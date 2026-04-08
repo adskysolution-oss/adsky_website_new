@@ -44,6 +44,12 @@ const userSchema = new mongoose.Schema({
     hoursPerDay: { type: Number },
     joiningTime: { type: String },
 
+    // Forgot password OTP fields
+    resetOTP: { type: String },
+    resetOTPExpiry: { type: Date },
+    resetToken: { type: String },
+    resetTokenExpiry: { type: Date },
+
     // Admin Access Management
     accountStatus: { type: String, enum: ['Active', 'Blocked'], default: 'Active' },
     

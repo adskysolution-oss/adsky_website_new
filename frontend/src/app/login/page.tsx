@@ -43,7 +43,7 @@ export default function LoginPage() {
         
         <div className="relative z-10">
           <Link href="/" className="text-4xl font-bold tracking-tight mb-12 block">
-            <span className="text-blue-400 mr-1">Work</span>Hustle
+            <span className="text-blue-400 mr-1">Ad</span>Sky
           </Link>
           <h2 className="text-4xl font-bold mb-6 leading-tight">Welcome back to the execution engine.</h2>
           <p className="text-blue-200 text-lg max-w-md line-clamp-4">
@@ -65,7 +65,7 @@ export default function LoginPage() {
         >
           <div className="lg:hidden mb-8 text-center">
             <Link href="/" className="text-3xl font-bold tracking-tight">
-              <span className="text-primary mr-1">Work</span>Hustle
+              <span className="text-primary mr-1">Ad</span>Sky
             </Link>
           </div>
 
@@ -87,10 +87,12 @@ export default function LoginPage() {
             </div>
             
             <div>
-               <div className="flex justify-between items-center mb-1">
-                 <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300">Password</label>
-                 <a href="#" className="text-sm text-primary hover:text-primary-hover font-medium">Forgot password?</a>
-               </div>
+              <div className="flex justify-between items-center mb-1">
+                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300">Password</label>
+                <Link href="/forgot-password" className="text-sm text-primary hover:text-primary-hover font-medium">
+                  Forgot password?
+                </Link>
+              </div>
               <input 
                 type="password" 
                 value={password}
