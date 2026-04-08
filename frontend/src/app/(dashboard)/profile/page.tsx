@@ -1,12 +1,12 @@
 'use client';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, Suspense } from 'react';
 import axios from 'axios';
 import { User, Camera, Save, CheckCircle, Loader2 } from 'lucide-react';
 import { useSearchParams } from 'next/navigation';
 
 const API = 'http://localhost:5000/api';
 
-export default function ProfilePage() {
+function ProfileContent() {
   const searchParams = useSearchParams();
   const [activeTab, setActiveTab] = useState(searchParams.get('tab') === 'picture' ? 'picture' : 'info');
   const [profile, setProfile] = useState<any>(null);
@@ -129,17 +129,17 @@ export default function ProfilePage() {
       {activeTab === 'info' && (
         <form onSubmit={handleSave} className="bg-white dark:bg-dark-surface rounded-2xl border border-gray-200 dark:border-gray-800 p-6 shadow-sm space-y-5">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-            {[
+            {([
               { label: 'Full Name', key: 'name', type: 'text', placeholder: 'John Doe' },
               { label: 'Phone Number', key: 'phone', type: 'tel', placeholder: '+91 98765 43210' },
               { label: 'Date of Birth', key: 'dob', type: 'date', placeholder: '' },
               { label: 'Location / Area', key: 'locationArea', type: 'text', placeholder: 'e.g. Pune, MH' },
               { label: 'Skills (comma-separated)', key: 'skills', type: 'text', placeholder: 'e.g. Delivery, Data Entry' },
               { label: 'Languages (comma-separated)', key: 'languages', type: 'text', placeholder: 'e.g. Hindi, English' },
-            ].map(field => (
+            ] as { label: string; key: keyof typeof form; type: React.HTMLInputTypeAttribute; placeholder: string }[]).map(field => (
               <div key={field.key}>
                 <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">{field.label}</label>
-                <input type={field.type} value={(form as any)[field.key]} onChange={e => setForm(f => ({ ...f, [field.key]: e.target.value }))}
+                <input type={field.type} value={form[field.key]} onChange={e => setForm(f => ({ ...f, [field.key]: e.target.value }))}
                   placeholder={field.placeholder}
                   className="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-[#151c2e] text-gray-900 dark:text-white focus:ring-2 focus:ring-primary outline-none transition-all text-sm"
                 />
@@ -221,5 +221,17 @@ export default function ProfilePage() {
         </div>
       )}
     </div>
+  );
+}
+
+export default function ProfilePage() {
+  return (
+    <Suspense fallback={
+      <div className="flex items-center justify-center min-h-64">
+        <Loader2 className="animate-spin text-primary" size={32} />
+      </div>
+    }>
+      <ProfileContent />
+    </Suspense>
   );
 }

@@ -62,7 +62,7 @@ export default function ApplicationsPage() {
         <div className="space-y-4">
           {applications.map((app) => {
             const status = (app.status || 'pending').toLowerCase();
-            const cfg = statusConfig[status] || statusConfig.pending;
+            const cfg = statusConfig[status] ?? statusConfig['pending'];
             return (
               <div key={app._id} className="bg-white dark:bg-dark-surface rounded-2xl border border-gray-200 dark:border-gray-800 p-5 shadow-sm hover:shadow-md transition-shadow">
                 <div className="flex items-start justify-between gap-4">

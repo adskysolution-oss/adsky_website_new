@@ -1,7 +1,7 @@
 'use client';
 import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
-import { Bell, CheckCircle, Info, AlertTriangle, DollarSign, Filter, Loader2 } from 'lucide-react';
+import { Bell, CheckCircle, Info, AlertTriangle, DollarSign, Loader2 } from 'lucide-react';
 
 interface Notification {
   _id: string;
@@ -78,7 +78,9 @@ export default function NotificationsPage() {
     return n.type === filter;
   });
 
-  const filterTabs = [
+  type FilterKey = 'all' | 'unread' | 'success' | 'info' | 'alert' | 'payment';
+
+  const filterTabs: { key: FilterKey; label: string }[] = [
     { key: 'all', label: 'All' },
     { key: 'unread', label: `Unread${unreadCount > 0 ? ` (${unreadCount})` : ''}` },
     { key: 'success', label: 'Success' },
@@ -110,7 +112,7 @@ export default function NotificationsPage() {
       <div className="flex gap-2 overflow-x-auto pb-2 mb-6">
         {filterTabs.map(tab => (
           <button key={tab.key}
-            onClick={() => setFilter(tab.key as any)}
+            onClick={() => setFilter(tab.key)}
             className={`flex-shrink-0 px-4 py-2 rounded-lg text-sm font-semibold transition-all ${
               filter === tab.key
                 ? 'bg-primary text-white shadow-sm'

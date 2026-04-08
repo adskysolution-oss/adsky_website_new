@@ -4,8 +4,16 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { 
   User, LogOut, FileText, Share2, Award, Download, 
-  AlertCircle, ShieldAlert, Star, Camera, ChevronDown 
+  AlertCircle, ShieldAlert, Star, Camera 
 } from 'lucide-react';
+import type { ReactNode } from 'react';
+
+interface MenuItem {
+  href: string;
+  icon: ReactNode;
+  label: string;
+  dividerAfter: boolean;
+}
 
 export default function ProfileDropdown() {
   const [isOpen, setIsOpen] = useState(false);
@@ -28,16 +36,16 @@ export default function ProfileDropdown() {
     router.push('/login');
   };
 
-  const menuItems = [
-    { href: '/profile', icon: <User size={16} />, label: 'My Profile' },
-    { href: '/profile?tab=picture', icon: <Camera size={16} />, label: 'Profile Picture' },
-    { href: '/applications', icon: <FileText size={16} />, label: 'Application History' },
-    { href: '/referrals', icon: <Share2 size={16} />, label: 'My Referrals' },
+  const menuItems: MenuItem[] = [
+    { href: '/profile', icon: <User size={16} />, label: 'My Profile', dividerAfter: false },
+    { href: '/profile?tab=picture', icon: <Camera size={16} />, label: 'Profile Picture', dividerAfter: false },
+    { href: '/applications', icon: <FileText size={16} />, label: 'Application History', dividerAfter: false },
+    { href: '/referrals', icon: <Share2 size={16} />, label: 'My Referrals', dividerAfter: false },
     { href: '/campus', icon: <Award size={16} />, label: 'Campus Ambassador', dividerAfter: true },
-    { href: '/download', icon: <Download size={16} />, label: 'Download App' },
-    { href: '/report', icon: <AlertCircle size={16} />, label: 'Report Wrongdoings' },
+    { href: '/download', icon: <Download size={16} />, label: 'Download App', dividerAfter: false },
+    { href: '/report', icon: <AlertCircle size={16} />, label: 'Report Wrongdoings', dividerAfter: false },
     { href: '/training', icon: <ShieldAlert size={16} />, label: 'POSH Training', dividerAfter: true },
-    { href: '/rate-us', icon: <Star size={16} />, label: 'Rate Us' },
+    { href: '/rate-us', icon: <Star size={16} />, label: 'Rate Us', dividerAfter: false },
   ];
 
   return (

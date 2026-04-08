@@ -2,15 +2,27 @@
 import { useState } from 'react';
 import { Award, CheckCircle, Loader2 } from 'lucide-react';
 
+type CampusFormKey = 'name' | 'college' | 'city' | 'year' | 'phone' | 'email' | 'motivation';
+
+interface CampusField {
+  label: string;
+  key: CampusFormKey;
+  placeholder: string;
+  type: React.HTMLInputTypeAttribute;
+  required: boolean;
+}
+
 export default function CampusPage() {
-  const [form, setForm] = useState({ name: '', college: '', city: '', year: '', phone: '', email: '', motivation: '' });
+  const [form, setForm] = useState<Record<CampusFormKey, string>>({
+    name: '', college: '', city: '', year: '', phone: '', email: '', motivation: ''
+  });
   const [submitted, setSubmitted] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    await new Promise(r => setTimeout(r, 1200)); // Simulated
+    await new Promise(r => setTimeout(r, 1200));
     setIsLoading(false);
     setSubmitted(true);
   };
@@ -20,6 +32,15 @@ export default function CampusPage() {
     { emoji: '🏅', title: 'Certificate of Excellence', desc: 'Recognized by industry leaders' },
     { emoji: '📈', title: 'Career Growth', desc: 'Priority placement in full-time roles' },
     { emoji: '🤝', title: 'Exclusive Network', desc: 'Connect with 500+ campus ambassadors' },
+  ];
+
+  const fields: CampusField[] = [
+    { label: 'Full Name', key: 'name', placeholder: 'John Doe', type: 'text', required: true },
+    { label: 'College / University', key: 'college', placeholder: 'IIT Bombay', type: 'text', required: true },
+    { label: 'City', key: 'city', placeholder: 'Mumbai', type: 'text', required: true },
+    { label: 'Year of Study', key: 'year', placeholder: '3rd Year', type: 'text', required: true },
+    { label: 'Phone', key: 'phone', placeholder: '+91 9876543210', type: 'tel', required: true },
+    { label: 'Email', key: 'email', placeholder: 'john@college.edu', type: 'email', required: true },
   ];
 
   return (
@@ -41,7 +62,7 @@ export default function CampusPage() {
         <div className="relative z-10">
           <span className="bg-white/20 text-white text-xs font-bold px-3 py-1 rounded-full">Now Open for Applications</span>
           <h2 className="text-2xl font-bold mt-3 mb-2">Be the Face of AdSky at Your Campus</h2>
-          <p className="text-blue-100 text-sm">Represent India's fastest growing gig platform, earn while you study, and build real leadership experience.</p>
+          <p className="text-blue-100 text-sm">Represent India&apos;s fastest growing gig platform, earn while you study, and build real leadership experience.</p>
         </div>
       </div>
 
@@ -61,24 +82,21 @@ export default function CampusPage() {
         <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-2xl p-8 text-center">
           <CheckCircle className="text-green-500 mx-auto mb-3" size={40} />
           <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">Application Submitted!</h3>
-          <p className="text-gray-500 dark:text-gray-400 text-sm">We'll review your application and reach out within 3–5 days.</p>
+          <p className="text-gray-500 dark:text-gray-400 text-sm">We&apos;ll review your application and reach out within 3–5 days.</p>
         </div>
       ) : (
         <div className="bg-white dark:bg-dark-surface rounded-2xl border border-gray-200 dark:border-gray-800 p-6 shadow-sm">
           <h2 className="font-bold text-gray-900 dark:text-white mb-5">Apply Now</h2>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {[
-                { label: 'Full Name', key: 'name', placeholder: 'John Doe', type: 'text', required: true },
-                { label: 'College / University', key: 'college', placeholder: 'IIT Bombay', type: 'text', required: true },
-                { label: 'City', key: 'city', placeholder: 'Mumbai', type: 'text', required: true },
-                { label: 'Year of Study', key: 'year', placeholder: '3rd Year', type: 'text', required: true },
-                { label: 'Phone', key: 'phone', placeholder: '+91 9876543210', type: 'tel', required: true },
-                { label: 'Email', key: 'email', placeholder: 'john@college.edu', type: 'email', required: true },
-              ].map(f => (
+              {fields.map(f => (
                 <div key={f.key}>
                   <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">{f.label}</label>
-                  <input type={f.type} required={f.required} value={(form as any)[f.key]} onChange={e => setForm(prev => ({ ...prev, [f.key]: e.target.value }))}
+                  <input
+                    type={f.type}
+                    required={f.required}
+                    value={form[f.key]}
+                    onChange={e => setForm(prev => ({ ...prev, [f.key]: e.target.value }))}
                     placeholder={f.placeholder}
                     className="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-[#151c2e] text-gray-900 dark:text-white focus:ring-2 focus:ring-primary outline-none text-sm transition-all"
                   />
@@ -87,8 +105,12 @@ export default function CampusPage() {
             </div>
             <div>
               <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Why do you want to be a Campus Ambassador?</label>
-              <textarea required value={form.motivation} onChange={e => setForm(prev => ({ ...prev, motivation: e.target.value }))}
-                placeholder="Tell us why you'd be a great fit..." rows={3}
+              <textarea
+                required
+                value={form.motivation}
+                onChange={e => setForm(prev => ({ ...prev, motivation: e.target.value }))}
+                placeholder="Tell us why you'd be a great fit..."
+                rows={3}
                 className="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-[#151c2e] text-gray-900 dark:text-white focus:ring-2 focus:ring-primary outline-none text-sm transition-all resize-none"
               />
             </div>
