@@ -15,7 +15,7 @@ const onboardingSchema = z.object({
     dob: z.string().min(1, "Date of birth is required"),
     languages: z.array(z.string()).min(1, "At least one language is required"),
     referralCode: z.string().optional(),
-    whatsappUpdates: z.boolean().default(true),
+    whatsappUpdates: z.boolean(),
   }),
   preferences: z.object({
     locationType: z.enum(["Current", "Manual"]),
@@ -52,7 +52,7 @@ export default function OnboardingPage() {
     resolver: zodResolver(onboardingSchema),
     mode: 'onChange',
     defaultValues: {
-      personalDetails: { name: '', languages: [], whatsappUpdates: true } as any,
+      personalDetails: { name: '', gender: undefined, dob: '', languages: [], whatsappUpdates: true, referralCode: '' } as any,
       preferences: { locationType: "Current", travelDistance: '' } as any,
       availability: { hoursPerDay: "4" } as any
     }
