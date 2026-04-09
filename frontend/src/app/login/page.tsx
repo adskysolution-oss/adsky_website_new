@@ -28,7 +28,11 @@ export default function LoginPage() {
          router.push('/office');
       }
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Login failed');
+      if (!err.response) {
+        setError('Cannot reach server. Make sure the backend is running on port 5000.');
+      } else {
+        setError(err.response?.data?.message || 'Login failed. Please try again.');
+      }
     } finally {
       setIsLoading(false);
     }

@@ -29,7 +29,11 @@ export default function ForgotPasswordPage() {
       if (res.data.devOTP) setDevOTP(res.data.devOTP);
       setStep('otp');
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Failed to send OTP');
+      if (!err.response) {
+        setError('Cannot reach server. Make sure the backend is running on port 5000.');
+      } else {
+        setError(err.response?.data?.message || 'Failed to send OTP. Please try again.');
+      }
     } finally {
       setIsLoading(false);
     }
@@ -43,7 +47,11 @@ export default function ForgotPasswordPage() {
       setResetToken(res.data.resetToken);
       setStep('password');
     } catch (err: any) {
-      setError(err.response?.data?.message || 'OTP verification failed');
+      if (!err.response) {
+        setError('Cannot reach server. Make sure the backend is running on port 5000.');
+      } else {
+        setError(err.response?.data?.message || 'OTP verification failed.');
+      }
     } finally {
       setIsLoading(false);
     }
@@ -62,7 +70,11 @@ export default function ForgotPasswordPage() {
       await axios.post(`${API}/reset-password`, { email, resetToken, newPassword });
       setStep('done');
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Password reset failed');
+      if (!err.response) {
+        setError('Cannot reach server. Make sure the backend is running on port 5000.');
+      } else {
+        setError(err.response?.data?.message || 'Password reset failed.');
+      }
     } finally {
       setIsLoading(false);
     }

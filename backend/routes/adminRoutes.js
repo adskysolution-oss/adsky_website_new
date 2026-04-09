@@ -6,6 +6,9 @@ const {
     updateUserStatus, 
     getAllJobs, 
     updateJobStatus,
+    createAdminJob,
+    updateAdminJob,
+    deleteAdminJob,
     getAllTasks,
     updateTaskStatus,
     getAllPayments,
@@ -33,7 +36,10 @@ router.patch('/users/:id/status', updateUserStatus);
 
 // Jobs
 router.get('/jobs', getAllJobs);
+router.post('/jobs', createAdminJob);
 router.patch('/jobs/:id/status', updateJobStatus);
+router.put('/jobs/:id', updateAdminJob);
+router.delete('/jobs/:id', deleteAdminJob);
 
 // Tasks
 router.get('/tasks', getAllTasks);

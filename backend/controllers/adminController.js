@@ -140,4 +140,35 @@ exports.makeMeAdmin = async (req, res) => {
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
-}
+};
+
+// Admin: Create a job (uses admin's own user ID as client)
+exports.createAdminJob = async (req, res) => {
+    try {
+        const job = await Job.create({ ...req.body, client: req.user.id });
+        res.status(201).json(job);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+// Admin: Update a job
+exports.updateAdminJob = async (req, res) => {
+    try {
+        const job = await Job.findByIdAndUpdate(req.params.id, req.body, { new: true });
+        if (!job) return res.status(404).json({ message: 'Job not found' });
+        res.json(job);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+// Admin: Delete a job
+exports.deleteAdminJob = async (req, res) => {
+    try {
+        await Job.findByIdAndDelete(req.params.id);
+        res.json({ message: 'Job deleted' });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
