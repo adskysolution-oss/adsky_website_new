@@ -1,26 +1,34 @@
 'use client';
 import { motion } from 'framer-motion';
 
-const LOGOS = ['Tata 1mg', 'Swiggy', 'Zomato', 'Reliance', 'Amazon', 'Flipkart', 'BigBasket'];
+const METRICS = [
+  { value: '10K+', label: 'Tasks Completed' },
+  { value: '5M+', label: 'Strong Workforce' },
+  { value: '120+', label: 'Cities Covered' },
+  { value: '4K+', label: 'Pin Codes' },
+];
 
 export default function TrustedBySection() {
   return (
-    <section className="py-12 bg-gray-50 border-y border-gray-200 dark:bg-[#0b1120] dark:border-gray-800">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <p className="text-sm font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-8">
-          Trusted by 100+ Leading Enterprises
-        </p>
-        <div className="flex flex-wrap justify-center items-center gap-8 md:gap-16 opacity-50 grayscale hover:grayscale-0 transition-all duration-500">
-          {LOGOS.map((logo, idx) => (
-            <motion.div 
-              key={logo}
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
+    <section className="border-y border-[#dbe4f1] bg-white/80 py-16">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="mb-10 text-center">
+          <p className="eyebrow eyebrow-light mb-4">Digital Transformation Excellence</p>
+          <h2 className="heading-md text-[#10213f]">Execution strength built for scale.</h2>
+        </div>
+
+        <div className="grid gap-5 md:grid-cols-4">
+          {METRICS.map((item, idx) => (
+            <motion.div
+              key={item.label}
+              initial={{ opacity: 0, y: 24 }}
+              whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: idx * 0.1 }}
-              className="text-xl md:text-2xl font-bold font-sans tracking-tight text-gray-400 dark:text-gray-600 hover:text-gray-800 dark:hover:text-gray-300 transition-colors cursor-default"
+              className="brand-card-light p-7 text-center"
             >
-              {logo}
+              <div className="text-4xl font-extrabold tracking-[-0.04em] text-[#0a2d67]">{item.value}</div>
+              <p className="mt-3 text-sm font-bold uppercase tracking-[0.16em] text-[#66789b]">{item.label}</p>
             </motion.div>
           ))}
         </div>

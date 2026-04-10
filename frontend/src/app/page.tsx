@@ -7,7 +7,7 @@ import CTASection from '@/components/home/CTASection';
 
 export default function Home() {
   return (
-    <div className="flex flex-col w-full h-full">
+    <div className="page-shell flex flex-col w-full h-full">
       <HeroSection />
       <TrustedBySection />
       <SolutionsSection />

@@ -2,8 +2,7 @@
 import { createContext, useContext, useEffect, useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import axios from 'axios';
-
-const API = 'http://localhost:5000/api';
+import { AUTH_API_URL } from '@/lib/auth';
 
 interface User {
   _id: string;
@@ -35,12 +34,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const fetchUser = useCallback(async (tk: string) => {
     try {
-      const res = await axios.get(`${API}/auth/profile`, {
-        headers: { Authorization: `Bearer ${tk}` }
+      const res = await axios.get(`${AUTH_API_URL}/profile`, {
+        headers: { Authorization: `Bearer ${tk}` },
       });
       setUser(res.data);
     } catch {
-      // Token invalid/expired - clear
       localStorage.removeItem('token');
       localStorage.removeItem('role');
       setToken(null);
@@ -48,7 +46,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   }, []);
 
-  // On mount: restore session from localStorage
   useEffect(() => {
     const storedToken = localStorage.getItem('token');
     if (storedToken) {

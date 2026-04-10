@@ -1,15 +1,15 @@
 import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
+import { Manrope } from 'next/font/google';
 import './globals.css';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { AuthProvider } from '@/context/AuthContext';
 
-const inter = Inter({ subsets: ['latin'] });
+const manrope = Manrope({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'AdSky - Gig & IT Services Marketplace',
-  description: 'Find jobs, hire complete workforces, or get top-tier IT services.',
+  title: 'AD Sky Solution | Workforce & IT Consulting',
+  description: 'Integrated IT solutions, strategic consulting, and workforce execution for growing businesses.',
 };
 
 export default function RootLayout({
@@ -19,7 +19,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={`${inter.className} pt-16 min-h-screen flex flex-col`}>
+      <body className={`${manrope.className} pt-16 min-h-screen flex flex-col`}>
         <AuthProvider>
           <Navbar />
           <main className="flex-grow">

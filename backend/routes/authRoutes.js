@@ -1,21 +1,28 @@
 const express = require('express');
 const router = express.Router();
-const { 
-    registerUser, loginUser, getProfile, updateProfile,
-    uploadProfilePicture, updateOnboardingProfile,
-    forgotPassword, verifyOTP, resetPassword
+const {
+  registerUser,
+  loginUser,
+  getProfile,
+  updateProfile,
+  uploadProfilePicture,
+  updateOnboardingProfile,
+  forgotPassword,
+  resetPassword,
 } = require('../controllers/authController');
 const { protect } = require('../middlewares/authMiddleware');
+const {
+  loginRateLimiter,
+  forgotPasswordRateLimiter,
+  resetPasswordRateLimiter,
+} = require('../middlewares/rateLimiters');
 const upload = require('../config/multer');
 
-// Public routes
 router.post('/register', registerUser);
-router.post('/login', loginUser);
-router.post('/forgot-password', forgotPassword);
-router.post('/verify-otp', verifyOTP);
-router.post('/reset-password', resetPassword);
+router.post('/login', loginRateLimiter, loginUser);
+router.post('/forgot-password', forgotPasswordRateLimiter, forgotPassword);
+router.post('/reset-password/:token', resetPasswordRateLimiter, resetPassword);
 
-// Protected routes
 router.get('/profile', protect, getProfile);
 router.put('/profile', protect, updateProfile);
 router.put('/profile/onboarding', protect, updateOnboardingProfile);
