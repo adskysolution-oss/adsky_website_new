@@ -35,6 +35,13 @@ const userSchema = new mongoose.Schema({
   passwordResetToken: { type: String },
   passwordResetExpiresAt: { type: Date },
   accountStatus: { type: String, enum: ['Active', 'Blocked'], default: 'Active' },
+  subscription: {
+    planName: { type: String, default: null },
+    status: { type: String, enum: ['inactive', 'active', 'expired'], default: 'inactive' },
+    amount: { type: Number, default: 0 },
+    orderId: { type: String, default: null },
+    activatedAt: { type: Date, default: null },
+  },
   createdAt: { type: Date, default: Date.now },
 });
 

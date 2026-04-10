@@ -19,7 +19,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={`${manrope.className} pt-16 min-h-screen flex flex-col`}>
+      <body suppressHydrationWarning className={`${manrope.className} pt-16 min-h-screen flex flex-col`}>
         <AuthProvider>
           <Navbar />
           <main className="flex-grow">

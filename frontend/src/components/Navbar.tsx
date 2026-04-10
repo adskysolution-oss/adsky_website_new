@@ -4,6 +4,14 @@ import { useState, useEffect } from 'react';
 import { Menu, X } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 
+const navItems = [
+  { href: '/business', label: 'Services' },
+  { href: '/jobs', label: 'Careers' },
+  { href: '/services', label: 'Solutions' },
+  { href: '/pricing', label: 'Pricing' },
+  { href: '/blogs', label: 'Insights' },
+];
+
 export default function Navbar() {
   const pathname = usePathname();
   const [isScrolled, setIsScrolled] = useState(false);
@@ -21,6 +29,8 @@ export default function Navbar() {
     return null;
   }
 
+  const isActive = (href: string) => pathname === href || pathname?.startsWith(`${href}/`);
+
   return (
     <nav className={`w-full fixed top-0 z-50 transition-all duration-300 ${isScrolled ? 'bg-[#081a34]/92 backdrop-blur-md shadow-[0_18px_50px_rgba(8,26,52,0.28)] border-b border-white/10 py-3' : 'bg-transparent py-5'}`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -31,19 +41,20 @@ export default function Navbar() {
             </Link>
           </div>
 
-          <div className="hidden md:flex space-x-8 items-center list-none">
-            <Link href="/business" className="text-white/80 hover:text-white transition-colors text-sm font-semibold">
-              Services <span className="ml-1 opacity-50">▾</span>
-            </Link>
-            <Link href="/jobs" className="text-white/80 hover:text-white transition-colors text-sm font-semibold">
-              Careers <span className="ml-1 opacity-50">▾</span>
-            </Link>
-            <Link href="/services" className="text-white/80 hover:text-white transition-colors text-sm font-semibold">
-              Solutions
-            </Link>
-            <Link href="/blogs" className="text-white/80 hover:text-white transition-colors text-sm font-semibold">
-              Insights
-            </Link>
+          <div className="hidden md:flex space-x-4 items-center list-none">
+            {navItems.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={`rounded-full px-4 py-2 text-sm font-semibold transition-colors ${
+                  isActive(item.href)
+                    ? 'bg-white/12 text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.1)]'
+                    : 'text-white/80 hover:text-white'
+                }`}
+              >
+                {item.label}
+              </Link>
+            ))}
           </div>
 
           <div className="hidden md:flex items-center space-x-4">
@@ -64,12 +75,23 @@ export default function Navbar() {
       </div>
 
       {mobileMenuOpen && (
-        <div className="md:hidden absolute top-full left-0 right-0 bg-[#0b1d3a] border-b border-white/10 shadow-xl p-4 flex flex-col space-y-4">
-          <Link href="/business" className="font-semibold text-white">Services</Link>
-          <Link href="/jobs" className="font-semibold text-white">Careers</Link>
-          <Link href="/services" className="font-semibold text-white">Solutions</Link>
+        <div className="md:hidden absolute top-full left-0 right-0 bg-[#0b1d3a] border-b border-white/10 shadow-xl p-4 flex flex-col space-y-3">
+          {navItems.map((item) => (
+            <Link
+              key={item.href}
+              href={item.href}
+              onClick={() => setMobileMenuOpen(false)}
+              className={`rounded-2xl px-4 py-3 font-semibold ${
+                isActive(item.href) ? 'bg-white/10 text-white' : 'text-white/80'
+              }`}
+            >
+              {item.label}
+            </Link>
+          ))}
           <hr className="border-white/10" />
-          <Link href="/login" className="font-semibold text-[#ff8ba0]">Sign In</Link>
+          <Link href="/login" onClick={() => setMobileMenuOpen(false)} className="font-semibold text-[#ff8ba0] px-4 py-2">
+            Sign In
+          </Link>
         </div>
       )}
     </nav>
