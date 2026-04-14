@@ -394,8 +394,8 @@ export default function Home() {
   const [activeTestimonial, setActiveTestimonial] = useState(3);
   const shellClass = 'mx-auto flex w-full justify-center px-6 lg:px-8';
   const shellInnerClass = 'mx-auto w-full max-w-[1200px]';
-  const homeCenteredShellStyle = { maxWidth: '1120px', marginLeft: 'auto', marginRight: 'auto' } as const;
-  const homeWideShellStyle = { maxWidth: '1180px', marginLeft: 'auto', marginRight: 'auto' } as const;
+  const homeCenteredShellStyle = { maxWidth: '1200px', marginLeft: 'auto', marginRight: 'auto' } as const;
+  const homeWideShellStyle = { maxWidth: '1200px', marginLeft: 'auto', marginRight: 'auto' } as const;
   const heroShellClass = 'w-full max-w-[1220px]';
   const navbarInnerClass = 'w-full max-w-[1280px]';
   const currentTestimonial = testimonials[activeTestimonial];
@@ -542,9 +542,8 @@ export default function Home() {
       </Section>
 
       <Section variant="lightGray" spacing="lg">
-        <div className="w-full px-4 md:px-6">
-          <div style={homeCenteredShellStyle}>
-            <div className="mx-auto inline-grid max-w-full grid-cols-1 justify-center justify-items-center gap-14 md:grid-cols-2 md:gap-14 xl:grid-cols-4 xl:gap-16">
+        <div className="mx-auto flex w-full max-w-[1200px] flex-col items-center justify-center px-4">
+          <div className="mx-auto grid w-full grid-cols-1 justify-items-center gap-14 md:grid-cols-2 md:gap-x-10 xl:grid-cols-4 xl:gap-x-12">
             {trustedStats.map((stat, index) => (
             <motion.div
               key={stat.eyebrow}
@@ -552,21 +551,19 @@ export default function Home() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: index * 0.08 }}
-              className="mx-auto flex w-full max-w-[250px] flex-col items-center text-center"
+              className="flex w-full max-w-[240px] flex-col items-center text-center"
             >
-              <div className="mb-3 text-[1.05rem] font-bold text-[#4c82ff]">{stat.eyebrow}</div>
-              <div className="mb-3 text-[3.4rem] font-bold leading-none tracking-[-0.04em] text-[#111827]">{stat.value}</div>
-              <p className="max-w-[240px] text-[1.02rem] leading-7 text-[#4b5563]">{stat.label}</p>
+              <div className="mb-3 text-[1rem] font-bold text-[#4c82ff]">{stat.eyebrow}</div>
+              <div className="mb-3 text-[3.2rem] font-bold leading-none tracking-[-0.04em] text-[#111827]">{stat.value}</div>
+              <p className="max-w-[220px] text-[0.95rem] leading-7 text-[#4b5563]">{stat.label}</p>
             </motion.div>
           ))}
-            </div>
           </div>
         </div>
       </Section>
 
       <Section variant="white" spacing="lg">
-        <div className="w-full px-4 md:px-6">
-          <div style={homeCenteredShellStyle} className="flex flex-col items-center justify-center">
+        <div className="mx-auto flex w-full max-w-[1200px] flex-col items-center justify-center px-4">
           <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }} className="mx-auto mb-16 max-w-[760px] text-center sm:mb-20">
             <h2 className="leading-[1.12]" style={{ fontSize: '2.5rem', fontWeight: 700 }}>Why work with us?</h2>
           </motion.div>
@@ -577,9 +574,9 @@ export default function Home() {
             viewport={{ once: true }}
             transition={{ duration: 0.8 }}
             className="mx-auto w-full overflow-hidden rounded-[30px] bg-[radial-gradient(circle_at_88%_28%,rgba(30,66,129,0.95),rgba(7,18,38,0.98)_44%,#000_76%)] shadow-[0_26px_70px_rgba(6,17,35,0.2)]"
-            style={{ maxWidth: '960px' }}
+            style={{ maxWidth: '1000px' }}
           >
-            <div className="grid min-h-[580px] w-full items-center justify-center justify-items-center lg:grid-cols-2 gap-4">
+            <div className="grid min-h-[540px] w-full lg:grid-cols-2">
               <div className="relative flex items-center justify-center px-10 py-12 sm:px-14 sm:py-16">
                 <div className="absolute left-[-80px] top-1/2 h-[560px] w-[360px] -translate-y-1/2 rounded-full bg-[radial-gradient(circle_at_72%_50%,rgba(27,63,128,0.9),rgba(7,18,38,0.96)_52%,transparent_74%)]" />
 
@@ -616,19 +613,19 @@ export default function Home() {
               </div>
 
               <div className="relative flex items-center px-10 py-12 text-center text-white sm:px-14 sm:py-16 lg:text-left">
-                <div className="mx-auto flex max-w-[520px] flex-col items-center lg:items-start">
-                  <div className="mb-20 inline-flex rounded-full bg-[#444c59] p-2 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]">
+                <div className="mx-auto flex max-w-[460px] flex-col items-center lg:items-start">
+                  <div className="mb-14 inline-flex rounded-full bg-[#444c59] p-2 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]">
                     <button
                       type="button"
                       onClick={() => setActiveWhyWorkTab('jobs')}
-                      className={`rounded-full px-8 py-3 text-[18px] font-medium transition-colors ${activeWhyWorkTab === 'jobs' ? 'bg-[#c9ff45] text-[#273448]' : 'text-white'}`}
+                      className={`rounded-full px-7 py-2.5 text-[16px] font-medium transition-colors ${activeWhyWorkTab === 'jobs' ? 'bg-[#c9ff45] text-[#273448]' : 'text-white'}`}
                     >
                       For Jobs
                     </button>
                     <button
                       type="button"
                       onClick={() => setActiveWhyWorkTab('business')}
-                      className={`rounded-full px-8 py-3 text-[18px] font-medium transition-colors ${activeWhyWorkTab === 'business' ? 'bg-[#c9ff45] text-[#273448]' : 'text-white'}`}
+                      className={`rounded-full px-7 py-2.5 text-[16px] font-medium transition-colors ${activeWhyWorkTab === 'business' ? 'bg-[#c9ff45] text-[#273448]' : 'text-white'}`}
                     >
                       For Business
                     </button>
@@ -643,17 +640,17 @@ export default function Home() {
                       transition={{ duration: 0.35 }}
                       className="flex flex-col items-center lg:items-start"
                     >
-                      <h3 className="mb-4 text-white leading-[1.18]" style={{ fontSize: '2.7rem', fontWeight: 700 }}>
+                      <h3 className="mb-4 text-white leading-[1.18]" style={{ fontSize: '2.4rem', fontWeight: 700 }}>
                         {activeWhyWorkContent.title}
                       </h3>
-                      <p className="mb-12 max-w-[520px] text-[21px] leading-[1.5] text-white/88">
+                      <p className="mb-10 max-w-[460px] text-[1.1rem] leading-[1.5] text-white/88">
                         {activeWhyWorkContent.description}
                       </p>
                       <Button
                         asChild
                         size="xl"
                         variant="secondary"
-                        className="min-w-[308px] h-[62px]"
+                        className="min-w-[280px] h-[56px]"
                       >
                         <Link href={activeWhyWorkTab === 'business' ? '/business' : '/jobs'} className="gap-3">
                           {activeWhyWorkContent.buttonLabel}
@@ -666,13 +663,11 @@ export default function Home() {
               </div>
             </div>
           </motion.div>
-          </div>
         </div>
       </Section>
 
       <section className="w-full overflow-hidden bg-[radial-gradient(circle_at_84%_18%,rgba(31,78,136,0.72),rgba(8,18,34,0.98)_44%,#000_82%)] py-28 text-white sm:py-32 lg:py-36">
-        <div className="w-full px-4 md:px-6">
-          <div style={homeWideShellStyle} className="flex flex-col items-center justify-center">
+        <div className="mx-auto flex w-full max-w-[1200px] flex-col items-center px-6 lg:px-8">
             <motion.div initial={{ opacity: 0, y: 18 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }} className="mx-auto mb-14 flex max-w-[760px] flex-col items-center text-center sm:mb-16">
               <h2 className="mb-9 text-white" style={{ fontSize: '2.7rem', fontWeight: 700 }}>Our Offerings</h2>
 
@@ -682,7 +677,7 @@ export default function Home() {
                     key={tab}
                     type="button"
                     onClick={() => setActiveOfferingTab(tab)}
-                    className={`rounded-full px-8 py-3 text-[1.15rem] font-bold transition-colors ${
+                    className={`rounded-full px-7 py-2.5 text-[1.05rem] font-bold transition-colors ${
                       activeOfferingTab === tab ? 'bg-[#c9ff45] text-[#212121]' : 'bg-[#3a3a3d] text-white/78'
                     }`}
                   >
@@ -691,10 +686,10 @@ export default function Home() {
                 ))}
               </div>
 
-              <p className="text-[1.18rem] font-semibold leading-8 text-white">Cognitive, Desk-based, Tech-centric</p>
+              <p className="text-[1.1rem] font-semibold leading-8 text-white">Cognitive, Desk-based, Tech-centric</p>
             </motion.div>
 
-            <div className="logo-marquee relative overflow-hidden">
+            <div className="logo-marquee relative w-full overflow-hidden">
               <div className="offerings-scroll flex gap-6">
                 {[0, 1].map((copy) => (
                   <div key={copy} className="flex flex-shrink-0 items-stretch gap-6">
@@ -750,12 +745,10 @@ export default function Home() {
               <div className="h-[3px] w-20 rounded-full bg-white/55" />
             </div>
           </div>
-          </div>
       </section>
 
       <Section variant="white" spacing="lg">
-        <div className="w-full px-4 md:px-6">
-          <div style={homeWideShellStyle} className="flex flex-col items-center justify-center">
+        <div className="mx-auto flex w-full max-w-[1200px] flex-col items-center justify-center px-4">
           <motion.div initial={{ opacity: 0, y: 18 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }} className="mx-auto mb-16 max-w-[760px] text-center sm:mb-20">
             <h2 className="mb-3 leading-[1.12] text-[#111827]" style={{ fontSize: '2.5rem', fontWeight: 700 }}>Job Categories</h2>
           </motion.div>
@@ -863,7 +856,6 @@ export default function Home() {
               </div>
             </div>
           </div>
-        </div>
       </Section>
 
       <Section variant="lightGray" spacing="lg">
@@ -951,8 +943,7 @@ export default function Home() {
       </Section>
 
       <Section className="mt-16 border-t border-white/20 bg-[radial-gradient(circle_at_0%_100%,rgba(20,49,96,0.88),transparent_30%),radial-gradient(circle_at_100%_0%,rgba(56,52,15,0.4),transparent_24%),linear-gradient(180deg,#020202_0%,#03060d_100%)] text-white" spacing="lg">
-          <div className="w-full px-4 md:px-6">
-            <div style={homeWideShellStyle} className="flex flex-col items-center justify-center">
+          <div className="mx-auto flex w-full max-w-[1200px] flex-col items-center justify-center px-4">
             <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }} className="mx-auto mb-12 max-w-[860px] text-center sm:mb-14">
               <h2 className="leading-[1.12] text-white" style={{ fontSize: '2.5rem', fontWeight: 700 }}>How It Works</h2>
               <p className="mt-3 text-[1.02rem] leading-8 text-white/82 sm:mt-4">
@@ -1075,13 +1066,11 @@ export default function Home() {
                 </motion.article>
               ))}
             </div>
-            </div>
           </div>
       </Section>
 
       <Section variant="lightGray" spacing="lg">
-          <div className="w-full px-4 md:px-6">
-            <div style={homeCenteredShellStyle} className="flex flex-col items-center justify-center">
+          <div className="mx-auto flex w-full max-w-[1200px] flex-col items-center justify-center px-4">
             <motion.div initial={{ opacity: 0, y: 18 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }} className="mx-auto mb-14 max-w-[760px] text-center">
               <h2 className="text-[#252525]" style={{ fontSize: '2.45rem', fontWeight: 700 }}>What People Say</h2>
             </motion.div>
@@ -1154,7 +1143,6 @@ export default function Home() {
             <div className="pt-28 text-center sm:pt-32">
               <h2 className="text-[#252525]" style={{ fontSize: '2.45rem', fontWeight: 700 }}>Blogs</h2>
             </div>
-            </div>
           </div>
       </Section>
 
@@ -1165,8 +1153,7 @@ export default function Home() {
         <div className="pointer-events-none absolute right-[4%] top-[22%] hidden h-28 w-28 rotate-12 rounded-[28px] bg-[#dfe7fb] opacity-45 md:block" style={{ clipPath: 'polygon(18% 0, 100% 26%, 71% 100%, 0 73%)' }} />
         <div className="absolute bottom-0 left-0 right-0 h-[190px] bg-black" />
 
-        <div className="relative z-10 w-full px-4 md:px-6 text-center">
-          <div style={homeCenteredShellStyle} className="flex flex-col items-center justify-center">
+        <div className="relative z-10 mx-auto flex w-full max-w-[1200px] flex-col items-center justify-center px-4 text-center">
             <motion.div initial={{ opacity: 0, y: 18 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }} className="mx-auto mb-12 max-w-[860px] text-center">
               <h2 className="text-[#203d6e]" style={{ fontSize: '2.2rem', fontWeight: 700 }}>In Media</h2>
               <p className="mt-3 text-[1.05rem] leading-8 text-[#53627b]">

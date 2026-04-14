@@ -376,19 +376,19 @@ export default function GigPage() {
       </Section>
 
       <Section variant="white" spacing="lg">
-        <div className="w-full max-w-[1320px] mx-auto">
+        <div className="mx-auto w-full max-w-[1200px]">
             <motion.div initial={{ opacity: 0, y: 18 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }} className="mx-auto mb-14 max-w-[760px] text-center sm:mb-16">
               <h2 className="mb-3 leading-[1.12] text-[#111827]" style={{ fontSize: '2.5rem', fontWeight: 700 }}>Job Categories</h2>
             </motion.div>
 
-            <div className="grid items-start gap-12 lg:grid-cols-[430px_minmax(0,1fr)] lg:gap-14">
-              <motion.div initial={{ opacity: 0, x: -24 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.7 }} className="relative mx-auto w-full max-w-[430px] lg:mx-0 lg:pt-2">
+            <div className="grid items-start gap-12 lg:grid-cols-[380px_minmax(0,1fr)] lg:gap-14">
+              <motion.div initial={{ opacity: 0, x: -24 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.7 }} className="relative mx-auto w-full max-w-[380px] lg:mx-0 lg:pt-2">
                 <div className="relative overflow-hidden">
-                  <img src="/image.png" alt="Job categories representative" className="h-[710px] w-full object-contain object-top" style={{ maskImage: 'linear-gradient(to bottom, black 72%, transparent 100%)', WebkitMaskImage: 'linear-gradient(to bottom, black 72%, transparent 100%)' }} />
+                  <img src="/image.png" alt="Job categories representative" className="h-[640px] w-full object-contain object-top" style={{ maskImage: 'linear-gradient(to bottom, black 72%, transparent 100%)', WebkitMaskImage: 'linear-gradient(to bottom, black 72%, transparent 100%)' }} />
                 </div>
               </motion.div>
 
-              <div className="flex flex-wrap justify-center gap-5 pt-2 xl:flex-nowrap xl:items-start xl:justify-start">
+              <div className="flex flex-wrap justify-center gap-4 pt-2 xl:flex-nowrap xl:items-start xl:justify-center">
                 {jobCategoryColumns.map((column, columnIndex) => (
                   <div key={column.join('-')} className="flex w-full max-w-[220px] flex-col items-center gap-5 sm:w-[210px] xl:w-[200px]">
                     {column.map((title, itemIndex) => {
@@ -417,13 +417,13 @@ export default function GigPage() {
       </Section>
 
       <Section variant="white" spacing="lg" className="pt-20 sm:pt-24 lg:pt-28">
-        <div className="w-full max-w-[1240px] mx-auto">
+        <div className="mx-auto w-full max-w-[1200px]">
             <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }} className="mx-auto mb-16 max-w-[760px] text-center sm:mb-20">
               <h2 className="leading-[1.12]" style={{ fontSize: '2.5rem', fontWeight: 700 }}>Why work with us?</h2>
             </motion.div>
 
-            <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.8 }} className="mx-auto overflow-hidden rounded-[34px] bg-[radial-gradient(circle_at_88%_28%,rgba(30,66,129,0.95),rgba(7,18,38,0.98)_44%,#000_76%)] shadow-[0_26px_70px_rgba(6,17,35,0.2)]" style={{ maxWidth: '1500px' }}>
-              <div className="grid min-h-[670px] lg:grid-cols-[0.9fr_1.1fr]">
+            <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.8 }} className="mx-auto w-full overflow-hidden rounded-[34px] bg-[radial-gradient(circle_at_88%_28%,rgba(30,66,129,0.95),rgba(7,18,38,0.98)_44%,#000_76%)] shadow-[0_26px_70px_rgba(6,17,35,0.2)]" style={{ maxWidth: '1100px' }}>
+              <div className="grid min-h-[580px] lg:grid-cols-[0.9fr_1.1fr]">
                 <div className="relative flex items-center justify-center px-12 py-14 sm:px-16 sm:py-[72px]">
                   <div className="absolute left-[-120px] top-1/2 h-[640px] w-[420px] -translate-y-1/2 rounded-full bg-[radial-gradient(circle_at_72%_50%,rgba(27,63,128,0.9),rgba(7,18,38,0.96)_52%,transparent_74%)]" />
                   <div className="relative flex w-full items-center justify-center">
@@ -474,24 +474,23 @@ export default function GigPage() {
       </Section>
 
       <section className="w-full overflow-hidden bg-[radial-gradient(circle_at_0%_100%,rgba(20,49,96,0.88),transparent_30%),radial-gradient(circle_at_100%_0%,rgba(56,52,15,0.4),transparent_24%),linear-gradient(180deg,#020202_0%,#03060d_100%)] py-28 text-white sm:py-32 lg:py-36">
-        <div className="mx-auto flex w-full justify-center px-6 lg:px-8">
-          <div className="w-full max-w-[1520px]">
-            <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }} className="mx-auto mb-12 max-w-[860px] text-center sm:mb-14">
+        <div className="mx-auto w-full max-w-[1200px] px-6 lg:px-8">
+            <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }} className="mx-auto mb-12 max-w-[760px] text-center sm:mb-14">
               <h2 className="leading-[1.12] text-white" style={{ fontSize: '2.5rem', fontWeight: 700 }}>How It Works</h2>
               <p className="mt-3 text-[1.02rem] leading-8 text-white/82 sm:mt-4">We ensure reliable execution of your job-seeking journey. Here&apos;s how we do it:</p>
             </motion.div>
 
-            <div className="mx-auto mb-12 hidden max-w-[1380px] items-center px-4 xl:flex">
+            <div className="mx-auto mb-12 hidden w-full items-center xl:flex">
               <div className="h-px flex-1 bg-white/70" />
               {jobHowItWorks.map((step, index) => (
                 <div key={step.step} className="flex items-center">
                   <div className="flex h-14 w-14 items-center justify-center rounded-full bg-white text-[1.15rem] font-bold text-[#17345d]">{step.step}</div>
-                  {index < jobHowItWorks.length - 1 ? <div className="h-px w-[140px] bg-white/70 xl:w-[170px]" /> : null}
+                  {index < jobHowItWorks.length - 1 ? <div className="h-px w-[100px] bg-white/70 xl:w-[130px]" /> : null}
                 </div>
               ))}
             </div>
 
-            <div className="mx-auto grid max-w-[1520px] gap-6 xl:grid-cols-5">
+            <div className="mx-auto grid w-full gap-5 xl:grid-cols-5">
               {jobHowItWorks.map((item, index) => (
                 <motion.article key={item.step} initial={{ opacity: 0, y: 26 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.55, delay: index * 0.1 }} className="rounded-[28px] bg-[linear-gradient(180deg,#2f3136_0%,#2a2a2b_100%)] px-6 pb-6 pt-8 text-center shadow-[0_20px_60px_rgba(0,0,0,0.22)]">
                   <div className="mb-6 flex items-center justify-center xl:hidden"><div className="flex h-12 w-12 items-center justify-center rounded-full bg-white text-lg font-bold text-[#17345d]">{item.step}</div></div>
@@ -501,23 +500,23 @@ export default function GigPage() {
                 </motion.article>
               ))}
             </div>
-          </div>
         </div>
       </section>
 
       <Section variant="lightGray" spacing="md">
-          <div className="grid grid-cols-1 gap-12 md:grid-cols-2 xl:grid-cols-4 xl:gap-14">
+          <div className="mx-auto grid w-full max-w-[1200px] grid-cols-1 justify-items-center gap-12 md:grid-cols-2 md:justify-center xl:grid-cols-4 xl:gap-14">
             {stats.map((stat) => (
-              <div key={stat.label} className="mx-auto flex w-full max-w-[260px] flex-col items-start text-left md:max-w-none">
-                <div className="mb-3 text-[0.95rem] font-medium text-[#4c82ff]">{stat.label}</div>
-                <div className="mb-3 text-[3rem] font-semibold leading-none tracking-[-0.03em] text-[#1e1e1e]">{stat.value}</div>
-                <p className="text-[0.95rem] leading-7 text-[#8c8c8c]">{stat.description}</p>
+              <div key={stat.label} className="flex w-full max-w-[240px] flex-col items-center text-center">
+                <div className="mb-3 text-[0.95rem] font-semibold text-[#4c82ff]">{stat.label}</div>
+                <div className="mb-3 text-[3rem] font-bold leading-none tracking-[-0.04em] text-[#1e1e1e]">{stat.value}</div>
+                <p className="max-w-[220px] text-[0.9rem] leading-6 text-[#6b7280]">{stat.description}</p>
               </div>
             ))}
           </div>
       </Section>
 
       <Section variant="lightGray" spacing="lg">
+          <div className="mx-auto w-full max-w-[1200px]">
           <motion.div
             initial={{ opacity: 0, y: 18 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -529,7 +528,7 @@ export default function GigPage() {
             <p className="mt-3 text-[1rem] leading-7 text-[#7c828a]">Here&apos;s what our Awignites have to say</p>
           </motion.div>
 
-          <div className="mx-auto grid max-w-[1020px] gap-5 lg:grid-cols-3">
+          <div className="mx-auto grid max-w-[1080px] gap-6 lg:grid-cols-3">
             {visibleTestimonials.map((testimonial, index) => (
               <motion.article
                 key={`${testimonial.name}-${testimonialIndex}-${index}`}
@@ -557,23 +556,23 @@ export default function GigPage() {
             ))}
           </div>
 
-          <div className="mt-8 flex items-center justify-center gap-4">
+          <div className="mt-10 flex items-center justify-center gap-5">
             <button
               type="button"
               aria-label="Previous testimonials"
               onClick={() => setTestimonialIndex((current) => (current === 0 ? testimonials.length - 1 : current - 1))}
-              className="flex h-9 w-9 items-center justify-center rounded-full border border-[#c8ced5] text-[#7b8592] transition-colors hover:bg-white"
+              className="flex h-10 w-10 items-center justify-center rounded-full border border-[#c8ced5] text-[#7b8592] transition-colors hover:bg-white"
             >
               <ChevronLeft className="h-4 w-4" />
             </button>
-            <div className="flex items-center gap-2.5">
+            <div className="flex items-center gap-3">
               {testimonials.map((testimonial, index) => (
                 <button
                   key={testimonial.name}
                   type="button"
                   aria-label={`Go to testimonial ${index + 1}`}
                   onClick={() => setTestimonialIndex(index)}
-                  className={`h-2.5 w-2.5 rounded-full transition-colors ${index === testimonialIndex ? 'bg-[#20364d]' : 'bg-[#d4d8dc]'}`}
+                  className={`h-3 w-3 rounded-full transition-colors ${index === testimonialIndex ? 'bg-[#20364d]' : 'bg-[#d4d8dc]'}`}
                 />
               ))}
             </div>
@@ -581,10 +580,11 @@ export default function GigPage() {
               type="button"
               aria-label="Next testimonials"
               onClick={() => setTestimonialIndex((current) => (current + 1) % testimonials.length)}
-              className="flex h-9 w-9 items-center justify-center rounded-full border border-[#d8dde2] text-[#c5cad0] transition-colors hover:bg-white"
+              className="flex h-10 w-10 items-center justify-center rounded-full border border-[#d8dde2] text-[#c5cad0] transition-colors hover:bg-white"
             >
               <ChevronRight className="h-4 w-4" />
             </button>
+          </div>
           </div>
       </Section>
 

@@ -534,21 +534,21 @@ export default function BusinessPage() {
         </div>
       </section>
 
-      <section className="bg-white px-6 py-20 lg:px-8">
-        <div className="mx-auto max-w-[1100px]">
+      <section className="bg-[#f5f7fb] px-6 py-20 lg:px-8">
+        <div className="mx-auto max-w-[1200px]">
           <div className="grid justify-items-center gap-10 md:grid-cols-2 xl:grid-cols-4">
             {stats.map((stat) => (
-              <div key={stat.label} className="max-w-[250px] text-center">
-                <div className="text-[0.9rem] font-medium text-[#6485d8]">{stat.label}</div>
-                <div className="mt-3 text-[2.35rem] font-semibold leading-none tracking-[-0.04em] text-[#111827]">{stat.value}</div>
-                <p className="mt-4 text-[0.98rem] leading-7 text-[#6b7280]">{stat.description}</p>
+              <div key={stat.label} className="max-w-[240px] text-center">
+                <div className="text-[0.9rem] font-semibold text-[#4c82ff]">{stat.label}</div>
+                <div className="mt-3 text-[2.5rem] font-bold leading-none tracking-[-0.04em] text-[#111827]">{stat.value}</div>
+                <p className="mt-4 text-[0.95rem] leading-7 text-[#6b7280]">{stat.description}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
       <Section variant="black" spacing="md">
-        <div className="mx-auto max-w-[1180px]">
+        <div className="mx-auto w-full max-w-[1200px]">
           <div className="mx-auto max-w-[760px] text-center">
             <h2 className="text-[2.9rem] font-semibold tracking-[-0.04em] text-white">Our Offerings</h2>
             <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
@@ -572,13 +572,13 @@ export default function BusinessPage() {
             <p className="mt-10 text-[1.05rem] font-semibold text-white">{currentOffering.subtitle}</p>
           </div>
 
-          <div className="mx-auto mt-14 grid max-w-[1120px] gap-7 lg:grid-cols-3">
+          <div className="mx-auto mt-14 grid max-w-[1200px] gap-7 lg:grid-cols-3">
             {currentOffering.cards.map((card) => (
               <div
                 key={card.title}
-                className="flex min-h-[430px] flex-col rounded-[30px] bg-[#2d2d2d] px-7 py-8 shadow-[0_22px_50px_rgba(0,0,0,0.24)]"
+                className="flex min-h-[400px] flex-col rounded-[30px] bg-[#2d2d2d] px-7 py-8 shadow-[0_22px_50px_rgba(0,0,0,0.24)]"
               >
-                <h3 className="text-[2rem] font-semibold leading-[1.08] tracking-[-0.04em] text-white">{card.title}</h3>
+                <h3 className="text-[1.8rem] font-semibold leading-[1.08] tracking-[-0.04em] text-white">{card.title}</h3>
                 <p className="mt-5 text-[1rem] leading-7 text-white/84">{card.description}</p>
                 <ul className="mt-7 space-y-3 text-[1rem] leading-7 text-white/90">
                   {card.bullets.map((bullet) => (
@@ -588,7 +588,7 @@ export default function BusinessPage() {
                     </li>
                   ))}
                 </ul>
-                <div className="mt-auto pt-10">
+                <div className="mt-auto pt-8">
                   <Button type="button" size="md" variant="secondary" className="gap-2 text-[#1f2937]">
                     Know More
                     <ArrowRight className="h-4 w-4" />
@@ -601,23 +601,23 @@ export default function BusinessPage() {
       </Section>
 
       <Section variant="white" spacing="md">
-        <div className="mx-auto max-w-[1120px] text-center">
+        <div className="mx-auto max-w-[1200px] text-center">
           <h2 className="text-[2.8rem] font-semibold tracking-[-0.04em] text-[#111827]">Why Work With Us?</h2>
-          <p className="mx-auto mt-5 max-w-[780px] text-[1.08rem] leading-8 text-[#6b7280]">
+          <p className="mx-auto mt-5 max-w-[760px] text-[1.08rem] leading-8 text-[#6b7280]">
             We combine platform intelligence, field execution, and a large verified workforce so your core operations
             move faster without sacrificing quality.
           </p>
-          <div className="mt-14 grid gap-7 md:grid-cols-3">
+          <div className="mt-14 grid gap-6 md:grid-cols-3">
             {whyWorkFeatures.map((feature) => (
               <div
                 key={feature.title}
-                className="rounded-[28px] border border-[#e5e7eb] bg-[#f8fafc] px-7 py-9 text-left shadow-[0_18px_45px_rgba(15,23,42,0.06)]"
+                className="rounded-[28px] border border-[#e5e7eb] bg-[#f8fafc] px-7 py-8 text-left shadow-[0_18px_45px_rgba(15,23,42,0.06)] transition-shadow hover:shadow-[0_24px_60px_rgba(15,23,42,0.10)]"
               >
                 <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#111827] text-white">
                   <CheckCircle2 className="h-6 w-6" />
                 </div>
-                <h3 className="mt-6 text-[1.5rem] font-semibold tracking-[-0.03em] text-[#111827]">{feature.title}</h3>
-                <p className="mt-4 text-[1rem] leading-7 text-[#6b7280]">{feature.description}</p>
+                <h3 className="mt-6 text-[1.4rem] font-semibold tracking-[-0.03em] text-[#111827]">{feature.title}</h3>
+                <p className="mt-4 text-[0.98rem] leading-7 text-[#6b7280]">{feature.description}</p>
               </div>
             ))}
           </div>
@@ -625,7 +625,7 @@ export default function BusinessPage() {
       </Section>
 
       <Section variant="lightGray" spacing="md" className="pt-6 pb-24">
-        <div className="mx-auto max-w-[1120px]">
+        <div className="mx-auto max-w-[1200px]">
           <div className="text-center">
             <h2 className="text-[2.9rem] font-semibold tracking-[-0.04em] text-[#1f2937]">Clients Success Stories</h2>
           </div>
@@ -673,9 +673,9 @@ export default function BusinessPage() {
         </div>
       </Section>
       <Section variant="transparent" spacing="lg" className="bg-[radial-gradient(circle_at_12%_88%,rgba(43,73,143,0.36),transparent_22%),linear-gradient(180deg,#030303_0%,#050505_100%)] text-white">
-        <div className="mx-auto max-w-[1180px] text-center">
+        <div className="mx-auto max-w-[1200px] text-center">
           <h2 className="text-[2.9rem] font-semibold tracking-[-0.04em] text-white">How It Works</h2>
-          <p className="mx-auto mt-4 max-w-[860px] text-[1.12rem] leading-8 text-white/84">
+          <p className="mx-auto mt-4 max-w-[760px] text-[1.08rem] leading-8 text-white/84">
             We ensure reliable execution of your core business operations. Here is how we do it.
           </p>
 
@@ -691,7 +691,7 @@ export default function BusinessPage() {
             ))}
           </div>
 
-          <div className="mx-auto mt-12 grid max-w-[1120px] gap-7 lg:grid-cols-3">
+          <div className="mx-auto mt-12 grid max-w-[1200px] gap-6 lg:grid-cols-3">
             {howItWorksSteps.map((step, index) => (
               <div
                 key={step.number}
@@ -778,16 +778,16 @@ export default function BusinessPage() {
           className="pointer-events-none absolute right-[4%] top-28 hidden h-28 w-28 rounded-[34px] bg-[#dfe7ff] opacity-50 blur-[2px] lg:block"
           style={{ clipPath: 'polygon(12% 0, 100% 36%, 66% 100%, 0 74%)' }}
         />
-        <div className="mx-auto max-w-[1080px] text-center">
+        <div className="mx-auto max-w-[1200px] text-center">
           <h2 className="text-[2.8rem] font-semibold tracking-[-0.04em] text-[#17356c]">In Media</h2>
           <p className="mx-auto mt-4 max-w-[760px] text-[1.05rem] leading-8 text-[#5870a6]">
             We&apos;re making headlines - click to explore what the buzz is all about.
           </p>
-          <div className="mx-auto mt-14 grid max-w-[860px] grid-cols-2 items-center gap-x-10 gap-y-10 md:grid-cols-3 lg:grid-cols-4">
+          <div className="mx-auto mt-14 grid max-w-[860px] grid-cols-2 items-center gap-x-12 gap-y-10 md:grid-cols-3 lg:grid-cols-4">
             {mediaLogos.map((logo) => (
               <div
                 key={logo}
-                className="text-center text-[1.8rem] font-semibold tracking-[-0.04em] text-[#111827] first:text-[#2f9a45] [&:nth-child(3)]:text-[#e62020] [&:nth-child(4)]:text-[#d92d20]"
+                className="text-center text-[1.6rem] font-bold tracking-[-0.04em] text-[#111827] first:text-[#2f9a45] [&:nth-child(3)]:text-[#e62020] [&:nth-child(4)]:text-[#d92d20]"
               >
                 {logo}
               </div>
