@@ -2,8 +2,9 @@
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { AlertTriangle } from 'lucide-react';
+import { Suspense } from 'react';
 
-export default function PaymentFailedPage() {
+function PaymentFailedContent() {
   const searchParams = useSearchParams();
   const plan = searchParams.get('plan') || 'pricing';
   const reason = searchParams.get('reason') || 'The payment was cancelled or could not be verified.';
@@ -32,5 +33,20 @@ export default function PaymentFailedPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function PaymentFailedPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-[#020817] px-4 pt-32 text-white">
+        <div className="mx-auto max-w-3xl rounded-[2rem] border border-white/10 bg-white/[0.04] p-8 text-center shadow-[0_30px_80px_rgba(0,0,0,0.22)]">
+          <AlertTriangle className="mx-auto h-14 w-14 text-[#ff7f7f]" />
+          <h1 className="mt-6 text-4xl font-black uppercase italic tracking-[-0.05em]">Loading...</h1>
+        </div>
+      </div>
+    }>
+      <PaymentFailedContent />
+    </Suspense>
   );
 }

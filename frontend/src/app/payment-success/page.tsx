@@ -1,11 +1,11 @@
 'use client';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Suspense } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { CheckCircle2, Loader2 } from 'lucide-react';
 import { verifyPaymentOrder } from '@/services/payment';
 
-export default function PaymentSuccessPage() {
+function PaymentSuccessContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const orderId = searchParams.get('order_id') || '';
@@ -89,5 +89,20 @@ export default function PaymentSuccessPage() {
         )}
       </div>
     </div>
+  );
+}
+
+export default function PaymentSuccessPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-[#020817] px-4 pt-32 text-white">
+        <div className="mx-auto max-w-3xl rounded-[2rem] border border-white/10 bg-white/[0.04] p-8 text-center shadow-[0_30px_80px_rgba(0,0,0,0.22)]">
+          <Loader2 className="mx-auto h-12 w-12 animate-spin text-[#7ca6ff]" />
+          <h1 className="mt-6 text-4xl font-black uppercase italic tracking-[-0.05em]">Loading...</h1>
+        </div>
+      </div>
+    }>
+      <PaymentSuccessContent />
+    </Suspense>
   );
 }
