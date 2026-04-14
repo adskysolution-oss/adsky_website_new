@@ -777,7 +777,7 @@ export default function Home() {
 
               <div className="mx-auto flex max-w-[680px] flex-wrap justify-center gap-5 pt-2 xl:flex-nowrap xl:items-start xl:justify-center">
                 {jobCategoryColumns.map((column, columnIndex) => (
-                  <div key={column.join('-')} className="flex w-full max-w-[220px] flex-col items-center gap-5 sm:w-[210px] xl:w-[200px]">
+                  <div key={column.join('-')} className="flex w-full min-w-[220px] flex-col items-center gap-5 sm:w-[210px] xl:w-[200px]">
                     {column.map((title, itemIndex) => {
                       const category = jobCategories.find((item) => item.title === title);
                       if (!category) return null;
@@ -804,8 +804,8 @@ export default function Home() {
                                 : 'bg-[linear-gradient(180deg,#112a52_0%,#071633_100%)] text-white'
                             }`}
                       >
-                        <div className="flex flex-1 flex-col items-center text-center">
-                          <h3 className="mb-4 max-w-[180px] leading-[1.25]" style={{ fontSize: '0.98rem', fontWeight: 700 }}>
+                        <div className="flex flex-1 flex-col items-center text-center !pt-[10%]">
+                          <h3 className="mb-4 max-w-[180px] leading-[1.25]" style={{ fontSize: '1.5rem', fontWeight: 700 ,textAlign:'start'}}>
                             {category.title}
                           </h3>
 
@@ -815,7 +815,7 @@ export default function Home() {
                               animate={{ opacity: 1, y: 0 }}
                               exit={{ opacity: 0, y: 8 }}
                               transition={{ duration: 0.22 }}
-                              className="flex flex-1 flex-col items-center text-center"
+                              className="flex flex-1 flex-col items-center text-center u2"
                             >
                               <div className="mb-3 flex flex-wrap justify-center gap-2">
                                 <span className="inline-flex rounded-full bg-black/10 px-3 py-1 text-xs font-semibold text-[#151515]">
@@ -848,10 +848,10 @@ export default function Home() {
                               transition={{ duration: 0.2 }}
                               className="mt-auto flex flex-wrap justify-center gap-2"
                             >
-                              <span className="inline-flex rounded-full bg-[#baff45] px-3 py-1 text-xs font-semibold text-[#111827]">
+                              <span className="inline-flex rounded-full bg-[#baff45] !px-3 !py-1 text-xs font-semibold text-[#111827]">
                                 {category.workType}
                               </span>
-                              <span className="inline-flex rounded-full bg-white px-3 py-1 text-xs font-semibold text-[#111827]">
+                              <span className="inline-flex rounded-full bg-white !px-3 !py-1 text-xs font-semibold text-[#111827]">
                                 {category.countLabel}
                               </span>
                             </motion.div>
@@ -894,12 +894,12 @@ export default function Home() {
                       transition={{ duration: 0.5, delay: index * 0.1 }}
                       className="flex items-start gap-3 text-base leading-7"
                     >
-                      <CheckCircle className="mt-0.5 h-6 w-6 flex-shrink-0 text-[#030213]" />
+                      <CheckCircle className="!mt-0.5 h-6 w-6 flex-shrink-0 text-[#030213]" />
                       <span>{feature}</span>
                     </motion.div>
                   ))}
                 </div>
-                <Button asChild size="md" variant="primary" className="mt-8 gap-2">
+                <Button asChild size="md" variant="primary" className="!mt-8 gap-2">
                   <Link href="/business">
                     Start Hiring
                     <ArrowRight className="h-5 w-5" />
@@ -956,7 +956,7 @@ export default function Home() {
           <div className="mx-auto flex w-full max-w-[1200px] flex-col items-center justify-center px-4">
             <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }} className="mx-auto mb-12 max-w-[860px] text-center sm:mb-14">
               <h2 className="leading-[1.12] text-white" style={{ fontSize: '2.5rem', fontWeight: 700 }}>How It Works</h2>
-              <p className="mt-3 text-[1.02rem] leading-8 text-white/82 sm:mt-4">
+              <p className="!mt-3 text-[1.02rem] leading-8 text-white/82 sm:mt-4">
                 We ensure reliable execution of your core business operations. Here&apos;s how we do it:
               </p>
             </motion.div>
@@ -983,13 +983,13 @@ export default function Home() {
                   transition={{ duration: 0.55, delay: index * 0.14 }}
                   className="rounded-[28px] bg-[linear-gradient(180deg,#2f3136_0%,#2a2a2b_100%)] px-7 pb-7 pt-8 text-center shadow-[0_20px_60px_rgba(0,0,0,0.22)]"
                 >
-                  <div className="mb-6 flex items-center justify-center lg:hidden">
+                  <div className="!mb-6 flex items-center justify-center lg:hidden">
                     <div className="flex h-12 w-12 items-center justify-center rounded-full bg-white text-lg font-bold text-[#17345d]">
                       {index + 1}
                     </div>
                   </div>
 
-                  <h3 className="mb-4 text-[1.05rem] font-medium leading-[1.35] text-white lg:min-h-[58px]">
+                  <h3 className="!mb-4 mt-[10%] text-[1.05rem] font-medium leading-[1.35] text-white lg:min-h-[58px] UTT43">
                     {index === 0 && 'Project Configuration on Awign App'}
                     {index === 1 && 'Task Allocation and Fulfillment'}
                     {index === 2 && 'Payment and Completion'}
