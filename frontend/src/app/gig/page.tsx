@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+
 import { useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
 import { ArrowRight, Briefcase, ChevronLeft, ChevronRight, Menu, Rocket, Settings2, Star, UserRound } from 'lucide-react';
@@ -311,8 +312,8 @@ export default function GigPage() {
   return (
     <div className="min-h-screen overflow-x-hidden bg-white text-slate-900">
       <section className="relative min-h-screen w-full overflow-hidden bg-[radial-gradient(circle_at_72%_70%,rgba(22,73,122,0.55),transparent_26%),radial-gradient(circle_at_12%_36%,rgba(28,69,130,0.35),transparent_28%),linear-gradient(90deg,#040607_0%,#07101c_45%,#081521_100%)] text-white">
-        <div className="mx-auto flex w-full max-w-[1280px] justify-center px-6 pt-7 lg:px-8">
-          <nav className="flex w-full items-center justify-between rounded-[32px] bg-[rgba(39,43,49,0.92)] px-10 py-5 shadow-[0_18px_40px_rgba(0,0,0,0.18)] backdrop-blur-md">
+        <div className="max-w-[1300px] !ml-[200px] mr-[1000px]  px-6 pt-7 lg:px-8 !mt-[30px] ">
+         <nav className="flex w-full items-center justify-between rounded-[32px] bg-[rgba(39,43,49,0.92)] px-10 py-5 shadow-[0_18px_40px_rgba(0,0,0,0.18)] backdrop-blur-md    ">
             <div className="flex items-center gap-3">
               <div className="flex h-10 w-10 items-center justify-center rounded-full border border-white/12 bg-white/5">
                 <AwignMark className="h-5 w-5 text-white" />
@@ -341,7 +342,7 @@ export default function GigPage() {
           </nav>
         </div>
 
-        <div className="mx-auto grid min-h-[calc(100vh-120px)] w-full max-w-[1280px] items-center gap-16 px-6 pb-20 pt-10 lg:grid-cols-[1.05fr_1fr] lg:px-8">
+        <div className=" grid min-h-[calc(100vh-120px)] w-full max-w-[1280px] items-center gap-16 px-6 pb-20 pt-10 lg:grid-cols-[1.05fr_1fr] lg:px-8 !ml-[220px] pl-[100px] ">
           <motion.div initial={{ opacity: 0, x: -24 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.8 }} className="flex max-w-[560px] flex-col items-start justify-center">
             <div className="mb-5 text-[1.2rem] font-medium uppercase tracking-[0.04em] text-white/82">India&apos;s Largest</div>
             <h1 className="mb-7 text-balance text-[4.25rem] font-semibold leading-[1.03] tracking-[-0.05em] text-white">Gig Work &amp; Part Time Jobs Platform</h1>
@@ -417,7 +418,7 @@ export default function GigPage() {
       </Section>
 
       <Section variant="white" spacing="lg" className="pt-20 sm:pt-24 lg:pt-28">
-        <div className="mx-auto w-full max-w-[1200px]">
+        <div className="mx-auto w-full max-w-[1200px] !ml-[40px]">
             <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }} className="mx-auto mb-16 max-w-[760px] text-center sm:mb-20">
               <h2 className="leading-[1.12]" style={{ fontSize: '2.5rem', fontWeight: 700 }}>Why work with us?</h2>
             </motion.div>
@@ -474,7 +475,7 @@ export default function GigPage() {
       </Section>
 
       <section className="w-full overflow-hidden bg-[radial-gradient(circle_at_0%_100%,rgba(20,49,96,0.88),transparent_30%),radial-gradient(circle_at_100%_0%,rgba(56,52,15,0.4),transparent_24%),linear-gradient(180deg,#020202_0%,#03060d_100%)] py-28 text-white sm:py-32 lg:py-36">
-        <div className="mx-auto w-full max-w-[1200px] px-6 lg:px-8">
+        <div className="mx-auto w-full max-w-[1200px] px-6 lg:px-8 !ml-[220px]">
             <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }} className="mx-auto mb-12 max-w-[760px] text-center sm:mb-14">
               <h2 className="leading-[1.12] text-white" style={{ fontSize: '2.5rem', fontWeight: 700 }}>How It Works</h2>
               <p className="mt-3 text-[1.02rem] leading-8 text-white/82 sm:mt-4">We ensure reliable execution of your job-seeking journey. Here&apos;s how we do it:</p>
@@ -522,7 +523,7 @@ export default function GigPage() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
-            className="mx-auto mb-14 max-w-[760px] text-center"
+            className="mx-auto mb-14 max-w-[760px] text-center !ml-[200px]"
           >
             <h2 className="text-[#252525]" style={{ fontSize: '2.25rem', fontWeight: 700 }}>People Love Working With Us</h2>
             <p className="mt-3 text-[1rem] leading-7 text-[#7c828a]">Here&apos;s what our Awignites have to say</p>
@@ -588,7 +589,7 @@ export default function GigPage() {
           </div>
       </Section>
 
-      <Footer />
+      <Footer   />
     </div>
   );
 }

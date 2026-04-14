@@ -352,7 +352,7 @@ export default function BusinessPage() {
         </div>
         <div className="pointer-events-none absolute right-[12%] top-[56%] hidden h-20 w-20 rounded-[28px] bg-white/12 opacity-30 lg:block" style={{ clipPath: 'polygon(12% 0, 100% 34%, 66% 100%, 0 70%)' }} />
 
-        <div ref={dropdownRef} className="relative z-20 mx-auto flex w-full max-w-[1240px] justify-center px-6 pt-7 lg:px-8">
+        <div ref={dropdownRef} className="relative z-20 !ml-[250px] !mt-[30px] mx-auto flex w-full max-w-[1240px] justify-center px-6 pt-7 lg:px-8">
           <div className="w-full">
             <nav className="flex w-full items-center justify-between rounded-[32px] bg-[rgba(39,43,49,0.96)] px-8 py-3 shadow-[0_18px_40px_rgba(0,0,0,0.18)] backdrop-blur-md">
               <div className="flex items-center gap-3">
@@ -404,7 +404,7 @@ export default function BusinessPage() {
             <div className="mt-2 flex justify-end pr-8">
               <div className="inline-flex items-center gap-2 rounded-2xl bg-white px-4 py-2 text-[0.95rem] font-medium text-[#1f2328] shadow-[0_10px_18px_rgba(0,0,0,0.12)]">
                 <Phone className="h-4 w-4" />
-                07966246581
+                9999999999
               </div>
             </div>
             <AnimatePresence>
@@ -467,8 +467,8 @@ export default function BusinessPage() {
           </div>
         </div>
 
-        <div className="relative z-10 mx-auto flex w-full max-w-[1240px] flex-col items-center px-6 pb-0 pt-16 text-center lg:px-8 lg:pt-20">
-          <div className="relative w-full max-w-[840px] rounded-[40px] bg-[rgba(6,8,14,0.52)] px-10 py-16 shadow-[0_30px_80px_rgba(0,0,0,0.18)] backdrop-blur-[2px]">
+        <div className="relative z-10 mx-auto flex w-full max-w-[1240px] !ml-[200] mt-[40px] pt-[50px] flex-col items-center px-6 pb-0 pt-16 text-center lg:px-8 lg:pt-20">
+          <div className="relative w-full max-w-[840px] !ml[350px] rounded-[40px] bg-[rgba(6,8,14,0.52)] px-10 py-16 shadow-[0_30px_80px_rgba(0,0,0,0.18)] backdrop-blur-[2px]">
             <div className="absolute inset-y-0 left-1/2 hidden w-[180px] -translate-x-1/2 bg-[repeating-linear-gradient(90deg,transparent_0,transparent_14px,rgba(255,255,255,0.08)_14px,rgba(255,255,255,0.08)_17px)] opacity-35 md:block" />
             <div className="relative z-10">
               <div className="mb-3 text-[1rem] font-medium uppercase tracking-[0.04em] text-white/88">INDIA&apos;S #1</div>
@@ -487,8 +487,8 @@ export default function BusinessPage() {
             </div>
           </div>
 
-          <div className="logo-marquee relative mt-12 w-full overflow-hidden pb-8">
-            <div className="offerings-scroll flex gap-6">
+          <div className="logo-marquee relative mt-12 w-full overflow-hidden !ml-[200px] !pl-[100px] pb-8">
+            <div className="offerings-scroll flex gap-6 !mt-[80px] ">
               {[0, 1].map((copy) => (
                 <div key={copy} className="flex flex-shrink-0 items-stretch gap-6">
                   {heroBannerCards.map((card) => (
@@ -510,8 +510,8 @@ export default function BusinessPage() {
         </div>
       </section>
 
-      <section className="bg-[#f5f7fb] px-6 py-24 lg:px-8">
-        <div className="mx-auto max-w-[1100px]">
+      <section className="bg-[#f5f7fb] px-6 py-24 !ml-[150px] !mt-[30px] lg:px-8">
+        <div className="mx-auto max-w-[1100px] !ml-[200px]">
           <div className="mx-auto max-w-[980px] overflow-hidden rounded-[36px] bg-white shadow-[0_28px_80px_rgba(15,23,42,0.12)] ring-1 ring-[#dfe6f2]">
             <div className="relative aspect-[16/9] bg-[#081224]">
               <img src="/hero-bg.jpg" alt="Awign business video showcase" className="h-full w-full object-cover" />
@@ -534,7 +534,7 @@ export default function BusinessPage() {
         </div>
       </section>
 
-      <section className="bg-[#f5f7fb] px-6 py-20 lg:px-8">
+      <section className="bg-[#f5f7fb] px-6 py-20 !ml-[200px] !mt-[60px] lg:px-8">
         <div className="mx-auto max-w-[1200px]">
           <div className="grid justify-items-center gap-10 md:grid-cols-2 xl:grid-cols-4">
             {stats.map((stat) => (
@@ -548,8 +548,8 @@ export default function BusinessPage() {
         </div>
       </section>
       <Section variant="black" spacing="md">
-        <div className="mx-auto w-full max-w-[1200px]">
-          <div className="mx-auto max-w-[760px] text-center">
+        <div className="mx-auto w-full max-w-[1200px] !ml-[100px]">
+          <div className="mx-auto max-w-[760px] !ml-[180px] text-center">
             <h2 className="text-[2.9rem] font-semibold tracking-[-0.04em] text-white">Our Offerings</h2>
             <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
               {(Object.entries(offeringTabs) as Array<

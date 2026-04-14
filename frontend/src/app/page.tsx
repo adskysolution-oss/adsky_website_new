@@ -695,6 +695,7 @@ export default function Home() {
                   </button>
                 ))}
               </div>
+              
 
               <p className="text-[1.5rem] font-semibold leading-8 text-white mt-[5%] !mb-[5%]">Cognitive, Desk-based, Tech-centric</p>
             </motion.div>
@@ -753,6 +754,7 @@ export default function Home() {
 
             <div className="mt-5 flex justify-center">
               <div className="h-[3px] w-20 rounded-full bg-white/55" />
+            </div>
             </div>
           </div>
       </section>
@@ -1161,7 +1163,7 @@ export default function Home() {
           <Star className="h-full w-full fill-current stroke-none" />
         </div>
         <div className="pointer-events-none absolute right-[4%] top-[22%] hidden h-28 w-28 rotate-12 rounded-[28px] bg-[#dfe7fb] opacity-45 md:block" style={{ clipPath: 'polygon(18% 0, 100% 26%, 71% 100%, 0 73%)' }} />
-        <div className="absolute bottom-0 left-0 right-0 h-[190px] bg-black" />
+        <div className="absolute bottom-0 left-0 right-0 h-[190px] bg-black" /></Section>
 
         <div className="relative z-10 mx-auto flex w-full max-w-[1200px] flex-col items-center justify-center px-4 text-center">
             <motion.div initial={{ opacity: 0, y: 18 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }} className="mx-auto mb-12 max-w-[860px] text-center">
@@ -1189,6 +1191,8 @@ export default function Home() {
                 </div>
               ))}
             </div>
+            
+            
 
             <div className="relative mx-auto flex w-full max-w-[860px] flex-col items-center justify-center gap-7 pb-10 md:flex-row md:items-stretch">
               <motion.article
@@ -1233,8 +1237,9 @@ export default function Home() {
             </div>
           </div>
         </div>
-      </Section>
+   );
+    
       <Footer />
-    </div>
-  );
+   
+  ;
 }
