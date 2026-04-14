@@ -35,8 +35,8 @@ const Section = forwardRef<HTMLElement, SectionProps>(
     };
 
     return (
-      <section ref={ref} className={`w-full overflow-hidden ${backgrounds[variant]} ${paddingY[spacing]} ${className}`} {...props}>
-        <div className="mx-auto flex w-full justify-center px-6 lg:px-8">
+      <section ref={ref} className={`w-full !pb-[3%] overflow-hidden ${backgrounds[variant]} ${paddingY[spacing]} ${className}`} {...props}>
+        <div className="mx-auto flex w-full justify-center px-6 lg:px-8 !mt-[5%]">
           <div className="w-full" style={{ maxWidth: maxWidthStyles[containerWidth] }}>
             {children}
           </div>

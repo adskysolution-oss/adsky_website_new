@@ -367,7 +367,7 @@ function AwignMark({ className = '' }: { className?: string }) {
 
 function TrustedCardMarquee({ items, reverse = false }: { items: string[]; reverse?: boolean }) {
   return (
-    <div className="logo-marquee relative overflow-hidden w-full">
+    <div className="logo-marquee relative overflow-hidden w-full ">
       <div className={`flex gap-4 ${reverse ? 'trusted-scroll-reverse' : 'trusted-scroll'}`}>
         {[0, 1, 2].map((copy) => (
           <div key={copy} className="flex flex-shrink-0 items-center gap-4">
@@ -409,7 +409,7 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen overflow-x-hidden bg-white text-slate-900">
+    <div className="min-h-screen overflow-x-hidden bg-white text-slate-900" style={{ fontFamily: '"Montserrat Variable", sans-serif' }}>
       <section className="relative min-h-screen w-full overflow-hidden bg-[radial-gradient(circle_at_50%_34%,rgba(33,94,146,0.72),rgba(7,22,41,0.95)_40%,#01060e_78%)] text-white">
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_18%_35%,rgba(18,167,134,0.18),transparent_28%),radial-gradient(circle_at_80%_34%,rgba(28,74,148,0.18),transparent_34%),linear-gradient(180deg,rgba(0,0,0,0.06),rgba(0,0,0,0.18))]" />
 
@@ -448,7 +448,7 @@ export default function Home() {
               initial={{ opacity: 0, y: 24 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.15 }}
-              className="flex max-w-[960px] flex-col items-center text-center"
+              className="flex max-w-[960px] flex-col items-center text-center !mt-[15%]"
             >
               <div className="mb-6 text-[21px] font-medium uppercase tracking-[0.02em] text-white/85">India&apos;s #1</div>
               <h1 className="mb-6 max-w-[980px] text-balance text-[3.9rem] font-semibold leading-[1.06] tracking-[-0.04em] text-white lg:text-[4.25rem]">
@@ -555,7 +555,7 @@ export default function Home() {
               className="mx-auto flex w-full max-w-[250px] flex-col items-center text-center"
             >
               <div className="mb-3 text-[1.05rem] font-bold text-[#4c82ff]">{stat.eyebrow}</div>
-              <div className="mb-3 text-[3.4rem] font-bold leading-none tracking-[-0.04em] text-[#111827]">{stat.value}</div>
+              <div className="mb-3 text-[2rem] font-bold leading-none tracking-[-0.04em] text-[#111827]">{stat.value}</div>
               <p className="max-w-[240px] text-[1.02rem] leading-7 text-[#4b5563]">{stat.label}</p>
             </motion.div>
           ))}
@@ -670,28 +670,37 @@ export default function Home() {
         </div>
       </Section>
 
-      <section className="w-full overflow-hidden bg-[radial-gradient(circle_at_84%_18%,rgba(31,78,136,0.72),rgba(8,18,34,0.98)_44%,#000_82%)] py-28 text-white sm:py-32 lg:py-36">
+      <section 
+        className="w-full overflow-hidden pt-[120px] pb-[160px] text-white"
+        style={{
+          backgroundColor: '#000',
+          backgroundImage: 'url(/images/new-home-page/desktop/yellow-shade.svg), url(/images/new-home-page/desktop/green-shade.svg), radial-gradient(circle at 84% 18%, rgba(31,78,136,0.72), rgba(8,18,34,0.98) 44%, #000 82%)',
+          backgroundPosition: '0 100%, 100% 0, 0 0',
+          backgroundRepeat: 'no-repeat'
+        }}
+      >
         <div className="w-full px-4 md:px-6">
-          <div style={homeWideShellStyle} className="flex flex-col items-center justify-center">
-            <motion.div initial={{ opacity: 0, y: 18 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }} className="mx-auto mb-14 flex max-w-[760px] flex-col items-center text-center sm:mb-16">
-              <h2 className="mb-9 text-white" style={{ fontSize: '2.7rem', fontWeight: 700 }}>Our Offerings</h2>
+          <div style={homeWideShellStyle} className="w-full flex flex-col items-center justify-center !mt-[5%]">
+            <motion.div initial={{ opacity: 0, y: 18 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }} className="mx-auto mb-14 flex max-w-[760px] flex-col items-center text-center sm:mb-16 !w-[100%]">
+              <h2 className="mb-9 !mt-[5%] text-white" style={{ fontSize: '2.2rem', fontWeight: 600 }}>Our Offerings</h2>
 
-              <div className="mb-10 inline-flex items-center gap-3 rounded-full bg-[#2f2f32] p-2.5">
+              <div className="mb-10 !ml-[40%] flex items-center gap-10 rounded-full p-2.5 !mt-[10%] !mb-[10%] w-full">
                 {offeringTabs.map((tab) => (
                   <button
                     key={tab}
                     type="button"
                     onClick={() => setActiveOfferingTab(tab)}
-                    className={`rounded-full px-8 py-3 text-[1.15rem] font-bold transition-colors ${
+                    className={`flex-1 max-w-[18%] rounded-full px-8 py-3 text-[1.15rem] transition-colors ${
                       activeOfferingTab === tab ? 'bg-[#c9ff45] text-[#212121]' : 'bg-[#3a3a3d] text-white/78'
                     }`}
+                    style={{ padding: '0.5% 1%' }}
                   >
                     {tab}
                   </button>
                 ))}
               </div>
 
-              <p className="text-[1.18rem] font-semibold leading-8 text-white">Cognitive, Desk-based, Tech-centric</p>
+              <p className="text-[1.5rem] font-semibold leading-8 text-white mt-[5%] !mb-[5%]">Cognitive, Desk-based, Tech-centric</p>
             </motion.div>
 
             <div className="logo-marquee relative overflow-hidden">
@@ -710,8 +719,8 @@ export default function Home() {
                           className="flex min-h-[440px] w-[340px] flex-shrink-0 flex-col rounded-[28px] border border-white/10 bg-[rgba(49,49,49,0.92)] px-6 py-6 shadow-[inset_0_1px_0_rgba(255,255,255,0.03)]"
                         >
                           <div className="mb-6 flex items-start justify-between">
-                            <div className="flex h-8 w-8 items-center justify-center rounded-md text-white/80">
-                              <Icon className="h-5 w-5" />
+                            <div className="flex !mt-[5%] !mb-[5%] !ml-[5%] h-8 w-8 items-center justify-center rounded-md text-white/80">
+                              <Icon className="h-8 w-8" />
                             </div>
                             <div className="flex flex-col items-center gap-1 text-white/50">
                               <span className="h-1 w-1 rounded-full bg-current" />
@@ -720,12 +729,12 @@ export default function Home() {
                             </div>
                           </div>
 
-                          <h3 className="mb-4 leading-[1.18] text-white" style={{ fontSize: '1.1rem', fontWeight: 700 }}>
+                          <h3 className="mb-4 !mb-[3%] !ml-[5%] leading-[1.18] text-white" style={{ fontSize: '1.1rem', fontWeight: 700 }}>
                             {service.title}
                           </h3>
-                          <p className="mb-4 text-[0.9rem] leading-6 text-white/75">{service.description}</p>
+                          <p className="mb-4 !mb-[3%] !ml-[5%] text-[0.9rem] leading-6 text-white/75">{service.description}</p>
 
-                          <ul className="mb-6 flex flex-1 list-disc flex-col gap-2 pl-5 text-[0.85rem] leading-5 text-white/78 marker:text-white/80">
+                          <ul className="mb-6 !ml-[10%] flex flex-1 list-disc flex-col gap-2 pl-5 text-[0.85rem] leading-5 text-white/78 marker:text-white/80">
                             {service.bullets.map((bullet) => (
                               <li key={bullet}>{bullet}</li>
                             ))}
