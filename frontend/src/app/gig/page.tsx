@@ -398,7 +398,7 @@ export default function GigPage() {
                       return (
                         <motion.div key={category.title} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.45, delay: columnIndex * 0.06 + itemIndex * 0.04 }} className="group w-full">
                           <div className="flex min-h-[148px] flex-col rounded-[26px] bg-[linear-gradient(180deg,#112a52_0%,#071633_100%)] px-5 py-5 text-white shadow-[0_14px_34px_rgba(17,24,39,0.08)]">
-                            <div className="flex flex-1 flex-col items-center text-center">
+                            <div className="flex flex-1 flex-col items-center text-center u1">
                               <h3 className="mb-4 max-w-[180px] leading-[1.25]" style={{ fontSize: '0.98rem', fontWeight: 700 }}>{category.title}</h3>
                               <div className="mt-auto flex flex-wrap justify-center gap-2">
                                 <span className="inline-flex rounded-full bg-[#baff45] px-3 py-1 text-xs font-semibold text-[#111827]">{category.workType}</span>
@@ -495,7 +495,7 @@ export default function GigPage() {
               {jobHowItWorks.map((item, index) => (
                 <motion.article key={item.step} initial={{ opacity: 0, y: 26 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.55, delay: index * 0.1 }} className="rounded-[28px] bg-[linear-gradient(180deg,#2f3136_0%,#2a2a2b_100%)] px-6 pb-6 pt-8 text-center shadow-[0_20px_60px_rgba(0,0,0,0.22)]">
                   <div className="mb-6 flex items-center justify-center xl:hidden"><div className="flex h-12 w-12 items-center justify-center rounded-full bg-white text-lg font-bold text-[#17345d]">{item.step}</div></div>
-                  <h3 className="mb-4 text-[1.05rem] font-medium leading-[1.35] text-white lg:min-h-[58px]">{item.title}</h3>
+                  <h3 className="mb-4 text-[1.05rem] font-medium leading-[1.35] text-white lg:min-h-[58px] UTT34">{item.title}</h3>
                   <p className="mx-auto mb-7 max-w-[320px] text-[0.96rem] font-semibold leading-[1.15] text-white">{item.description}</p>
                   <div className="mx-auto flex min-h-[270px] w-full max-w-[290px] items-center justify-center rounded-[20px] bg-transparent"><JobsPreview preview={item.preview} /></div>
                 </motion.article>
