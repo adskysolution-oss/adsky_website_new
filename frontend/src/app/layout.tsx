@@ -1,9 +1,7 @@
 import type { Metadata } from 'next';
 import { Manrope } from 'next/font/google';
 import './globals.css';
-import Navbar from '@/components/Navbar';
-import Footer from '@/components/Footer';
-import { AuthProvider } from '@/context/AuthContext';
+import LayoutShell from '@/components/LayoutShell';
 
 const manrope = Manrope({ subsets: ['latin'] });
 
@@ -19,14 +17,8 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body suppressHydrationWarning className={`${manrope.className} pt-16 min-h-screen flex flex-col`}>
-        <AuthProvider>
-          <Navbar />
-          <main className="flex-grow">
-            {children}
-          </main>
-          <Footer />
-        </AuthProvider>
+      <body suppressHydrationWarning className={`${manrope.className} min-h-screen flex flex-col`}>
+        <LayoutShell>{children}</LayoutShell>
       </body>
     </html>
   );

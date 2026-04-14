@@ -8,7 +8,6 @@ const { Server } = require('socket.io');
 const { getRequiredEnv } = require('./utils/env');
 
 dotenv.config();
-connectDB();
 
 const app = express();
 app.set('trust proxy', 1);
@@ -84,6 +83,16 @@ app.get('/', (req, res) => {
 });
 
 const PORT = process.env.PORT || 5000;
-server.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+
+async function startServer() {
+  await connectDB();
+
+  server.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+  });
+}
+
+startServer().catch((error) => {
+  console.error('Backend startup failed:', error.message);
+  process.exit(1);
 });

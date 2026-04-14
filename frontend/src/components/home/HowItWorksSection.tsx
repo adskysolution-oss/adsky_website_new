@@ -1,62 +1,61 @@
-'use client';
+﻿'use client';
+
 import { motion } from 'framer-motion';
+import { Briefcase, CheckCircle, Users } from 'lucide-react';
 
 const steps = [
   {
-    num: '01',
-    title: 'Project Configuration on App',
-    desc: 'We configure the task, hiring, or consulting engagement inside the platform and align the right delivery workflow quickly.',
+    step: '01',
+    title: 'Post Your Project',
+    description: 'Define your requirements, timeline, and budget so the platform can match you with qualified workers.',
+    icon: Briefcase,
   },
   {
-    num: '02',
-    title: 'Task Allocation and Fulfillment',
-    desc: 'Our workflow engine distributes execution rapidly while project oversight and quality checks keep outputs dependable.',
+    step: '02',
+    title: 'Get Matched',
+    description: 'Review verified profiles, ratings, and previous work to find the best fit for your needs.',
+    icon: Users,
   },
   {
-    num: '03',
-    title: 'Quality Review and Reporting',
-    desc: 'Operational dashboards, checkpoints, and manual validations help clients monitor outcomes without managing every detail.',
-  },
-  {
-    num: '04',
-    title: 'Payment and Completion',
-    desc: 'Structured completion milestones and payout workflows help keep projects moving with transparency and accountability.',
+    step: '03',
+    title: 'Track and Pay',
+    description: 'Monitor progress in real time and release payments securely once work is completed.',
+    icon: CheckCircle,
   },
 ];
 
 export default function HowItWorksSection() {
   return (
-    <section className="section-container border-t border-[#dbe4f1] py-20">
-      <div className="text-center mb-20">
-        <p className="eyebrow eyebrow-light mb-5">How It Works</p>
-        <h2 className="heading-md mb-4 text-gray-900">Reliable execution of your core business operations.</h2>
-        <p className="subtext mx-auto max-w-3xl">The visual structure follows the same step-led story as the reference: configuration, allocation, fulfillment, and payout.</p>
-      </div>
+    <section className="bg-white px-6 py-24 text-slate-900">
+      <div className="mx-auto max-w-7xl">
+        <div className="text-center">
+          <h2 className="text-4xl font-bold tracking-[-0.04em] sm:text-5xl">How It Works</h2>
+          <p className="mt-4 text-lg text-slate-500">Get started in three simple steps</p>
+        </div>
 
-      <div className="relative">
-        <div className="hidden lg:block absolute top-7 left-12 right-12 h-px bg-gradient-to-r from-transparent via-[#cfd9ea] to-transparent z-0" />
-
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-12 relative z-10 lg:px-4">
-          {steps.map((step, idx) => (
-            <motion.div
-              key={step.num}
-              initial={{ opacity: 0, y: 40 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: idx * 0.15 }}
-              className="flex flex-col items-center text-center group"
-            >
-              <div className="number-pill mb-6 relative z-10 group-hover:scale-110 transition-transform">
-                {step.num}
-              </div>
-              <div className="brand-card-light p-7">
-                <h3 className="text-xl font-bold mb-3 text-gray-900">{step.title}</h3>
-                <p className="text-gray-500">
-                  {step.desc}
-                </p>
-              </div>
-            </motion.div>
-          ))}
+        <div className="mt-16 grid gap-12 md:grid-cols-3">
+          {steps.map((item, index) => {
+            const Icon = item.icon;
+            return (
+              <motion.div
+                key={item.step}
+                initial={{ opacity: 0, y: 24 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: 0.2 }}
+                transition={{ duration: 0.5, delay: index * 0.12 }}
+                className="relative"
+              >
+                <div className="mb-4 text-6xl font-black text-slate-900/10">{item.step}</div>
+                <div className="absolute left-0 top-2 flex h-16 w-16 items-center justify-center rounded-full bg-[#2f67ff]/10 text-[#2f67ff] transition group-hover:bg-[#2f67ff]/20">
+                  <Icon className="h-8 w-8" />
+                </div>
+                <div className="pt-20">
+                  <h3 className="text-2xl font-semibold tracking-[-0.03em] text-slate-900">{item.title}</h3>
+                  <p className="mt-3 text-base leading-8 text-slate-500">{item.description}</p>
+                </div>
+              </motion.div>
+            );
+          })}
         </div>
       </div>
     </section>

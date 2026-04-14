@@ -1,19 +1,12 @@
 'use client';
-import { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import axios from 'axios';
-import { X, ChevronRight, ChevronLeft, CheckCircle, Loader2, User, Phone, Mail, Calendar, MapPin, Clock } from 'lucide-react';
 
-interface Job {
-  _id: string;
-  title: string;
-  salaryAmount: number;
-  salaryType: string;
-  location?: string;
-  category: string;
-  companyName?: string;
-  client?: { name: string; companyName?: string };
-}
+import { useState } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
+import axios from 'axios';
+import { Calendar, CheckCircle, ChevronLeft, ChevronRight, Clock3, Loader2, Mail, MapPin, Phone, User, X } from 'lucide-react';
+import { APPLICATIONS_API_URL } from '@/lib/auth';
+import { formatCompensation, getCompanyName } from '@/lib/jobs';
+import type { Job } from '@/types/job';
 
 interface Props {
   job: Job;
@@ -22,15 +15,15 @@ interface Props {
 
 const LANGUAGES = ['English', 'Hindi', 'Marathi', 'Telugu', 'Tamil', 'Kannada', 'Bengali', 'Gujarati'];
 
-const inputClass = 'w-full px-4 py-2.5 rounded-xl border border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-[#151c2e] text-gray-900 dark:text-white focus:ring-2 focus:ring-secondary focus:border-transparent outline-none text-sm transition-all';
-const labelClass = 'block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5';
+const inputClass =
+  'w-full rounded-[1.15rem] border border-white/10 bg-white/6 px-4 py-3 text-sm text-white outline-none transition placeholder:text-[#7f95bf] focus:border-secondary/40';
+const labelClass = 'mb-2 block text-xs font-black uppercase tracking-[0.16em] text-[#9fb2d7]';
 
 export default function ApplicationModal({ job, onClose }: Props) {
   const [step, setStep] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState('');
-
   const [form, setForm] = useState({
     applicantName: '',
     applicantPhone: '',
@@ -42,223 +35,240 @@ export default function ApplicationModal({ job, onClose }: Props) {
     applicantNote: '',
   });
 
-  const set = (key: keyof typeof form, value: string | string[]) =>
-    setForm(f => ({ ...f, [key]: value }));
-
-  const toggleLanguage = (lang: string) => {
-    const curr = form.applicantLanguages;
-    set('applicantLanguages', curr.includes(lang) ? curr.filter(l => l !== lang) : [...curr, lang]);
+  const updateForm = (key: keyof typeof form, value: string | string[]) => {
+    setForm((current) => ({ ...current, [key]: value }));
   };
 
-  const validateStep1 = () => form.applicantName.trim().length >= 2 && form.applicantPhone.trim().length >= 10;
-  const validateStep2 = () => form.applicantLanguages.length > 0 && form.applicantLocation.trim().length > 0;
+  const toggleLanguage = (language: string) => {
+    const current = form.applicantLanguages;
+    updateForm(
+      'applicantLanguages',
+      current.includes(language) ? current.filter((item) => item !== language) : [...current, language],
+    );
+  };
 
-  const handleNext = () => {
-    if (step === 1 && !validateStep1()) {
-      setError('Please enter your full name and a valid 10-digit phone number.');
+  const validateStepOne =
+    form.applicantName.trim().length >= 2 && /^\d{10,}$/.test(form.applicantPhone.replace(/\D/g, ''));
+  const validateStepTwo = form.applicantLanguages.length > 0 && form.applicantLocation.trim().length > 1;
+
+  const handleContinue = () => {
+    if (step === 1 && !validateStepOne) {
+      setError('Please enter your full name and a valid phone number.');
       return;
     }
-    if (step === 2 && !validateStep2()) {
-      setError('Please select at least one language and enter your location.');
+
+    if (step === 2 && !validateStepTwo) {
+      setError('Please select at least one language and tell us your location.');
       return;
     }
+
     setError('');
-    setStep(s => s + 1);
+    setStep((current) => current + 1);
   };
 
   const handleSubmit = async () => {
     setIsSubmitting(true);
     setError('');
+
     try {
       const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+
       await axios.post(
-        'http://localhost:5000/api/applications',
+        APPLICATIONS_API_URL,
         { ...form, jobId: job._id },
-        token ? { headers: { Authorization: `Bearer ${token}` } } : {}
+        token ? { headers: { Authorization: `Bearer ${token}` } } : {},
       );
+
       setSubmitted(true);
-    } catch (err: unknown) {
-      const axiosError = err as { response?: { data?: { message?: string } } };
-      setError(axiosError.response?.data?.message || 'Submission failed. Please try again.');
+    } catch (submitError: unknown) {
+      const axiosError = submitError as { response?: { data?: { message?: string } } };
+      setError(axiosError.response?.data?.message || 'We could not submit the application just now. Please try again.');
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  const companyDisplay = job.companyName || job.client?.companyName || job.client?.name || 'AdSky Partner';
-  const salaryLabel = `₹${job.salaryAmount}/${job.salaryType === 'Gig' ? 'task' : job.salaryType === 'Hourly' ? 'hr' : job.salaryType === 'Monthly' ? 'mo' : 'fixed'}`;
-
-  const STEPS = ['Personal Info', 'Work Preferences', 'Review & Submit'];
+  const companyDisplay = getCompanyName(job);
+  const compensation = formatCompensation(job);
+  const steps = ['Profile', 'Preferences', 'Review'];
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center px-2 sm:px-4 modal-backdrop bg-black/50">
+    <div className="modal-backdrop fixed inset-0 z-50 flex items-end justify-center bg-black/55 px-2 py-2 sm:items-center sm:px-4">
       <motion.div
-        initial={{ opacity: 0, y: 60 }}
+        initial={{ opacity: 0, y: 48 }}
         animate={{ opacity: 1, y: 0 }}
-        exit={{ opacity: 0, y: 60 }}
-        className="bg-white dark:bg-dark-surface rounded-t-3xl sm:rounded-2xl w-full max-w-lg shadow-2xl max-h-[92vh] overflow-y-auto"
+        exit={{ opacity: 0, y: 48 }}
+        className="brand-card-light w-full max-w-2xl overflow-hidden rounded-[1.9rem]"
       >
-        {/* Header */}
-        <div className="sticky top-0 z-10 bg-white dark:bg-dark-surface rounded-t-3xl sm:rounded-t-2xl border-b border-gray-100 dark:border-gray-800 px-6 pt-5 pb-4">
-          <div className="flex items-start justify-between mb-4">
-            <div className="flex-1 min-w-0">
-              <p className="text-xs font-semibold text-secondary uppercase tracking-wider">{companyDisplay}</p>
-              <h2 className="font-bold text-gray-900 dark:text-white text-lg leading-tight mt-0.5 line-clamp-1">{job.title}</h2>
-              <p className="text-sm text-gray-500 mt-0.5">{salaryLabel} · {job.location || 'Remote'}</p>
+        <div className="border-b border-white/8 bg-[linear-gradient(180deg,rgba(255,255,255,0.04),rgba(255,255,255,0.01))] px-6 py-5 sm:px-7">
+          <div className="flex items-start justify-between gap-4">
+            <div className="min-w-0">
+              <p className="text-xs font-black uppercase tracking-[0.2em] text-secondary">{companyDisplay}</p>
+              <h2 className="mt-2 text-2xl font-black tracking-[-0.05em] text-white">Apply for {job.title}</h2>
+              <p className="mt-2 text-sm text-[#b6c5e5]">
+                {compensation} {' | '} {job.location || 'Remote / Flexible'}
+              </p>
             </div>
-            <button onClick={onClose} className="ml-3 p-2 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors text-gray-400 hover:text-gray-600 flex-shrink-0">
-              <X size={20} />
+            <button
+              onClick={onClose}
+              className="flex h-10 w-10 items-center justify-center rounded-full bg-white/6 text-[#dce7ff] transition hover:bg-white/12"
+            >
+              <X className="h-4 w-4" />
             </button>
           </div>
 
-          {/* Step Indicator */}
-          {!submitted && (
-            <div className="flex items-center gap-2">
-              {STEPS.map((label, i) => (
-                <div key={label} className="flex items-center gap-2 flex-1">
-                  <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0 transition-all ${
-                    i + 1 < step ? 'bg-green-500 text-white' :
-                    i + 1 === step ? 'bg-secondary text-white' :
-                    'bg-gray-200 dark:bg-gray-700 text-gray-500'
-                  }`}>
-                    {i + 1 < step ? '✓' : i + 1}
+          {!submitted ? (
+            <div className="mt-5 flex items-center gap-3">
+              {steps.map((label, index) => (
+                <div key={label} className="flex flex-1 items-center gap-3">
+                  <div
+                    className={`flex h-8 w-8 items-center justify-center rounded-full text-xs font-black ${
+                      index + 1 < step
+                        ? 'bg-secondary text-[#05101f]'
+                        : index + 1 === step
+                          ? 'bg-white text-[#061020]'
+                          : 'bg-white/8 text-[#9fb2d7]'
+                    }`}
+                  >
+                    {index + 1 < step ? 'OK' : index + 1}
                   </div>
-                  <span className={`text-xs font-semibold hidden sm:block ${i + 1 === step ? 'text-gray-900 dark:text-white' : 'text-gray-400'}`}>{label}</span>
-                  {i < STEPS.length - 1 && <div className={`flex-1 h-0.5 rounded-full ${i + 1 < step ? 'bg-green-400' : 'bg-gray-200 dark:bg-gray-700'}`} />}
+                  <span className={`text-xs font-bold uppercase tracking-[0.16em] ${index + 1 === step ? 'text-white' : 'text-[#7f95bf]'}`}>
+                    {label}
+                  </span>
+                  {index < steps.length - 1 ? <div className="h-px flex-1 bg-white/10" /> : null}
                 </div>
               ))}
             </div>
-          )}
+          ) : null}
         </div>
 
-        <div className="px-6 py-5">
+        <div className="max-h-[80vh] overflow-y-auto px-6 py-6 sm:px-7">
           <AnimatePresence mode="wait">
             {submitted ? (
-              <motion.div
-                key="success"
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                className="text-center py-8"
-              >
-                <div className="w-20 h-20 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center mx-auto mb-5">
-                  <CheckCircle size={40} className="text-green-500" />
+              <motion.div key="success" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="py-6 text-center">
+                <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-secondary/14 text-secondary">
+                  <CheckCircle className="h-10 w-10" />
                 </div>
-                <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">Application Submitted! 🎉</h3>
-                <p className="text-gray-500 dark:text-gray-400 text-sm mb-6 leading-relaxed max-w-xs mx-auto">
-                  Thank you for applying! We will review your application and get back to you soon.
+                <h3 className="mt-6 text-3xl font-black tracking-[-0.05em] text-white">Application submitted</h3>
+                <p className="mx-auto mt-3 max-w-md text-sm leading-7 text-[#b6c5e5] sm:text-base">
+                  Your details have been shared for review. We kept the flow short so applicants can complete it quickly on mobile or desktop.
                 </p>
-                <div className="bg-gray-50 dark:bg-gray-800/50 rounded-xl p-4 text-left text-sm mb-6">
-                  <p className="font-semibold text-gray-900 dark:text-white mb-1">{job.title}</p>
-                  <p className="text-gray-500">{companyDisplay} · {salaryLabel}</p>
+                <div className="mt-6 rounded-[1.4rem] border border-white/8 bg-white/5 p-4 text-left">
+                  <p className="text-xs font-black uppercase tracking-[0.18em] text-secondary">Role Summary</p>
+                  <p className="mt-2 text-lg font-bold text-white">{job.title}</p>
+                  <p className="mt-1 text-sm text-[#b6c5e5]">{companyDisplay} {' | '} {compensation}</p>
                 </div>
-                <button onClick={onClose} className="w-full btn-primary py-3 rounded-xl font-bold">
-                  Done
+                <button onClick={onClose} className="btn-primary mt-7 px-7 py-3">
+                  Close
                 </button>
               </motion.div>
             ) : step === 1 ? (
-              <motion.div key="step1" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-4">
+              <motion.div key="step-1" initial={{ opacity: 0, x: 18 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -18 }} className="space-y-5">
                 <div>
-                  <h3 className="font-bold text-gray-900 dark:text-white mb-1">Personal Information</h3>
-                  <p className="text-sm text-gray-500 dark:text-gray-400">Tell us a bit about yourself</p>
+                  <p className="text-xs font-black uppercase tracking-[0.18em] text-secondary">Step 1</p>
+                  <h3 className="mt-2 text-2xl font-black tracking-[-0.04em] text-white">Personal details</h3>
+                  <p className="mt-2 text-sm leading-7 text-[#9bb0d6]">We only ask for the essentials needed to move your application forward.</p>
                 </div>
-
-                <div className="grid grid-cols-1 gap-4">
-                  <div>
-                    <label className={labelClass}><User size={13} className="inline mr-1" />Full Name *</label>
-                    <input type="text" value={form.applicantName} onChange={e => set('applicantName', e.target.value)}
-                      placeholder="Enter your full name" className={inputClass} />
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <div className="sm:col-span-2">
+                    <label className={labelClass}><User className="mr-2 inline h-3.5 w-3.5" />Full Name</label>
+                    <input className={inputClass} value={form.applicantName} onChange={(event) => updateForm('applicantName', event.target.value)} placeholder="Aarav Sharma" />
                   </div>
                   <div>
-                    <label className={labelClass}><Phone size={13} className="inline mr-1" />Phone Number *</label>
-                    <input type="tel" value={form.applicantPhone} onChange={e => set('applicantPhone', e.target.value)}
-                      placeholder="+91 98765 43210" className={inputClass} />
+                    <label className={labelClass}><Phone className="mr-2 inline h-3.5 w-3.5" />Phone</label>
+                    <input className={inputClass} value={form.applicantPhone} onChange={(event) => updateForm('applicantPhone', event.target.value)} placeholder="9876543210" />
                   </div>
                   <div>
-                    <label className={labelClass}><Mail size={13} className="inline mr-1" />Email Address</label>
-                    <input type="email" value={form.applicantEmail} onChange={e => set('applicantEmail', e.target.value)}
-                      placeholder="name@email.com" className={inputClass} />
+                    <label className={labelClass}><Mail className="mr-2 inline h-3.5 w-3.5" />Email</label>
+                    <input className={inputClass} value={form.applicantEmail} onChange={(event) => updateForm('applicantEmail', event.target.value)} placeholder="name@example.com" />
                   </div>
                   <div>
-                    <label className={labelClass}><Calendar size={13} className="inline mr-1" />Date of Birth</label>
-                    <input type="date" value={form.applicantDob} onChange={e => set('applicantDob', e.target.value)} className={inputClass} />
+                    <label className={labelClass}><Calendar className="mr-2 inline h-3.5 w-3.5" />Date of Birth</label>
+                    <input type="date" className={inputClass} value={form.applicantDob} onChange={(event) => updateForm('applicantDob', event.target.value)} />
                   </div>
                 </div>
               </motion.div>
             ) : step === 2 ? (
-              <motion.div key="step2" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-4">
+              <motion.div key="step-2" initial={{ opacity: 0, x: 18 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -18 }} className="space-y-5">
                 <div>
-                  <h3 className="font-bold text-gray-900 dark:text-white mb-1">Work Preferences</h3>
-                  <p className="text-sm text-gray-500 dark:text-gray-400">Help us match you better</p>
+                  <p className="text-xs font-black uppercase tracking-[0.18em] text-secondary">Step 2</p>
+                  <h3 className="mt-2 text-2xl font-black tracking-[-0.04em] text-white">Work preferences</h3>
+                  <p className="mt-2 text-sm leading-7 text-[#9bb0d6]">This helps recruiters identify fit faster when the same component is reused across roles.</p>
                 </div>
-
                 <div>
-                  <label className={labelClass}>Languages you speak *</label>
-                  <div className="flex flex-wrap gap-2">
-                    {LANGUAGES.map(lang => (
-                      <button key={lang} type="button" onClick={() => toggleLanguage(lang)}
-                        className={`px-3.5 py-1.5 rounded-full border text-xs font-semibold transition-all ${
-                          form.applicantLanguages.includes(lang)
-                            ? 'bg-primary text-white border-primary'
-                            : 'border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-400 hover:border-primary hover:text-primary'
-                        }`}>
-                        {lang}
+                  <label className={labelClass}>Languages</label>
+                  <div className="flex flex-wrap gap-2.5">
+                    {LANGUAGES.map((language) => (
+                      <button
+                        key={language}
+                        type="button"
+                        onClick={() => toggleLanguage(language)}
+                        className={`rounded-full px-4 py-2 text-sm font-bold transition ${
+                          form.applicantLanguages.includes(language)
+                            ? 'bg-secondary text-[#05101f]'
+                            : 'border border-white/10 bg-white/5 text-[#dce7ff] hover:border-secondary/40'
+                        }`}
+                      >
+                        {language}
                       </button>
                     ))}
                   </div>
                 </div>
-
-                <div>
-                  <label className={labelClass}><MapPin size={13} className="inline mr-1" />Your Location *</label>
-                  <input type="text" value={form.applicantLocation} onChange={e => set('applicantLocation', e.target.value)}
-                    placeholder="City, area (e.g. Pune, MH)" className={inputClass} />
-                </div>
-
-                <div>
-                  <label className={labelClass}><Clock size={13} className="inline mr-1" />Availability</label>
-                  <select value={form.applicantAvailability} onChange={e => set('applicantAvailability', e.target.value)} className={inputClass}>
-                    <option value="">Select availability</option>
-                    <option value="Full-time">Full-time (8 hrs/day)</option>
-                    <option value="Part-time">Part-time (4 hrs/day)</option>
-                    <option value="Weekends only">Weekends only</option>
-                    <option value="Flexible">Flexible</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label className={labelClass}>Additional Note (optional)</label>
-                  <textarea value={form.applicantNote} onChange={e => set('applicantNote', e.target.value)}
-                    placeholder="Any relevant experience or message to the recruiter..." rows={3}
-                    className={`${inputClass} resize-none`} />
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <div>
+                    <label className={labelClass}><MapPin className="mr-2 inline h-3.5 w-3.5" />Location</label>
+                    <input className={inputClass} value={form.applicantLocation} onChange={(event) => updateForm('applicantLocation', event.target.value)} placeholder="Pune, Maharashtra" />
+                  </div>
+                  <div>
+                    <label className={labelClass}><Clock3 className="mr-2 inline h-3.5 w-3.5" />Availability</label>
+                    <select className={inputClass} value={form.applicantAvailability} onChange={(event) => updateForm('applicantAvailability', event.target.value)}>
+                      <option value="">Select availability</option>
+                      <option value="Full-time">Full-time</option>
+                      <option value="Part-time">Part-time</option>
+                      <option value="Weekends only">Weekends only</option>
+                      <option value="Flexible">Flexible</option>
+                    </select>
+                  </div>
+                  <div className="sm:col-span-2">
+                    <label className={labelClass}>Additional Note</label>
+                    <textarea
+                      rows={4}
+                      className={`${inputClass} resize-none`}
+                      value={form.applicantNote}
+                      onChange={(event) => updateForm('applicantNote', event.target.value)}
+                      placeholder="Share relevant experience, preferred shift, or anything the recruiter should know."
+                    />
+                  </div>
                 </div>
               </motion.div>
             ) : (
-              <motion.div key="step3" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-4">
+              <motion.div key="step-3" initial={{ opacity: 0, x: 18 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -18 }} className="space-y-5">
                 <div>
-                  <h3 className="font-bold text-gray-900 dark:text-white mb-1">Review Your Application</h3>
-                  <p className="text-sm text-gray-500 dark:text-gray-400">Please verify before submitting</p>
+                  <p className="text-xs font-black uppercase tracking-[0.18em] text-secondary">Step 3</p>
+                  <h3 className="mt-2 text-2xl font-black tracking-[-0.04em] text-white">Review submission</h3>
+                  <p className="mt-2 text-sm leading-7 text-[#9bb0d6]">A compact review step keeps the modal reusable across different jobs and still trustworthy for applicants.</p>
                 </div>
 
-                {/* Job summary */}
-                <div className="bg-primary/5 dark:bg-primary/10 border border-primary/20 rounded-xl p-4">
-                  <p className="text-xs font-semibold text-primary uppercase tracking-wide mb-1">Applying For</p>
-                  <p className="font-bold text-gray-900 dark:text-white">{job.title}</p>
-                  <p className="text-sm text-gray-500">{companyDisplay} · {salaryLabel}</p>
+                <div className="rounded-[1.4rem] border border-white/8 bg-white/5 p-4">
+                  <p className="text-xs font-black uppercase tracking-[0.18em] text-secondary">Applying For</p>
+                  <p className="mt-2 text-lg font-bold text-white">{job.title}</p>
+                  <p className="mt-1 text-sm text-[#b6c5e5]">{companyDisplay} {' | '} {compensation}</p>
                 </div>
 
-                {/* Summary rows */}
-                <div className="divide-y divide-gray-100 dark:divide-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
+                <div className="overflow-hidden rounded-[1.4rem] border border-white/8">
                   {[
-                    { label: 'Name', value: form.applicantName },
-                    { label: 'Phone', value: form.applicantPhone },
-                    { label: 'Email', value: form.applicantEmail || '—' },
-                    { label: 'Date of Birth', value: form.applicantDob || '—' },
-                    { label: 'Languages', value: form.applicantLanguages.join(', ') || '—' },
-                    { label: 'Location', value: form.applicantLocation || '—' },
-                    { label: 'Availability', value: form.applicantAvailability || '—' },
-                  ].map(row => (
-                    <div key={row.label} className="flex items-center px-4 py-3">
-                      <span className="text-xs font-semibold text-gray-500 w-28 flex-shrink-0">{row.label}</span>
-                      <span className="text-sm text-gray-900 dark:text-white font-medium">{row.value}</span>
+                    ['Full Name', form.applicantName],
+                    ['Phone', form.applicantPhone],
+                    ['Email', form.applicantEmail || 'Not provided'],
+                    ['Date of Birth', form.applicantDob || 'Not provided'],
+                    ['Languages', form.applicantLanguages.join(', ') || 'Not selected'],
+                    ['Location', form.applicantLocation || 'Not provided'],
+                    ['Availability', form.applicantAvailability || 'Not provided'],
+                    ['Note', form.applicantNote || 'No additional note'],
+                  ].map(([label, value], index) => (
+                    <div key={label} className={`grid gap-2 bg-white/3 px-4 py-3 sm:grid-cols-[150px_minmax(0,1fr)] ${index !== 0 ? 'border-t border-white/8' : ''}`}>
+                      <span className="text-xs font-black uppercase tracking-[0.16em] text-[#8ea4cf]">{label}</span>
+                      <span className="text-sm text-white">{value}</span>
                     </div>
                   ))}
                 </div>
@@ -266,36 +276,30 @@ export default function ApplicationModal({ job, onClose }: Props) {
             )}
           </AnimatePresence>
 
-          {/* Error */}
-          {error && (
-            <div className="mt-4 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl text-sm text-red-600 dark:text-red-400">
-              {error}
-            </div>
-          )}
+          {error ? <div className="mt-5 rounded-[1.2rem] border border-red-500/20 bg-red-500/10 px-4 py-3 text-sm text-red-200">{error}</div> : null}
 
-          {/* Footer Nav */}
-          {!submitted && (
-            <div className="flex items-center justify-between mt-6 pt-4 border-t border-gray-100 dark:border-gray-800">
+          {!submitted ? (
+            <div className="mt-6 flex items-center justify-between border-t border-white/8 pt-5">
               {step > 1 ? (
-                <button onClick={() => { setStep(s => s - 1); setError(''); }}
-                  className="flex items-center gap-1.5 text-gray-600 dark:text-gray-400 font-semibold text-sm hover:text-gray-900 dark:hover:text-white transition-colors px-3 py-2">
-                  <ChevronLeft size={16} /> Back
+                <button onClick={() => { setError(''); setStep((current) => current - 1); }} className="btn-secondary px-5 py-3">
+                  <ChevronLeft className="h-4 w-4" />
+                  Back
                 </button>
               ) : <div />}
 
               {step < 3 ? (
-                <button onClick={handleNext}
-                  className="btn-secondary px-6 py-2.5 rounded-xl font-bold text-sm flex items-center gap-1.5">
-                  Continue <ChevronRight size={16} />
+                <button onClick={handleContinue} className="btn-primary px-6 py-3">
+                  Continue
+                  <ChevronRight className="h-4 w-4" />
                 </button>
               ) : (
-                <button onClick={handleSubmit} disabled={isSubmitting}
-                  className="btn-secondary px-8 py-2.5 rounded-xl font-bold text-sm flex items-center gap-2 disabled:opacity-60">
-                  {isSubmitting ? <><Loader2 size={15} className="animate-spin" /> Submitting...</> : <>Submit Application ✓</>}
+                <button onClick={handleSubmit} disabled={isSubmitting} className="btn-primary px-6 py-3 disabled:cursor-not-allowed disabled:opacity-70">
+                  {isSubmitting ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
+                  {isSubmitting ? 'Submitting...' : 'Submit Application'}
                 </button>
               )}
             </div>
-          )}
+          ) : null}
         </div>
       </motion.div>
     </div>

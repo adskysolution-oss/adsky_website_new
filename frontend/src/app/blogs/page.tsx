@@ -1,110 +1,87 @@
 'use client';
-import { motion } from 'framer-motion';
-import Link from 'next/link';
-import { ArrowRight, Calendar, Clock, User } from 'lucide-react';
 
-const featuredPost = {
-  id: 'future-of-gig',
-  title: 'How Enterprise Gig Economies are Reshaping traditional HR overheads',
-  excerpt: 'A comprehensive guide into how modern companies leverage tech-driven workforce algorithms to cut fixed HR costs by over 45% while retaining velocity.',
-  category: 'Enterprise Strategy',
-  author: 'Annanya S.',
-  date: 'Oct 24, 2024',
-  readTime: '6 min read',
-  image: 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&q=80&w=1200'
-};
-
-const posts = [
-  {
-    id: 'ai-data-annotation',
-    title: 'Scaling AI Models: Why Human-in-the-Loop Data Annotation isn\'t dead.',
-    category: 'AI & Data',
-    author: 'Vikram R.',
-    date: 'Oct 18, 2024',
-    readTime: '5 min read',
-    image: 'https://images.unsplash.com/photo-1555949963-ff9fe0c870eb?auto=format&fit=crop&q=80&w=800'
-  },
-  {
-    id: 'field-ops-hacks',
-    title: '5 Metrics Every Ground Operations Manager Needs to Track',
-    category: 'Operations',
-    author: 'Rahul T.',
-    date: 'Oct 12, 2024',
-    readTime: '4 min read',
-    image: 'https://images.unsplash.com/photo-1600880292203-757bb62b4baf?auto=format&fit=crop&q=80&w=800'
-  },
-  {
-    id: 'gig-worker-rights',
-    title: 'The Evolution of Gig Worker Flexibility and Benefits in India',
-    category: 'Workforce',
-    author: 'Smriti M.',
-    date: 'Oct 05, 2024',
-    readTime: '7 min read',
-    image: 'https://images.unsplash.com/photo-1573164713988-8665fc963095?auto=format&fit=crop&q=80&w=800'
-  }
-];
+import { useMemo, useState } from 'react';
+import BlogCard from '@/components/blogs/BlogCard';
+import BlogFilters from '@/components/blogs/BlogFilters';
+import FeaturedBlogCard from '@/components/blogs/FeaturedBlogCard';
+import { blogCategories, blogPosts, getFeaturedBlog, type BlogCategory } from '@/lib/blogs';
+import { Button } from '@/components/ui/Button';
+import { Section } from '@/components/ui/Section';
+import { Card } from '@/components/ui/Card';
 
 export default function BlogsPage() {
-  return (
-    <div className="pt-24 pb-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div className="text-center mb-16">
-        <h1 className="heading-lg text-gray-900 dark:text-white mb-6">Insights & <span className="text-primary">Resources</span></h1>
-        <p className="subtext">Deep dives into workforce management, enterprise scaling, and gig economy trends.</p>
-      </div>
+  const [activeCategory, setActiveCategory] = useState<BlogCategory>('All');
+  const featuredPost = getFeaturedBlog();
 
-      {/* Featured Blog */}
-      <motion.div 
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="mb-20 rounded-2xl overflow-hidden bg-white dark:bg-dark-surface border border-gray-100 dark:border-gray-800 shadow-lg group flex flex-col lg:flex-row"
-      >
-        <div className="lg:w-3/5 h-64 lg:h-auto overflow-hidden relative">
-          <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors z-10" />
-          <img src={featuredPost.image} alt={featuredPost.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-        </div>
-        <div className="lg:w-2/5 p-8 lg:p-12 flex flex-col justify-center">
-          <div className="text-primary font-bold text-sm tracking-widest uppercase mb-4">{featuredPost.category}</div>
-          <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4 line-clamp-3">{featuredPost.title}</h2>
-          <p className="text-gray-600 dark:text-gray-400 mb-8">{featuredPost.excerpt}</p>
-          
-          <div className="flex items-center text-sm text-gray-500 dark:text-gray-400 mb-6 space-x-4">
-            <span className="flex items-center"><User className="w-4 h-4 mr-1"/> {featuredPost.author}</span>
-            <span className="flex items-center"><Calendar className="w-4 h-4 mr-1"/> {featuredPost.date}</span>
+  const filteredPosts = useMemo(() => {
+    const remainingPosts = blogPosts.filter((post) => post.slug !== featuredPost.slug);
+
+    if (activeCategory === 'All') {
+      return remainingPosts;
+    }
+
+    return remainingPosts.filter((post) => post.category === activeCategory);
+  }, [activeCategory, featuredPost.slug]);
+
+  return (
+    <div className="min-h-screen bg-[#f7f8fb]">
+      <Section variant="transparent" spacing="lg" className="bg-[radial-gradient(circle_at_top,rgba(37,99,235,0.10),transparent_38%),linear-gradient(180deg,#ffffff_0%,#f7f8fb_100%)]">
+        <div className="mx-auto max-w-[1220px]">
+          <div className="mx-auto max-w-[860px] text-center">
+            <span className="inline-flex rounded-full bg-white px-4 py-2 text-[0.82rem] font-semibold uppercase tracking-[0.18em] text-[#17356c] ring-1 ring-[#e6eaf2]">
+              Awign Blogs
+            </span>
+            <h1 className="mt-6 text-[3rem] font-semibold tracking-[-0.05em] text-[#101828] sm:text-[3.7rem]">
+              Smarter Work, Better Careers, Stronger Operations
+            </h1>
+            <p className="mx-auto mt-6 max-w-[740px] text-[1.08rem] leading-8 text-[#667085]">
+              Explore interview guides, workforce insights, platform stories, and operating playbooks inspired by how modern
+              teams and professionals grow with Awign.
+            </p>
           </div>
 
-          <Link href={`/blogs/${featuredPost.id}`} className="mt-auto inline-flex items-center text-primary font-semibold hover:text-primary-hover transition-colors">
-            Read Article <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
-          </Link>
-        </div>
-      </motion.div>
+          <div className="mt-12">
+            <BlogFilters categories={blogCategories} activeCategory={activeCategory} onChange={setActiveCategory} />
+          </div>
 
-      {/* Recent Posts Grid */}
-      <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-8 border-b border-gray-200 dark:border-gray-800 pb-4">Recent Articles</h3>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {posts.map((post, idx) => (
-          <motion.div
-            key={post.id}
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: idx * 0.1 }}
-            className="flex flex-col rounded-2xl bg-white dark:bg-dark-surface border border-gray-100 dark:border-gray-800 shadow-sm hover:shadow-xl transition-all overflow-hidden group"
-          >
-            <div className="h-48 overflow-hidden">
-               <img src={post.image} alt={post.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+          <div className="mt-14">
+            <FeaturedBlogCard post={featuredPost} />
+          </div>
+        </div>
+      </Section>
+
+      <Section variant="lightGray" spacing="md">
+        <div className="mx-auto max-w-[1220px]">
+          <div className="mb-10 flex flex-col items-center justify-between gap-4 text-center md:flex-row md:text-left">
+            <div>
+              <h2 className="text-[2rem] font-semibold tracking-[-0.04em] text-[#101828]">Latest Articles</h2>
+              <p className="mt-2 text-[1rem] leading-7 text-[#667085]">
+                Curated reads for job seekers, enterprise teams, and workforce operators.
+              </p>
             </div>
-            <div className="p-6 flex flex-col flex-grow">
-               <div className="text-primary font-semibold text-xs tracking-wider uppercase mb-3">{post.category}</div>
-               <h4 className="text-xl font-bold text-gray-900 dark:text-white mb-3 group-hover:text-primary transition-colors">{post.title}</h4>
-               
-               <div className="mt-auto pt-6 flex items-center justify-between text-xs text-gray-500 dark:text-gray-400 border-t border-gray-100 dark:border-gray-800">
-                 <span className="flex items-center"><Calendar className="w-3.5 h-3.5 mr-1"/> {post.date}</span>
-                 <span className="flex items-center"><Clock className="w-3.5 h-3.5 mr-1"/> {post.readTime}</span>
-               </div>
+            <div className="rounded-full bg-white px-4 py-2 text-[0.92rem] font-medium text-[#475467] ring-1 ring-[#e4e7ec]">
+              {filteredPosts.length} article{filteredPosts.length === 1 ? '' : 's'}
             </div>
-          </motion.div>
-        ))}
-      </div>
+          </div>
+
+          <div className="grid gap-8 md:grid-cols-2 xl:grid-cols-3">
+            {filteredPosts.map((post) => (
+              <BlogCard key={post.id} post={post} />
+            ))}
+          </div>
+
+          <div className="mt-14 flex justify-center">
+            <Button
+              type="button"
+              size="md"
+              variant="primary"
+              className="bg-[#101828] text-white hover:bg-[#1d2939]"
+            >
+              Load More Articles
+            </Button>
+          </div>
+        </div>
+      </Section>
     </div>
   );
 }

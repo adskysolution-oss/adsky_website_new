@@ -1,63 +1,62 @@
-import Link from 'next/link';
+﻿import Link from 'next/link';
+
+const columns = [
+  {
+    title: 'Product',
+    links: [
+      { href: '/services', label: 'Features' },
+      { href: '/pricing', label: 'Pricing' },
+      { href: '/business', label: 'Case Studies' },
+    ],
+  },
+  {
+    title: 'Company',
+    links: [
+      { href: '/business', label: 'About Us' },
+      { href: '/jobs', label: 'Careers' },
+      { href: '/blogs', label: 'Blog' },
+    ],
+  },
+  {
+    title: 'Resources',
+    links: [
+      { href: '/services', label: 'Help Center' },
+      { href: '/services', label: 'API Docs' },
+      { href: '/blogs', label: 'Community' },
+    ],
+  },
+  {
+    title: 'Legal',
+    links: [
+      { href: '/privacy_policy', label: 'Privacy' },
+      { href: '/terms_and_conditions', label: 'Terms' },
+      { href: '/terms_and_conditions', label: 'Security' },
+    ],
+  },
+];
 
 export default function Footer() {
   return (
-    <footer className="w-full bg-[#081528] text-slate-300 pt-20 pb-8 border-t border-white/10">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-8 mb-12">
-          <div className="col-span-2">
-            <Link href="/" className="text-2xl font-extrabold tracking-[-0.04em] text-white flex items-center mb-6">
-              <span className="text-[#ff5572] mr-1">AD</span>Sky Solution
-            </Link>
-            <p className="text-sm text-slate-400 mb-6 max-w-sm leading-7">
-              Empowering businesses and individuals through expert consulting, strategic execution, and scalable workforce solutions.
-            </p>
-            <div className="space-y-2 text-sm text-slate-400">
-              <p>126 Satyam Enclave Sahibabad, Ghaziabad, Uttar Pradesh 201003</p>
-              <p>+91 8076611842</p>
-              <p>info@adskysolution.in</p>
+    <footer className="bg-[#121826] px-6 py-16 text-white">
+      <div className="mx-auto max-w-[1120px]">
+        <div className="grid justify-items-center gap-12 text-center sm:grid-cols-2 lg:grid-cols-4">
+          {columns.map((column) => (
+            <div key={column.title} className="w-full max-w-[180px]">
+              <h4 className="mb-4 text-base font-semibold text-white">{column.title}</h4>
+              <ul className="space-y-3 text-sm text-white/68">
+                {column.links.map((link) => (
+                  <li key={link.label}>
+                    <Link href={link.href} className="transition hover:text-white">
+                      {link.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
             </div>
-          </div>
-
-          <div>
-            <h4 className="text-white font-bold mb-4 uppercase tracking-wider text-sm">Company</h4>
-            <ul className="space-y-3 text-sm">
-              <li><Link href="/business" className="hover:text-white transition-colors">About Us</Link></li>
-              <li><Link href="/services" className="hover:text-white transition-colors">Services</Link></li>
-              <li><Link href="/blogs" className="hover:text-white transition-colors">Blogs</Link></li>
-              <li><Link href="/jobs" className="hover:text-white transition-colors">Career Portal</Link></li>
-            </ul>
-          </div>
-
-          <div>
-            <h4 className="text-white font-bold mb-4 uppercase tracking-wider text-sm">Services</h4>
-            <ul className="space-y-3 text-sm">
-              <li><Link href="/business" className="hover:text-white transition-colors">IT Project Planning</Link></li>
-              <li><Link href="/services" className="hover:text-white transition-colors">Web & App Strategy</Link></li>
-              <li><Link href="/services" className="hover:text-white transition-colors">Process Automation</Link></li>
-              <li><Link href="/services" className="hover:text-white transition-colors">Architecture Advisory</Link></li>
-            </ul>
-          </div>
-
-          <div>
-            <h4 className="text-white font-bold mb-4 uppercase tracking-wider text-sm">Legal</h4>
-            <ul className="space-y-3 text-sm">
-              <li><Link href="/terms" className="hover:text-white transition-colors">Terms & Conditions</Link></li>
-              <li><Link href="/privacy" className="hover:text-white transition-colors">Privacy Policy</Link></li>
-              <li><Link href="/terms" className="hover:text-white transition-colors">Refund Policy</Link></li>
-              <li><Link href="/terms" className="hover:text-white transition-colors">Delivery Policy</Link></li>
-            </ul>
-          </div>
+          ))}
         </div>
-
-        <div className="pt-8 border-t border-white/10 flex flex-col md:flex-row justify-between items-center">
-          <p className="text-sm text-slate-500 mb-4 md:mb-0">
-            &copy; {new Date().getFullYear()} AD Sky Solution. All rights reserved.
-          </p>
-          <div className="flex space-x-6 text-sm text-slate-500">
-            <Link href="/terms" className="hover:text-slate-300">Terms & Conditions</Link>
-            <Link href="/privacy" className="hover:text-slate-300">Privacy Policy</Link>
-          </div>
+        <div className="mt-12 border-t border-white/12 pt-8 text-center text-sm text-white/52">
+          Copyright {new Date().getFullYear()} Awign. All rights reserved.
         </div>
       </div>
     </footer>
