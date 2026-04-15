@@ -1,152 +1,282 @@
 'use client';
-import { motion } from 'framer-motion';
+
 import Link from 'next/link';
-import { Briefcase, User as UserIcon } from 'lucide-react';
-import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import axios from 'axios';
-import { AUTH_API_URL, PASSWORD_REGEX, PASSWORD_REQUIREMENTS_TEXT } from '@/lib/auth';
+import { Briefcase, UserRound } from 'lucide-react';
+import { useMemo, useState } from 'react';
+import { AuthField } from '@/components/auth/AuthField';
+import { AuthPageShell } from '@/components/auth/AuthPageShell';
+import { useAuth } from '@/context/AuthContext';
+import {
+  authApi,
+  extractAuthErrorMessage,
+  isValidEmail,
+  isValidPhone,
+  PASSWORD_REGEX,
+  PASSWORD_REQUIREMENTS_TEXT,
+} from '@/lib/auth';
+
+type Role = 'Worker' | 'Client';
+
+type RegisterErrors = {
+  name?: string;
+  companyName?: string;
+  email?: string;
+  phone?: string;
+  password?: string;
+  confirmPassword?: string;
+};
+
+const roleOptions: Array<{ value: Role; label: string; icon: typeof UserRound; description: string }> = [
+  {
+    value: 'Worker',
+    label: "I'm a Worker",
+    icon: UserRound,
+    description: 'Create a worker account to discover gigs and complete onboarding.',
+  },
+  {
+    value: 'Client',
+    label: "I'm a Business",
+    icon: Briefcase,
+    description: 'Create a client account to manage operations and request workforce support.',
+  },
+];
 
 export default function RegisterPage() {
   const router = useRouter();
-  const [role, setRole] = useState<'Worker' | 'Client'>('Worker');
+  const { login } = useAuth();
+  const [role, setRole] = useState<Role>('Worker');
   const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
   const [companyName, setCompanyName] = useState('');
+  const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
-  const [error, setError] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [errors, setErrors] = useState<RegisterErrors>({});
+  const [formError, setFormError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleRegister = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsLoading(true);
-    setError('');
+  const roleDescription = useMemo(
+    () => roleOptions.find((option) => option.value === role)?.description ?? '',
+    [role],
+  );
+
+  const validate = () => {
+    const nextErrors: RegisterErrors = {};
+
+    if (name.trim().length < 2) {
+      nextErrors.name = 'Please enter your full name.';
+    }
+
+    if (role === 'Client' && companyName.trim().length < 2) {
+      nextErrors.companyName = 'Company name is required for business accounts.';
+    }
+
+    if (!isValidEmail(email)) {
+      nextErrors.email = 'Enter a valid email address.';
+    }
+
+    if (!isValidPhone(phone)) {
+      nextErrors.phone = 'Enter a valid phone number.';
+    }
 
     if (!PASSWORD_REGEX.test(password)) {
-      setError(PASSWORD_REQUIREMENTS_TEXT);
-      setIsLoading(false);
+      nextErrors.password = PASSWORD_REQUIREMENTS_TEXT;
+    }
+
+    if (confirmPassword !== password) {
+      nextErrors.confirmPassword = 'Passwords do not match.';
+    }
+
+    setErrors(nextErrors);
+    return Object.keys(nextErrors).length === 0;
+  };
+
+  const handleRegister = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setFormError('');
+
+    if (!validate()) {
       return;
     }
 
-    try {
-      const payload: Record<string, string> = { name, email, password, role };
-      if (role === 'Client') payload.companyName = companyName;
-      if (phone) payload.phone = phone;
+    setIsLoading(true);
 
-      const res = await axios.post(`${AUTH_API_URL}/register`, payload);
-      localStorage.setItem('token', res.data.token);
-      localStorage.setItem('role', res.data.role);
+    try {
+      const payload: Record<string, string> = {
+        name: name.trim(),
+        email: email.trim(),
+        password,
+        role,
+        phone: phone.trim(),
+      };
+
+      if (role === 'Client') {
+        payload.companyName = companyName.trim();
+      }
+
+      const response = await authApi.post('/register', payload);
+      await login(response.data.token, response.data.role);
       router.push('/onboarding');
-    } catch (err: any) {
-      setError(err.response?.data?.message || 'Registration failed');
+    } catch (error) {
+      setFormError(
+        extractAuthErrorMessage(error, 'Unable to create your account right now. Please try again.'),
+      );
     } finally {
       setIsLoading(false);
     }
   };
 
   return (
-    <div className="flex min-h-screen bg-gray-50 dark:bg-dark-bg">
-      <div className="w-full lg:w-1/2 flex items-center justify-center p-4 py-12 sm:p-8 overflow-y-auto">
-        <motion.div
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          className="w-full max-w-md bg-white dark:bg-dark-surface p-8 sm:p-10 rounded-2xl shadow-xl lg:shadow-none lg:border-none lg:bg-transparent border border-gray-100 dark:border-gray-800"
-        >
-          <div className="mb-8 block">
-            <Link href="/" className="text-3xl font-bold tracking-tight">
-              <span className="text-primary mr-1">AD</span>Sky
-            </Link>
-          </div>
-
-          <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">Create an account</h3>
-          <p className="text-gray-500 dark:text-gray-400 mb-8 text-sm">Join the platform with a secure, production-ready account.</p>
-
-          <div className="grid grid-cols-2 gap-4 mb-8">
-            <button
-              type="button"
-              onClick={() => setRole('Worker')}
-              className={`p-4 rounded-xl border-2 flex flex-col items-center justify-center transition-all ${role === 'Worker' ? 'border-primary bg-blue-50 dark:bg-blue-900/10 text-primary' : 'border-gray-200 dark:border-gray-700 text-gray-500 dark:text-gray-400 hover:border-gray-300 dark:hover:border-gray-600'}`}
-            >
-              <UserIcon className="w-6 h-6 mb-2" />
-              <span className="font-semibold text-sm text-gray-800 dark:text-gray-200">I&apos;m a Worker</span>
-            </button>
-            <button
-              type="button"
-              onClick={() => setRole('Client')}
-              className={`p-4 rounded-xl border-2 flex flex-col items-center justify-center transition-all ${role === 'Client' ? 'border-primary bg-blue-50 dark:bg-blue-900/10 text-primary' : 'border-gray-200 dark:border-gray-700 text-gray-500 dark:text-gray-400 hover:border-gray-300 dark:hover:border-gray-600'}`}
-            >
-              <Briefcase className="w-6 h-6 mb-2" />
-              <span className="font-semibold text-sm text-gray-800 dark:text-gray-200">I&apos;m a Business</span>
-            </button>
-          </div>
-
-          {error && <div className="mb-4 p-3 bg-red-100 text-red-600 rounded-lg text-sm">{error}</div>}
-
-          <form className="space-y-4" onSubmit={handleRegister}>
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Full Name</label>
-              <input type="text" value={name} onChange={e => setName(e.target.value)} required placeholder={role === 'Client' ? 'Contact Person Name' : 'John Doe'} className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-[#151c2e] text-gray-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all" />
-            </div>
-
-            {role === 'Client' && (
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Company Name</label>
-                <input type="text" value={companyName} onChange={e => setCompanyName(e.target.value)} required placeholder="Acme Corp Ltd." className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-[#151c2e] text-gray-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all" />
-              </div>
-            )}
-
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Email <span className="text-red-500">*</span></label>
-              <input type="email" value={email} onChange={e => setEmail(e.target.value)} required placeholder="name@company.com" className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-[#151c2e] text-gray-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all" />
-            </div>
-
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Phone Number <span className="text-red-500">*</span></label>
-              <input type="tel" value={phone} onChange={e => setPhone(e.target.value)} required placeholder="+91 98765 43210" className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-[#151c2e] text-gray-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all" />
-            </div>
-
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Password <span className="text-red-500">*</span></label>
-              <input type="password" value={password} onChange={e => setPassword(e.target.value)} required placeholder="Create a strong password" className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-[#151c2e] text-gray-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all" />
-              <p className="mt-2 text-xs text-gray-500 dark:text-gray-400">{PASSWORD_REQUIREMENTS_TEXT}</p>
-            </div>
-
-            <div className="pt-2">
-              <button disabled={isLoading} type="submit" className="w-full py-3 px-4 bg-primary hover:bg-primary-hover text-white font-bold rounded-lg shadow-md hover:shadow-lg disabled:opacity-50 transition-all focus:ring-4 focus:ring-blue-200 dark:focus:ring-blue-900">
-                {isLoading ? 'Creating...' : 'Create Account'}
-              </button>
-            </div>
-          </form>
-
-          <p className="mt-8 text-center text-sm text-gray-600 dark:text-gray-400">
-            Already have an account? <Link href="/login" className="text-primary font-semibold hover:underline">Sign In</Link>
-          </p>
-        </motion.div>
-      </div>
-
-      <div className="hidden lg:flex w-1/2 bg-slate-900 relative overflow-hidden flex-col justify-center px-16 text-white border-l border-slate-800">
-        <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&q=80')] opacity-20 mix-blend-overlay bg-cover bg-center" />
-        <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/80 to-slate-900/40" />
-
-        <div className="relative z-10 max-w-lg">
-          <h2 className="text-4xl font-bold mb-6 leading-tight">Create a secure account for reliable execution.</h2>
-          <ul className="space-y-6 text-gray-300 text-lg">
-            <li className="flex items-start">
-              <span className="w-6 h-6 rounded-full bg-blue-500/20 text-blue-400 flex items-center justify-center mr-3 flex-shrink-0 mt-1">✓</span>
-              Strong password validation on both the client and server.
-            </li>
-            <li className="flex items-start">
-              <span className="w-6 h-6 rounded-full bg-blue-500/20 text-blue-400 flex items-center justify-center mr-3 flex-shrink-0 mt-1">✓</span>
-              Secure authentication with JWT and protected account states.
-            </li>
-            <li className="flex items-start">
-              <span className="w-6 h-6 rounded-full bg-blue-500/20 text-blue-400 flex items-center justify-center mr-3 flex-shrink-0 mt-1">✓</span>
-              Password recovery via time-limited, one-time reset links.
-            </li>
-          </ul>
+    <AuthPageShell
+      panelPosition="right"
+      sideEyebrow="Create account"
+      sideTitle="Set up a secure account that’s ready for real-world execution."
+      sideDescription="Whether you are joining as a worker or a business, the registration flow is designed to be reliable, responsive, and easy to complete."
+      sideHighlights={[
+        'Worker and business sign-up paths with clear role selection.',
+        'Strong password validation before data reaches the server.',
+        'Smooth onboarding handoff after successful registration.',
+      ]}
+      sideImage="https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&q=80&w=1400"
+    >
+      <div className="mb-8">
+        <div className="mb-3 inline-flex rounded-full border border-[#d9e6fb] bg-[#f4f8ff] px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.2em] text-[#355799]">
+          Create your account
         </div>
+        <h1 className="text-[2rem] font-semibold tracking-[-0.03em] text-slate-900 sm:text-[2.35rem]">
+          Join the platform
+        </h1>
+        <p className="mt-3 max-w-[470px] text-sm leading-7 text-slate-500 sm:text-[0.98rem]">
+          Choose the right account type, complete the required details, and we&apos;ll take you straight into onboarding.
+        </p>
       </div>
-    </div>
+
+      <div className="mb-6 grid grid-cols-1 gap-3 sm:grid-cols-2">
+        {roleOptions.map((option) => {
+          const Icon = option.icon;
+          const isActive = option.value === role;
+
+          return (
+            <button
+              key={option.value}
+              type="button"
+              onClick={() => setRole(option.value)}
+              className={`rounded-[24px] border px-4 py-4 text-left transition-all ${
+                isActive
+                  ? 'border-[#2b64f0] bg-[#eef4ff] shadow-[0_10px_30px_rgba(43,100,240,0.12)]'
+                  : 'border-slate-200 bg-white hover:border-slate-300'
+              }`}
+            >
+              <div className="mb-3 inline-flex h-10 w-10 items-center justify-center rounded-2xl bg-[#16233f] text-white">
+                <Icon className="h-5 w-5" />
+              </div>
+              <div className="text-sm font-semibold text-slate-900">{option.label}</div>
+              <div className="mt-1 text-xs leading-5 text-slate-500">{option.description}</div>
+            </button>
+          );
+        })}
+      </div>
+
+      <p className="mb-6 text-sm leading-6 text-slate-500">{roleDescription}</p>
+
+      {formError ? (
+        <div className="mb-5 rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700" aria-live="polite">
+          {formError}
+        </div>
+      ) : null}
+
+      <form noValidate className="space-y-4" onSubmit={handleRegister}>
+        <AuthField
+          id="register-name"
+          type="text"
+          label="Full name"
+          placeholder={role === 'Client' ? 'Contact person name' : 'John Doe'}
+          autoComplete="name"
+          value={name}
+          onChange={(event) => setName(event.target.value)}
+          error={errors.name}
+          requiredMark
+        />
+
+        {role === 'Client' ? (
+          <AuthField
+            id="register-company"
+            type="text"
+            label="Company name"
+            placeholder="Acme Corp Ltd."
+            autoComplete="organization"
+            value={companyName}
+            onChange={(event) => setCompanyName(event.target.value)}
+            error={errors.companyName}
+            requiredMark
+          />
+        ) : null}
+
+        <AuthField
+          id="register-email"
+          type="email"
+          label="Email address"
+          placeholder="name@company.com"
+          autoComplete="email"
+          value={email}
+          onChange={(event) => setEmail(event.target.value)}
+          error={errors.email}
+          requiredMark
+        />
+
+        <AuthField
+          id="register-phone"
+          type="tel"
+          label="Phone number"
+          placeholder="+91 98765 43210"
+          autoComplete="tel"
+          value={phone}
+          onChange={(event) => setPhone(event.target.value)}
+          error={errors.phone}
+          requiredMark
+        />
+
+        <AuthField
+          id="register-password"
+          type="password"
+          label="Password"
+          placeholder="Create a strong password"
+          autoComplete="new-password"
+          value={password}
+          onChange={(event) => setPassword(event.target.value)}
+          error={errors.password}
+          hint={PASSWORD_REQUIREMENTS_TEXT}
+          requiredMark
+        />
+
+        <AuthField
+          id="register-confirm-password"
+          type="password"
+          label="Confirm password"
+          placeholder="Re-enter your password"
+          autoComplete="new-password"
+          value={confirmPassword}
+          onChange={(event) => setConfirmPassword(event.target.value)}
+          error={errors.confirmPassword}
+          requiredMark
+        />
+
+        <button
+          disabled={isLoading}
+          type="submit"
+          className="inline-flex h-14 w-full items-center justify-center rounded-full bg-[#16233f] px-6 text-base font-semibold text-white transition-all hover:bg-[#1b2c4d] focus:outline-none focus:ring-4 focus:ring-[#dbe8ff] disabled:cursor-not-allowed disabled:opacity-60"
+        >
+          {isLoading ? 'Creating account...' : 'Create Account'}
+        </button>
+      </form>
+
+      <p className="mt-8 text-center text-sm text-slate-500">
+        Already have an account?{' '}
+        <Link href="/login" className="font-semibold text-[#2b64f0] hover:text-[#1f4fd0]">
+          Sign in
+        </Link>
+      </p>
+    </AuthPageShell>
   );
 }

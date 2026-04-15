@@ -348,7 +348,7 @@ export default function GigPage() {
             <h1 className="mb-7 text-balance text-[4.25rem] font-semibold leading-[1.03] tracking-[-0.05em] text-white">Gig Work &amp; Part Time Jobs Platform</h1>
             <p className="mb-12 max-w-[560px] text-[1.02rem] leading-[1.35] text-white/84 sm:text-[1.15rem] lg:text-[1.25rem]">Part-time, Full-time, Onsite, and Remote work opportunities!</p>
             <Button asChild size="lg" variant="secondary" className="min-w-[340px]">
-              <Link href="/jobs">
+              <Link href="/categories">
                 Find Work
               </Link>
             </Button>

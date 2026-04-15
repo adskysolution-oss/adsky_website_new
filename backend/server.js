@@ -12,16 +12,43 @@ dotenv.config();
 const app = express();
 app.set('trust proxy', 1);
 
-const allowedOrigin = getRequiredEnv('FRONTEND_URL');
+const normalizeOrigin = (origin) => String(origin || '').replace(/\/$/, '');
+const configuredOrigin = normalizeOrigin(getRequiredEnv('FRONTEND_URL'));
+const allowedOrigins = Array.from(
+  new Set(
+    [
+      configuredOrigin,
+      'http://localhost:3000',
+      'http://127.0.0.1:3000',
+    ].filter(Boolean),
+  ),
+);
+
+const isAllowedOrigin = (origin) => {
+  if (!origin) return true;
+  return allowedOrigins.includes(normalizeOrigin(origin));
+};
+
 const corsOptions = {
-  origin: allowedOrigin,
+  origin(origin, callback) {
+    if (isAllowedOrigin(origin)) {
+      callback(null, true);
+      return;
+    }
+
+    callback(new Error(`Origin ${origin} is not allowed by CORS`));
+  },
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
   credentials: true,
 };
 
 const server = http.createServer(app);
 const io = new Server(server, {
-  cors: corsOptions,
+  cors: {
+    origin: allowedOrigins,
+    methods: corsOptions.methods,
+    credentials: true,
+  },
 });
 
 app.use(cors(corsOptions));

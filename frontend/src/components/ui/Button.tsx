@@ -1,4 +1,5 @@
 import { ButtonHTMLAttributes, forwardRef } from 'react';
+import { Slot } from '@radix-ui/react-slot';
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: 'primary' | 'secondary' | 'outline' | 'ghost' | 'dimmed';
@@ -7,7 +8,8 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 const Button = forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className = '', variant = 'primary', size = 'lg', children, ...props }, ref) => {
+  ({ className = '', variant = 'primary', size = 'lg', asChild = false , children, ...props }, ref) => {
+    //  const Comp = asChild ? Slot : 'button';
     // Base styles: precise flex center, rounded pill shape, text-center + transition
     const baseStyles = 'inline-flex items-center justify-center rounded-full font-semibold transition-all duration-200';
     

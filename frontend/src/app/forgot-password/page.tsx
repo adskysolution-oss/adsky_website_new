@@ -1,12 +1,15 @@
 'use client';
-import { useState } from 'react';
+
 import Link from 'next/link';
-import axios from 'axios';
-import { ArrowLeft, CheckCircle, Mail } from 'lucide-react';
-import { AUTH_API_URL } from '@/lib/auth';
+import { useState } from 'react';
+import { ArrowLeft, CheckCircle2 } from 'lucide-react';
+import { AuthField } from '@/components/auth/AuthField';
+import { AuthPageShell } from '@/components/auth/AuthPageShell';
+import { authApi, extractAuthErrorMessage, isValidEmail } from '@/lib/auth';
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState('');
+  const [emailError, setEmailError] = useState('');
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -15,72 +18,103 @@ export default function ForgotPasswordPage() {
     event.preventDefault();
     setError('');
     setSuccess('');
+
+    if (!isValidEmail(email)) {
+      setEmailError('Enter a valid email address.');
+      return;
+    }
+
+    setEmailError('');
     setIsLoading(true);
 
     try {
-      const response = await axios.post(`${AUTH_API_URL}/forgot-password`, { email });
+      const response = await authApi.post('/forgot-password', {
+        email: email.trim(),
+      });
       setSuccess(response.data.message);
-    } catch (err: any) {
-      setError(err.response?.data?.message || 'Unable to send reset instructions right now.');
+    } catch (requestError) {
+      setError(
+        extractAuthErrorMessage(
+          requestError,
+          'Unable to send reset instructions right now. Please try again shortly.',
+        ),
+      );
     } finally {
       setIsLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-dark-bg p-4">
-      <div className="w-full max-w-md">
-        <Link href="/login" className="inline-flex items-center gap-2 text-sm text-gray-500 hover:text-primary mb-6 transition-colors">
-          <ArrowLeft size={16} /> Back to Login
+    <AuthPageShell
+      panelPosition="left"
+      sideEyebrow="Recover access"
+      sideTitle="Reset your password without losing momentum."
+      sideDescription="We’ll send a secure reset link to your registered email so you can safely create a new password and get back into your account."
+      sideHighlights={[
+        'Time-limited reset links for safer account recovery.',
+        'Clear success and error states throughout the request flow.',
+        'Responsive recovery screen that works cleanly across devices.',
+      ]}
+      sideImage="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&q=80&w=1400"
+    >
+      <div className="mb-8">
+        <Link href="/login" className="mb-6 inline-flex items-center gap-2 text-sm font-medium text-slate-500 transition-colors hover:text-[#2b64f0]">
+          <ArrowLeft className="h-4 w-4" />
+          Back to login
         </Link>
-
-        <div className="bg-white dark:bg-dark-surface rounded-2xl shadow-xl border border-gray-100 dark:border-gray-800 p-8 sm:p-10">
-          <div className="mb-8">
-            <div className="w-12 h-12 rounded-2xl bg-primary/10 text-primary flex items-center justify-center mb-4">
-              <Mail size={22} />
-            </div>
-            <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">Forgot your password?</h1>
-            <p className="text-gray-500 dark:text-gray-400 text-sm leading-6">
-              Enter your registered email address and we&apos;ll send you a secure reset link.
-            </p>
-          </div>
-
-          {error && (
-            <div className="mb-5 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 rounded-lg text-sm">
-              {error}
-            </div>
-          )}
-
-          {success ? (
-            <div className="rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-5 text-sm text-emerald-700 dark:border-emerald-900/50 dark:bg-emerald-900/20 dark:text-emerald-300">
-              <div className="flex items-start gap-3">
-                <CheckCircle className="mt-0.5 h-5 w-5" />
-                <div>
-                  <p className="font-semibold">Check your inbox</p>
-                  <p className="mt-1 leading-6">{success}</p>
-                </div>
-              </div>
-            </div>
-          ) : (
-            <form onSubmit={handleSubmit} className="space-y-5">
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Email Address</label>
-                <input
-                  type="email"
-                  required
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="name@company.com"
-                  className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-[#151c2e] text-gray-900 dark:text-white focus:ring-2 focus:ring-primary outline-none transition-all"
-                />
-              </div>
-              <button disabled={isLoading} type="submit" className="w-full py-3 bg-primary hover:bg-primary-hover text-white font-bold rounded-lg disabled:opacity-50 transition-all">
-                {isLoading ? 'Sending reset link...' : 'Send Reset Link'}
-              </button>
-            </form>
-          )}
+        <div className="mb-3 inline-flex rounded-full border border-[#d9e6fb] bg-[#f4f8ff] px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.2em] text-[#355799]">
+          Password recovery
         </div>
+        <h1 className="text-[2rem] font-semibold tracking-[-0.03em] text-slate-900 sm:text-[2.35rem]">
+          Forgot your password?
+        </h1>
+        <p className="mt-3 max-w-[440px] text-sm leading-7 text-slate-500 sm:text-[0.98rem]">
+          Enter your registered email address and we&apos;ll send a secure password reset link.
+        </p>
       </div>
-    </div>
+
+      {error ? (
+        <div className="mb-5 rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700" aria-live="polite">
+          {error}
+        </div>
+      ) : null}
+
+      {success ? (
+        <div className="rounded-[28px] border border-emerald-200 bg-emerald-50 px-5 py-5 text-sm text-emerald-700" aria-live="polite">
+          <div className="flex items-start gap-3">
+            <CheckCircle2 className="mt-0.5 h-5 w-5 flex-shrink-0" />
+            <div>
+              <p className="font-semibold">Check your inbox</p>
+              <p className="mt-1 leading-6">{success}</p>
+              <p className="mt-3 text-xs leading-5 text-emerald-700/80">
+                If you don&apos;t see it, check your spam folder and confirm you entered the correct email.
+              </p>
+            </div>
+          </div>
+        </div>
+      ) : (
+        <form noValidate className="space-y-5" onSubmit={handleSubmit}>
+          <AuthField
+            id="forgot-password-email"
+            type="email"
+            label="Email address"
+            autoComplete="email"
+            placeholder="name@company.com"
+            value={email}
+            onChange={(event) => setEmail(event.target.value)}
+            error={emailError}
+            requiredMark
+          />
+
+          <button
+            disabled={isLoading}
+            type="submit"
+            className="inline-flex h-14 w-full items-center justify-center rounded-full bg-[#16233f] px-6 text-base font-semibold text-white transition-all hover:bg-[#1b2c4d] focus:outline-none focus:ring-4 focus:ring-[#dbe8ff] disabled:cursor-not-allowed disabled:opacity-60"
+          >
+            {isLoading ? 'Sending reset link...' : 'Send Reset Link'}
+          </button>
+        </form>
+      )}
+    </AuthPageShell>
   );
 }

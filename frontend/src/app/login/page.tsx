@@ -1,119 +1,156 @@
 'use client';
-import { motion } from 'framer-motion';
+
 import Link from 'next/link';
-import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import axios from 'axios';
-import { AUTH_API_URL } from '@/lib/auth';
+import { useState } from 'react';
+import { ArrowRight } from 'lucide-react';
+import { AuthField } from '@/components/auth/AuthField';
+import { AuthPageShell } from '@/components/auth/AuthPageShell';
+import { useAuth } from '@/context/AuthContext';
+import { authApi, extractAuthErrorMessage, isValidEmail } from '@/lib/auth';
+
+type LoginErrors = {
+  email?: string;
+  password?: string;
+};
 
 export default function LoginPage() {
   const router = useRouter();
+  const { login } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+  const [errors, setErrors] = useState<LoginErrors>({});
+  const [formError, setFormError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const validate = () => {
+    const nextErrors: LoginErrors = {};
+
+    if (!isValidEmail(email)) {
+      nextErrors.email = 'Enter a valid email address.';
+    }
+
+    if (!password.trim()) {
+      nextErrors.password = 'Password is required.';
+    }
+
+    setErrors(nextErrors);
+    return Object.keys(nextErrors).length === 0;
+  };
+
+  const handleLogin = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setFormError('');
+
+    if (!validate()) {
+      return;
+    }
+
     setIsLoading(true);
-    setError('');
 
     try {
-      const res = await axios.post(`${AUTH_API_URL}/login`, { email, password });
-      localStorage.setItem('token', res.data.token);
-      localStorage.setItem('role', res.data.role);
+      const response = await authApi.post('/login', {
+        email: email.trim(),
+        password,
+      });
 
-      if (!res.data.onboardingCompleted) {
+      await login(response.data.token, response.data.role);
+
+      if (!response.data.onboardingCompleted) {
         router.push('/onboarding');
       } else {
         router.push('/office');
       }
-    } catch (err: any) {
-      if (!err.response) {
-        setError('Cannot reach server. Make sure the backend is running.');
-      } else {
-        setError(err.response?.data?.message || 'Login failed. Please try again.');
-      }
+    } catch (error) {
+      setFormError(
+        extractAuthErrorMessage(error, 'Unable to sign in right now. Please try again.'),
+      );
     } finally {
       setIsLoading(false);
     }
   };
 
   return (
-    <div className="flex h-screen bg-gray-50 dark:bg-dark-bg">
-      <div className="hidden lg:flex w-1/2 bg-blue-900 relative overflow-hidden flex-col justify-center px-16 text-white">
-        <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1554774853-719586f82d77?auto=format&fit=crop&q=80')] opacity-20 mix-blend-overlay bg-cover bg-center" />
-        <div className="absolute inset-0 bg-gradient-to-t from-blue-900/90 to-blue-900/40" />
+    <AuthPageShell
+      panelPosition="left"
+      sideEyebrow="Secure sign in"
+      sideTitle="Access your workforce dashboard without the friction."
+      sideDescription="Manage operations, monitor performance, and keep your execution workflow moving from one secure workspace."
+      sideHighlights={[
+        'JWT-backed sessions with protected profile loading.',
+        'Clear validation and accurate API error feedback.',
+        'Built for keyboard-friendly, production-ready access.',
+      ]}
+      sideImage="https://images.unsplash.com/photo-1554774853-719586f82d77?auto=format&fit=crop&q=80&w=1400"
+    >
+      <div className="mb-8">
+        <div className="mb-3 inline-flex rounded-full border border-[#d9e6fb] bg-[#f4f8ff] px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.2em] text-[#355799]">
+          Welcome back
+        </div>
+        <h1 className="text-[2rem] font-semibold tracking-[-0.03em] text-slate-900 sm:text-[2.35rem]">
+          Sign in to your account
+        </h1>
+        <p className="mt-3 max-w-[420px] text-sm leading-7 text-slate-500 sm:text-[0.98rem]">
+          Enter your credentials to access your dashboard, continue onboarding, or resume work where you left off.
+        </p>
+      </div>
 
-        <div className="relative z-10">
-          <Link href="/" className="text-4xl font-bold tracking-tight mb-12 block">
-            <span className="text-blue-400 mr-1">Ad</span>Sky
+      {formError ? (
+        <div className="mb-5 rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700" aria-live="polite">
+          {formError}
+        </div>
+      ) : null}
+
+      <form noValidate className="!space-y-5 mt-[10px] " onSubmit={handleLogin}>
+        <AuthField
+          id="login-email"
+          type="email"
+          label="Email address"
+          autoComplete="email"
+          placeholder="name@company.com"
+          value={email}
+          onChange={(event) => setEmail(event.target.value)}
+          error={errors.email}
+          requiredMark
+          className="!p-[10px]"
+        />
+
+        <AuthField
+          id="login-password"
+          type="password"
+          label="Password"
+          autoComplete="current-password"
+          placeholder="Enter your password"
+          value={password}
+          onChange={(event) => setPassword(event.target.value)}
+          error={errors.password}
+          className="!p-[10px]"
+          requiredMark
+        />
+
+        <div className="flex items-center justify-between  gap-4 text-sm">
+          <span className="text-slate-500">Need help accessing your account?</span>
+          <Link href="/forgot-password" className="font-semibold !text-[#1f4fd0] transition-colors hover:text-[#1f4fd0]">
+            Forgot password
           </Link>
-          <h2 className="text-4xl font-bold mb-6 leading-tight">Welcome back to the execution engine.</h2>
-          <p className="text-blue-200 text-lg max-w-md line-clamp-4">
-            Manage your gig workforce, track daily operations, and scale your business without the traditional HR constraints.
-          </p>
         </div>
 
-        <div className="absolute -bottom-24 -left-24 w-96 h-96 border-4 border-blue-400/20 rounded-full" />
-        <div className="absolute -top-12 -right-12 w-64 h-64 border-4 border-white/10 rounded-full" />
-      </div>
-
-      <div className="w-full lg:w-1/2 flex items-center justify-center p-8">
-        <motion.div
-          initial={{ opacity: 0, x: 20 }}
-          animate={{ opacity: 1, x: 0 }}
-          className="w-full max-w-md bg-white dark:bg-dark-surface p-8 sm:p-10 rounded-2xl shadow-xl lg:shadow-none lg:border-none lg:bg-transparent border border-gray-100 dark:border-gray-800"
+        <button
+          disabled={isLoading}
+          type="submit"
+          className="inline-flex h-14 w-full items-center justify-center gap-2 rounded-full bg-[#16233f] px-6 text-base font-semibold text-white transition-all hover:bg-[#1b2c4d] focus:outline-none focus:ring-4 focus:ring-[#dbe8ff] disabled:cursor-not-allowed disabled:opacity-60"
         >
-          <div className="lg:hidden mb-8 text-center">
-            <Link href="/" className="text-3xl font-bold tracking-tight">
-              <span className="text-primary mr-1">Ad</span>Sky
-            </Link>
-          </div>
+          {isLoading ? 'Signing in...' : 'Sign In'}
+          {!isLoading ? <ArrowRight className="h-4 w-4" /> : null}
+        </button>
+      </form>
 
-          <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">Sign in to your account</h3>
-          <p className="text-gray-500 dark:text-gray-400 mb-6 text-sm">Enter your credentials to access your dashboard.</p>
-
-          {error && <div className="mb-4 p-3 bg-red-100 text-red-600 rounded-lg text-sm">{error}</div>}
-
-          <form className="space-y-5" onSubmit={handleLogin}>
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Email Address</label>
-              <input
-                type="email"
-                value={email}
-                onChange={e => setEmail(e.target.value)}
-                placeholder="name@company.com"
-                className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-[#151c2e] text-gray-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all"
-              />
-            </div>
-
-            <div>
-              <div className="flex justify-between items-center mb-1">
-                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300">Password</label>
-                <Link href="/forgot-password" className="text-sm text-primary hover:text-primary-hover font-medium">
-                  Forgot password?
-                </Link>
-              </div>
-              <input
-                type="password"
-                value={password}
-                onChange={e => setPassword(e.target.value)}
-                placeholder="••••••••"
-                className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-[#151c2e] text-gray-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all"
-              />
-            </div>
-
-            <button disabled={isLoading} type="submit" className="w-full py-3 px-4 bg-primary hover:bg-primary-hover text-white font-bold rounded-lg shadow-md hover:shadow-lg disabled:opacity-50 transition-all focus:ring-4 focus:ring-blue-200 dark:focus:ring-blue-900 mt-4">
-              {isLoading ? 'Signing in...' : 'Sign In'}
-            </button>
-          </form>
-
-          <p className="mt-8 text-center text-sm text-gray-600 dark:text-gray-400">
-            Don&apos;t have an account? <Link href="/register" className="text-primary font-semibold hover:underline">Create one</Link>
-          </p>
-        </motion.div>
-      </div>
-    </div>
+      <p className="mt-8 text-center text-sm text-slate-500">
+        Don&apos;t have an account?{' '}
+        <Link href="/register" className="font-semibold text-[#2b64f0] hover:text-[#1f4fd0]">
+          Create one
+        </Link>
+      </p>
+    </AuthPageShell>
   );
 }

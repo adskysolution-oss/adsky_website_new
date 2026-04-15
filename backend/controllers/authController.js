@@ -10,6 +10,7 @@ const { getRequiredEnv } = require('../utils/env');
 
 const PASSWORD_RESET_TTL_MS = 15 * 60 * 1000;
 const FORGOT_PASSWORD_RESPONSE = 'If an account with that email exists, a password reset link will be sent shortly.';
+const LOCAL_DEV_ORIGIN_REGEX = /^https?:\/\/(localhost|127\.0\.0\.1):\d+$/i;
 
 const buildAuthResponse = (user) => ({
   _id: user._id,
@@ -209,7 +210,10 @@ exports.forgotPassword = async (req, res) => {
       user.passwordResetExpiresAt = expiresAt;
       await user.save();
 
-      const frontendUrl = getRequiredEnv('FRONTEND_URL');
+      const requestOrigin = String(req.get('origin') || '');
+      const frontendUrl = LOCAL_DEV_ORIGIN_REGEX.test(requestOrigin)
+        ? requestOrigin
+        : getRequiredEnv('FRONTEND_URL');
       const resetUrl = `${frontendUrl.replace(/\/$/, '')}/reset-password/${rawToken}`;
       const emailPayload = buildPasswordResetEmail({ name: user.name, resetUrl, expiresInMinutes: 15 });
 

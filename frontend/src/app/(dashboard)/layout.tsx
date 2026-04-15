@@ -48,7 +48,7 @@ export default function DashboardLayout({
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-dark-bg flex flex-col">
       {/* Dashboard Top Navbar */}
-      <nav className="w-full bg-primary py-3 px-4 sm:px-6 lg:px-8 text-white sticky top-0 z-40 shadow-md">
+      <nav className="w-full !h-[50px] !pt-[10px] !pl-[10px] bg-primary py-3 px-4 sm:px-6 lg:px-8 text-white sticky top-0 z-40 shadow-md">
         <div className="max-w-screen-xl mx-auto flex items-center justify-between">
 
           {/* Logo */}
@@ -59,18 +59,18 @@ export default function DashboardLayout({
 
             {/* Desktop Nav Links */}
             <div className="hidden md:flex items-center gap-1 lg:gap-2">
-              <div className="hidden lg:flex items-center gap-5 mr-4 opacity-90 border-r border-white/20 pr-6">
+              <div className="hidden  !pl-[500px] !gap-6 lg:flex items-center gap-5 mr-4 opacity-90 border-r border-white/20 pr-6">
                 <Link href="/business" className="font-semibold text-sm hover:text-white/80 transition-colors">Business</Link>
                 <Link href="/jobs" className="font-semibold text-sm hover:text-white/80 transition-colors">Jobs</Link>
                 <Link href="/blogs" className="font-semibold text-sm hover:text-white/80 transition-colors">Blog</Link>
               </div>
-              <Link href="/explore" className="px-3 py-2 hover:bg-white/10 rounded-md font-medium text-sm transition-colors">Explore</Link>
-              <Link href="/office" className="px-4 py-2 bg-blue-900 rounded-md font-bold text-sm shadow-inner text-white hover:bg-blue-950 transition-colors">Office</Link>
+              <Link href="/explore" className="px-3 !ml-[20px] py-2 hover:bg-white/10 rounded-md font-medium text-sm transition-colors">Explore</Link>
+              <Link href="/office" className="px-4 !ml-[20px] py-2 hover:bg-white/10 rounded-md font-medium text-sm transition-colors">Office</Link>
             </div>
           </div>
 
           {/* Right Area */}
-          <div className="flex items-center gap-3 sm:gap-4 lg:gap-6">
+          <div className="flex items-center gap-3 sm:gap-4 lg:gap-6 absolute right-1 !pr-[10px] !pt-10px ">
             <HelpDropdown />
             <NotificationDropdown />
             <ProfileDropdown />
