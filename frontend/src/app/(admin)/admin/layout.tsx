@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { 
   Users, Briefcase, CheckSquare, Settings, BarChart2, 
-  CreditCard, Menu, X, Bell, LogOut 
+  CreditCard, Menu, X, Bell, LogOut, ClipboardList
 } from 'lucide-react';
 import axios from 'axios';
 
@@ -41,6 +41,7 @@ export default function AdminLayout({
     { name: 'Dashboard', path: '/admin', icon: <BarChart2 size={20} /> },
     { name: 'Users', path: '/admin/users', icon: <Users size={20} /> },
     { name: 'Jobs', path: '/admin/jobs', icon: <Briefcase size={20} /> },
+    { name: 'Applications', path: '/admin/applications', icon: <ClipboardList size={20} /> },
     { name: 'Tasks', path: '/admin/tasks', icon: <CheckSquare size={20} /> },
     { name: 'Vendors', path: '/admin/vendors', icon: <Settings size={20} /> },
     { name: 'Payments', path: '/admin/payments', icon: <CreditCard size={20} /> },

@@ -2,11 +2,13 @@ const User = require('../models/User');
 const Job = require('../models/Job');
 const Task = require('../models/Task');
 const Payment = require('../models/Payment');
+const Application = require('../models/Application');
 
 exports.getAdminStats = async (req, res) => {
     try {
         const totalUsers = await User.countDocuments();
         const activeJobs = await Job.countDocuments({ status: 'Open' });
+        const totalApplications = await Application.countDocuments();
         
         // Mock revenue and vendor counts since those modules are minimal right now
         const totalRevenue = 154000;
@@ -16,7 +18,8 @@ exports.getAdminStats = async (req, res) => {
             totalUsers,
             totalRevenue,
             activeJobs,
-            totalVendors
+            totalVendors,
+            totalApplications
         });
     } catch (error) {
         res.status(500).json({ message: error.message });

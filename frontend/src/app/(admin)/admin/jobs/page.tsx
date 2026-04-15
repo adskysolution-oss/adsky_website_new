@@ -20,15 +20,24 @@ interface Job {
   _id: string; title: string; category: string; location?: string;
   salaryAmount: number; salaryType: string; status: string;
   applicationsCount: number; createdAt: string; companyName?: string; openings?: number;
+  description?: string; requirements?: string[]; tags?: string[];
+  experienceLevel?: string; qualification?: string;
 }
 
 function JobFormModal({ job, onClose, onSave }: { job: Job | null; onClose: () => void; onSave: () => void }) {
   const [form, setForm] = useState(job ? {
-    title: job.title, description: '', requirements: '', category: job.category,
-    location: job.location || '', salaryType: job.salaryType,
-    salaryAmount: String(job.salaryAmount), openings: String(job.openings || 1),
-    companyName: job.companyName || '', experienceLevel: 'Any',
-    qualification: 'No minimum', tags: ''
+    title: job.title,
+    description: job.description || '',
+    requirements: (job.requirements || []).join('\n'),
+    category: job.category,
+    location: job.location || '',
+    salaryType: job.salaryType,
+    salaryAmount: String(job.salaryAmount),
+    openings: String(job.openings || 1),
+    companyName: job.companyName || '',
+    experienceLevel: job.experienceLevel || 'Any',
+    qualification: job.qualification || 'No minimum',
+    tags: (job.tags || []).join(', ')
   } : { ...emptyForm });
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
@@ -52,9 +61,9 @@ function JobFormModal({ job, onClose, onSave }: { job: Job | null; onClose: () =
     };
     try {
       if (job) {
-        await axios.put(`${API}/jobs/${job._id}`, payload, { headers: { Authorization: `Bearer ${token}` } });
+        await axios.put(`${API}/admin/jobs/${job._id}`, payload, { headers: { Authorization: `Bearer ${token}` } });
       } else {
-        await axios.post(`${API}/jobs`, payload, { headers: { Authorization: `Bearer ${token}` } });
+        await axios.post(`${API}/admin/jobs`, payload, { headers: { Authorization: `Bearer ${token}` } });
       }
       onSave();
     } catch (err: unknown) {
@@ -149,7 +158,7 @@ function JobFormModal({ job, onClose, onSave }: { job: Job | null; onClose: () =
             <button type="button" onClick={onClose} className="flex-1 py-2.5 border border-gray-300 dark:border-gray-700 rounded-xl text-sm font-semibold text-gray-700 dark:text-gray-300 hover:border-primary transition-colors">
               Cancel
             </button>
-            <button type="submit" disabled={isLoading} className="flex-1 btn-secondary py-2.5 rounded-xl text-sm font-bold flex items-center justify-center gap-2 disabled:opacity-60">
+            <button type="submit" disabled={isLoading} className="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-2.5 rounded-xl text-sm font-bold flex items-center justify-center gap-2 disabled:opacity-60 transition-colors">
               {isLoading ? <><Loader2 size={16} className="animate-spin" /> Saving...</> : job ? 'Update Job' : 'Publish Job'}
             </button>
           </div>
@@ -221,7 +230,7 @@ export default function AdminJobsPage() {
         </div>
         <button
           onClick={() => { setEditJob(null); setShowForm(true); }}
-          className="btn-secondary flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold text-sm shadow-md"
+          className="bg-blue-600 hover:bg-blue-700 text-white flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold text-sm shadow-md transition-colors"
         >
           <Plus size={18} /> Post New Job
         </button>
