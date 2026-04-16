@@ -35,7 +35,7 @@ export default function HeroSection() {
           <div className="mt-10 flex flex-col justify-center gap-4 sm:flex-row">
             <Link
               href="/register"
-              className="inline-flex items-center justify-center rounded-xl bg-white px-8 py-4 text-base font-semibold text-[#0f2847] shadow-[0_18px_45px_rgba(0,0,0,0.18)] transition hover:-translate-y-0.5 hover:shadow-[0_24px_60px_rgba(0,0,0,0.24)]"
+              className="inline-flex items-center justify-center rounded-xl bg-grey px-8 py-4 text-base font-semibold text-black  shadow-[0_18px_45px_rgba(0,0,0,0.18)] transition hover:-translate-y-0.5 hover:shadow-[0_24px_60px_rgba(0,0,0,0.24)]"
             >
               Get Started Free
             </Link>
@@ -67,12 +67,11 @@ export default function HeroSection() {
                     <div className="absolute left-1/2 top-1/2 -z-10 h-px w-[260px] -translate-x-1/2 -translate-y-1/2 rotate-[var(--angle)] border-t border-dashed border-white/25" style={{ ['--angle' as string]: `${role.angle}deg` }} />
                     <div className={`h-26 w-26 overflow-hidden rounded-full border-4 border-white shadow-2xl ${role.ring}`}>
                       <Image
-                        src={`https://images.unsplash.com/${role.image}?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=180`}
+                        src="/hero.webp"
                         alt={role.name}
                         width={80}
                         height={80}
                         className="h-full w-full object-cover"
-                        unoptimized
                       />
                     </div>
                     <div className="absolute -bottom-10 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full bg-black/30 px-3 py-1 text-sm font-medium text-white backdrop-blur-sm">

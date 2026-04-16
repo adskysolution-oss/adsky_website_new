@@ -249,6 +249,9 @@ exports.updateOnboardingProfile = async (req, res) => {
 };
 
 exports.forgotPassword = async (req, res) => {
+  let resetUser = null;
+  let shouldCleanupResetToken = false;
+
   try {
     const email = normalizeEmail(req.body.email);
 
@@ -258,6 +261,7 @@ exports.forgotPassword = async (req, res) => {
 
     const user = await User.findOne({ email });
     if (user) {
+      resetUser = user;
       const rawToken = crypto.randomBytes(32).toString('hex');
       const hashedToken = crypto.createHash('sha256').update(rawToken).digest('hex');
       const expiresAt = new Date(Date.now() + PASSWORD_RESET_TTL_MS);
@@ -265,6 +269,7 @@ exports.forgotPassword = async (req, res) => {
       user.passwordResetToken = hashedToken;
       user.passwordResetExpiresAt = expiresAt;
       await user.save();
+      shouldCleanupResetToken = true;
 
       const requestOrigin = String(req.get('origin') || '');
       const isProduction = process.env.NODE_ENV === 'production';
@@ -282,14 +287,28 @@ exports.forgotPassword = async (req, res) => {
           html: emailPayload.html,
         });
       } catch (emailError) {
+        console.error('[forgotPassword] Email send failed:', emailError?.message || emailError);
         user.passwordResetToken = undefined;
         user.passwordResetExpiresAt = undefined;
         await user.save();
+        shouldCleanupResetToken = false;
       }
     }
 
     res.json({ message: FORGOT_PASSWORD_RESPONSE });
   } catch (error) {
+    console.error('[forgotPassword] Request failed:', error?.message || error);
+
+    if (resetUser && shouldCleanupResetToken) {
+      try {
+        resetUser.passwordResetToken = undefined;
+        resetUser.passwordResetExpiresAt = undefined;
+        await resetUser.save();
+      } catch (cleanupError) {
+        console.error('[forgotPassword] Token cleanup failed:', cleanupError?.message || cleanupError);
+      }
+    }
+
     res.json({ message: FORGOT_PASSWORD_RESPONSE });
   }
 };
