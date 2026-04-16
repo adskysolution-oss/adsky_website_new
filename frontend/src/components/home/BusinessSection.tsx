@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { ArrowRight, CheckCircle } from 'lucide-react';
@@ -56,10 +57,13 @@ export default function BusinessSection() {
           transition={{ duration: 0.7 }}
           className="overflow-hidden rounded-[1.8rem] shadow-[0_28px_80px_rgba(15,40,71,0.16)]"
         >
-          <img
+          <Image
             src="https://images.unsplash.com/photo-1758873268663-5a362616b5a7?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1400"
             alt="Business team"
+            width={1400}
+            height={500}
             className="h-[360px] w-full object-cover sm:h-[430px] lg:h-[500px]"
+            unoptimized
           />
         </motion.div>
       </div>

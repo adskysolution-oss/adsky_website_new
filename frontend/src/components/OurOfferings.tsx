@@ -65,7 +65,7 @@ const offerings = [
     title: "EdTech Solutions",
     description: "Full-cycle EdTech: educator onboarding, assessments, evaluations.",
     features: [
-      "Over 500+ professional educators in Awign's network (kindergarten to post-grad)",
+      "Over 500+ professional educators in AD Sky Solution's network (kindergarten to post-grad)",
       "Expert tutors for advanced courses and competitive exams",
       "From lab assistants to language experts, and more!"
     ],
@@ -73,7 +73,7 @@ const offerings = [
   },
   {
     id: 7,
-    title: "Awign Expert",
+    title: "AD Sky Expert",
     description: "Contractual talent sourcing for 3x faster team building.",
     features: [
       "1.5 Million+ skilled professionals",
@@ -149,7 +149,7 @@ const OurOfferings = () => {
         {/* App Download Section */}
         <div className="mt-20 text-center bg-white rounded-2xl p-12 card-shadow">
           <h3 className="text-2xl font-bold text-gray-900 mb-6">
-            Get the Awign App
+            Get the AD Sky App
           </h3>
           <p className="text-gray-600 mb-8 max-w-2xl mx-auto">
             Download our mobile app to access work opportunities on the go

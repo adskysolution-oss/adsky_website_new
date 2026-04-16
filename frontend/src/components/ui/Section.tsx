@@ -11,7 +11,7 @@ const Section = forwardRef<HTMLElement, SectionProps>(
     // 1. Background Variants
     const backgrounds = {
       white: 'bg-white text-slate-900',
-      lightGray: 'bg-[#f7f8fb] text-slate-900', // Standard Awign off-white
+      lightGray: 'bg-[#f7f8fb] text-slate-900', // Standard AD Sky off-white
       darkGray: 'bg-[#1f1f1f] text-white',
       black: 'bg-[#040404] text-white',
       darkGradient: 'bg-[radial-gradient(circle_at_50%_34%,rgba(33,94,146,0.72),rgba(7,22,41,0.95)_40%,#01060e_78%)] text-white', // Used typically in Hero
@@ -23,7 +23,7 @@ const Section = forwardRef<HTMLElement, SectionProps>(
       none: '',
       sm: 'py-12 sm:py-16',
       md: 'py-20 sm:py-24',
-      lg: 'py-28 sm:py-32 lg:py-36', // Extensive spacing mimicking Awign's distinct sections
+      lg: 'py-28 sm:py-32 lg:py-36', // Extensive spacing mimicking AD Sky's distinct sections
     };
 
     // 3. Container Width Constrains

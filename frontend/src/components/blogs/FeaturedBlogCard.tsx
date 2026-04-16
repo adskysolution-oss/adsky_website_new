@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import Link from 'next/link';
 import type { BlogPost } from '@/lib/blogs';
 
@@ -33,7 +34,14 @@ export default function FeaturedBlogCard({ post }: { post: BlogPost }) {
         </div>
 
         <Link href={`/blogs/${post.slug}`} className="block min-h-[320px] bg-[#111827]">
-          <img src={post.image} alt={post.title} className="h-full w-full object-cover" />
+          <Image 
+            src={post.image} 
+            alt={post.title} 
+            width={600} 
+            height={400} 
+            className="h-full w-full object-cover" 
+            unoptimized={post.image.startsWith('http')}
+          />
         </Link>
       </div>
     </article>

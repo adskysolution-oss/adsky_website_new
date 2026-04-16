@@ -6,12 +6,12 @@ import { useParams, useRouter } from 'next/navigation';
 import { ArrowLeft, CheckCircle2 } from 'lucide-react';
 import { AuthField } from '@/components/auth/AuthField';
 import { AuthPageShell } from '@/components/auth/AuthPageShell';
+import { authService } from '@/services/auth.service';
+import { extractErrorMessage } from '@/lib/api';
 import {
-  authApi,
-  extractAuthErrorMessage,
   PASSWORD_REGEX,
   PASSWORD_REQUIREMENTS_TEXT,
-} from '@/lib/auth';
+} from '@/lib/validation';
 
 type ResetErrors = {
   password?: string;
@@ -70,13 +70,11 @@ export default function ResetPasswordPage() {
     setIsLoading(true);
 
     try {
-      const response = await authApi.post(`/reset-password/${token}`, {
-        newPassword: password,
-      });
-      setSuccess(response.data.message);
+      await authService.resetPassword(token , { newPassword: password });
+      setSuccess('Your password has been successfully updated.');
     } catch (requestError) {
       setError(
-        extractAuthErrorMessage(
+        extractErrorMessage(
           requestError,
           'Unable to reset your password right now. Please try again.',
         ),

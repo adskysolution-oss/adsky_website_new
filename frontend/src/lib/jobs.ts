@@ -1,6 +1,5 @@
-import axios from 'axios';
-import { JOBS_API_URL } from '@/lib/auth';
-import type { Job, JobQuery, JobsResponse } from '@/types/job';
+import { jobService } from '@/services/job.service';
+import type { Job, JobQuery } from '@/types/job';
 
 export const JOB_CATEGORIES = [
   'All',
@@ -14,24 +13,27 @@ export const JOB_CATEGORIES = [
 
 export const JOB_SALARY_TYPES = ['All', 'Fixed', 'Gig', 'Hourly', 'Monthly'];
 
-export function getCompanyName(job: Pick<Job, 'companyName' | 'client'>) {
+type JobCompanyInfo = Pick<Job, 'companyName' | 'client'>;
+type JobCompensationInfo = Pick<Job, 'salaryAmount' | 'salaryType'>;
+
+export function getCompanyName(job: JobCompanyInfo) {
   return job.companyName || job.client?.companyName || job.client?.name || 'AdSky Partner';
 }
 
-export function formatCompensation(job: Pick<Job, 'salaryAmount' | 'salaryType'>) {
+export function formatCompensation(job: JobCompensationInfo) {
   const amount = new Intl.NumberFormat('en-IN').format(job.salaryAmount ?? 0);
 
   switch (job.salaryType) {
     case 'Hourly':
-      return `₹${amount}/hr`;
+      return `Rs ${amount}/hr`;
     case 'Monthly':
-      return `₹${amount}/month`;
+      return `Rs ${amount}/month`;
     case 'Gig':
-      return `₹${amount}/task`;
+      return `Rs ${amount}/task`;
     case 'Fixed':
-      return `₹${amount}/fixed`;
+      return `Rs ${amount}/fixed`;
     default:
-      return `₹${amount}/${job.salaryType.toLowerCase()}`;
+      return `Rs ${amount}/${(job.salaryType || '').toLowerCase()}`;
   }
 }
 
@@ -51,28 +53,9 @@ export function formatPostedLabel(createdAt: string) {
 }
 
 export async function fetchJobs(query: JobQuery = {}) {
-  const params: Record<string, string> = {
-    page: String(query.page ?? 1),
-    limit: String(query.limit ?? 12),
-  };
-
-  if (query.category && query.category !== 'All') {
-    params.category = query.category;
-  }
-
-  if (query.search) {
-    params.search = query.search;
-  }
-
-  if (query.salaryType && query.salaryType !== 'All') {
-    params.salaryType = query.salaryType;
-  }
-
-  const response = await axios.get<JobsResponse>(JOBS_API_URL, { params });
-  return response.data;
+  return jobService.getAll(query);
 }
 
 export async function fetchJobById(id: string) {
-  const response = await axios.get<Job>(`${JOBS_API_URL}/${id}`);
-  return response.data;
+  return jobService.getById(id);
 }

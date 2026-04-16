@@ -19,7 +19,7 @@ const Card = forwardRef<HTMLDivElement, CardProps>(
       // Transparent / subtle overlay for dark backgrounds
       glass: 'bg-[rgba(255,255,255,0.05)] border border-white/10 backdrop-blur-md rounded-[28px]',
       
-      // High contrast dark card typical in Awign dark sections
+      // High contrast dark card typical in AD Sky dark sections
       dark: 'bg-[linear-gradient(180deg,#2f3136_0%,#2a2a2b_100%)] shadow-[0_22px_50px_rgba(0,0,0,0.24)] rounded-[30px] text-white'
     };
 

@@ -7,7 +7,8 @@ import { ArrowRight } from 'lucide-react';
 import { AuthField } from '@/components/auth/AuthField';
 import { AuthPageShell } from '@/components/auth/AuthPageShell';
 import { useAuth } from '@/context/AuthContext';
-import { authApi, extractAuthErrorMessage, isValidEmail } from '@/lib/auth';
+import { isValidEmail } from '@/lib/validation';
+
 
 type LoginErrors = {
   email?: string;
@@ -49,22 +50,10 @@ export default function LoginPage() {
     setIsLoading(true);
 
     try {
-      const response = await authApi.post('/login', {
-        email: email.trim(),
-        password,
-      });
-
-      await login(response.data.token, response.data.role);
-
-      if (!response.data.onboardingCompleted) {
-        router.push('/onboarding');
-      } else {
-        router.push('/office');
-      }
-    } catch (error) {
-      setFormError(
-        extractAuthErrorMessage(error, 'Unable to sign in right now. Please try again.'),
-      );
+      await login({ email: email.trim() ,  password });
+      router.push('/office');
+    } catch (error: unknown) {
+      setFormError((error as { message?: string }).message || 'Login failed. Please check your credentials.');
     } finally {
       setIsLoading(false);
     }

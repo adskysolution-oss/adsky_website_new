@@ -1,10 +1,11 @@
 'use client';
 import { useState, useEffect } from 'react';
-import axios from 'axios';
+import { apiClient } from '@/lib/api';
 import { Search, IndianRupee, RefreshCcw, DownloadCloud, CheckCircle, Clock } from 'lucide-react';
+import { Payment } from '@/types/payment';
 
 export default function AdminPaymentsPage() {
-  const [payments, setPayments] = useState<any[]>([]);
+  const [payments, setPayments] = useState<Payment[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
 
@@ -12,14 +13,13 @@ export default function AdminPaymentsPage() {
     fetchPayments();
   }, []);
 
+  
+
   const fetchPayments = async () => {
     try {
-      const token = localStorage.getItem('token');
-      const res = await axios.get('http://localhost:5000/api/admin/payments', {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      const res = await apiClient.get('/admin/payments');
       setPayments(res.data);
-    } catch (err) {
+    } catch (err :unknown) {
       console.error(err);
     } finally {
       setLoading(false);
@@ -28,17 +28,21 @@ export default function AdminPaymentsPage() {
 
   const updatePaymentStatus = async (id: string, newStatus: string) => {
     try {
-      const token = localStorage.getItem('token');
-      await axios.patch(`http://localhost:5000/api/admin/payments/${id}/status`, { status: newStatus }, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      await apiClient.patch(`/admin/payments/${id}/status`, { status: newStatus });
       setPayments(payments.map(p => p._id === id ? { ...p, status: newStatus } : p));
-    } catch (err) {
+    } catch (err:unknown) {
       console.error("Failed to update status");
     }
   };
 
-  const filteredPayments = payments.filter(p => p.transactionId?.toLowerCase().includes(search.toLowerCase()) || p.user?.name.toLowerCase().includes(search.toLowerCase()));
+  const query = search.toLowerCase();
+
+const filteredPayments = payments.filter((p) => {
+  const transactionId = p.transactionId?.toLowerCase() ?? '';
+  const userName = p.user?.name?.toLowerCase() ?? '';
+
+  return transactionId.includes(query) || userName.includes(query);
+});
 
   return (
     <div className="space-y-6">

@@ -68,10 +68,24 @@ exports.applyToJob = async (req, res) => {
     }
 };
 
+// GET /api/applications/all — admin: view all applications across the platform
+exports.getAllApplicationsForAdmin = async (req, res) => {
+    try {
+        const applications = await Application.find()
+            .populate('job', 'title category companyName location status')
+            .populate('worker', 'name email phone')
+            .sort({ appliedAt: -1 });
+        res.json(applications);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
 // GET /api/applications/job/:jobId — admin: view all applications for a job
 exports.getJobApplications = async (req, res) => {
     try {
         const applications = await Application.find({ job: req.params.jobId })
+            .populate('worker', 'name email phone')
             .sort({ appliedAt: -1 });
         res.json(applications);
     } catch (error) {

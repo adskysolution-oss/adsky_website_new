@@ -1,13 +1,29 @@
 'use client';
-import { useState, useEffect, useCallback } from 'react';
-import axios from 'axios';
+
+import { useCallback, useEffect, useState, type ReactNode } from 'react';
+import { applicationService } from '@/services/application.service';
+import { adminService } from '@/services/admin.service';
+import { extractErrorMessage } from '@/lib/api';
 import {
-  Search, Users, ChevronDown, ChevronRight, Phone, Mail,
-  MapPin, Calendar, Clock, FileText, CheckCircle, XCircle,
-  AlertCircle, Loader2, Eye, X, Briefcase
+  Search,
+  Users,
+  ChevronDown,
+  ChevronRight,
+  Phone,
+  Mail,
+  MapPin,
+  Clock,
+  FileText,
+  CheckCircle,
+  XCircle,
+  AlertCircle,
+  Loader2,
+  Eye,
+  X,
+  Briefcase,
 } from 'lucide-react';
 
-const API = 'http://localhost:5000/api';
+type ApplicationStatus = 'Pending' | 'Shortlisted' | 'Rejected' | 'Hired';
 
 interface Application {
   _id: string;
@@ -20,9 +36,13 @@ interface Application {
   applicantLanguages?: string[];
   applicantNote?: string;
   coverLetter?: string;
-  status: 'Pending' | 'Shortlisted' | 'Rejected' | 'Hired';
+  status: ApplicationStatus;
   appliedAt: string;
-  worker?: { name: string; email: string; phone?: string };
+  worker?: {
+    name: string;
+    email: string;
+    phone?: string;
+  };
 }
 
 interface Job {
@@ -36,105 +56,173 @@ interface Job {
   companyName?: string;
 }
 
-const statusConfig: Record<string, { color: string; icon: React.ReactNode; label: string }> = {
-  Pending: { color: 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400', icon: <AlertCircle size={12} />, label: 'Pending' },
-  Shortlisted: { color: 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400', icon: <Eye size={12} />, label: 'Shortlisted' },
-  Hired: { color: 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400', icon: <CheckCircle size={12} />, label: 'Hired' },
-  Rejected: { color: 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400', icon: <XCircle size={12} />, label: 'Rejected' },
+type StatusMeta = {
+  color: string;
+  icon: ReactNode;
+  label: string;
+};
+
+const statusConfig: Record<ApplicationStatus, StatusMeta> = {
+  Pending: {
+    color: 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400',
+    icon: <AlertCircle size={12} />,
+    label: 'Pending',
+  },
+  Shortlisted: {
+    color: 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400',
+    icon: <Eye size={12} />,
+    label: 'Shortlisted',
+  },
+  Hired: {
+    color: 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400',
+    icon: <CheckCircle size={12} />,
+    label: 'Hired',
+  },
+  Rejected: {
+    color: 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400',
+    icon: <XCircle size={12} />,
+    label: 'Rejected',
+  },
 };
 
 function timeAgo(d: string) {
   const diff = Date.now() - new Date(d).getTime();
   const m = Math.floor(diff / 60000);
+
   if (m < 1) return 'just now';
   if (m < 60) return `${m}m ago`;
+
   const h = Math.floor(m / 60);
   if (h < 24) return `${h}h ago`;
+
   return `${Math.floor(h / 24)}d ago`;
 }
 
-function ApplicantModal({ app, onClose, onStatusChange }: {
-  app: Application; onClose: () => void; onStatusChange: (id: string, status: string) => void;
+function ApplicantModal({
+  app,
+  onClose,
+  onStatusChange,
+}: {
+  app: Application;
+  onClose: () => void;
+  onStatusChange: (id: string, status: ApplicationStatus) => void;
 }) {
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-4" onClick={onClose}>
-      <div className="bg-white dark:bg-[#111827] rounded-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto shadow-2xl border border-gray-200 dark:border-gray-700"
-        onClick={e => e.stopPropagation()}>
-        <div className="sticky top-0 bg-white dark:bg-[#111827] border-b border-gray-100 dark:border-gray-800 px-6 py-4 flex items-center justify-between">
-          <h2 className="text-lg font-bold text-gray-900 dark:text-white">Applicant Details</h2>
-          <button onClick={onClose} className="p-2 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-400 transition-colors"><X size={18} /></button>
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-4"
+      onClick={onClose}
+    >
+      <div
+        className="max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-2xl border border-gray-200 bg-white shadow-2xl dark:border-gray-700 dark:bg-[#111827]"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="sticky top-0 flex items-center justify-between border-b border-gray-100 bg-white px-6 py-4 dark:border-gray-800 dark:bg-[#111827]">
+          <h2 className="text-lg font-bold text-gray-900 dark:text-white">
+            Applicant Details
+          </h2>
+          <button
+            onClick={onClose}
+            className="rounded-xl p-2 text-gray-400 transition-colors hover:bg-gray-100 dark:hover:bg-gray-800"
+          >
+            <X size={18} />
+          </button>
         </div>
 
-        <div className="px-6 py-5 space-y-5">
-          {/* Avatar + Name */}
+        <div className="space-y-5 px-6 py-5">
           <div className="flex items-center gap-4">
-            <div className="w-14 h-14 rounded-full bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center text-white font-black text-xl">
+            <div className="flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-br from-blue-500 to-purple-500 text-xl font-black text-white">
               {app.applicantName.charAt(0).toUpperCase()}
             </div>
             <div>
-              <h3 className="text-lg font-bold text-gray-900 dark:text-white">{app.applicantName}</h3>
+              <h3 className="text-lg font-bold text-gray-900 dark:text-white">
+                {app.applicantName}
+              </h3>
               <p className="text-sm text-gray-500">Applied {timeAgo(app.appliedAt)}</p>
             </div>
           </div>
 
-          {/* Contact Info */}
           <div className="grid grid-cols-1 gap-3">
-            <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-800/50 rounded-xl">
+            <div className="flex items-center gap-3 rounded-xl bg-gray-50 p-3 dark:bg-gray-800/50">
               <Phone size={16} className="text-primary" />
-              <span className="text-sm font-medium text-gray-700 dark:text-gray-300">{app.applicantPhone}</span>
+              <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                {app.applicantPhone}
+              </span>
             </div>
-            {app.applicantEmail && (
-              <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-800/50 rounded-xl">
+
+            {app.applicantEmail ? (
+              <div className="flex items-center gap-3 rounded-xl bg-gray-50 p-3 dark:bg-gray-800/50">
                 <Mail size={16} className="text-primary" />
-                <span className="text-sm font-medium text-gray-700 dark:text-gray-300">{app.applicantEmail}</span>
+                <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                  {app.applicantEmail}
+                </span>
               </div>
-            )}
-            {app.applicantLocation && (
-              <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-800/50 rounded-xl">
+            ) : null}
+
+            {app.applicantLocation ? (
+              <div className="flex items-center gap-3 rounded-xl bg-gray-50 p-3 dark:bg-gray-800/50">
                 <MapPin size={16} className="text-primary" />
-                <span className="text-sm font-medium text-gray-700 dark:text-gray-300">{app.applicantLocation}</span>
+                <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                  {app.applicantLocation}
+                </span>
               </div>
-            )}
-            {app.applicantAvailability && (
-              <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-800/50 rounded-xl">
+            ) : null}
+
+            {app.applicantAvailability ? (
+              <div className="flex items-center gap-3 rounded-xl bg-gray-50 p-3 dark:bg-gray-800/50">
                 <Clock size={16} className="text-primary" />
-                <span className="text-sm font-medium text-gray-700 dark:text-gray-300">{app.applicantAvailability}</span>
+                <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                  {app.applicantAvailability}
+                </span>
               </div>
-            )}
+            ) : null}
           </div>
 
-          {/* Languages */}
-          {app.applicantLanguages && app.applicantLanguages.length > 0 && (
+          {app.applicantLanguages && app.applicantLanguages.length > 0 ? (
             <div>
-              <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">Languages</p>
+              <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-gray-500">
+                Languages
+              </p>
               <div className="flex flex-wrap gap-2">
-                {app.applicantLanguages.map((l, i) => (
-                  <span key={i} className="px-2.5 py-1 bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400 rounded-lg text-xs font-semibold">{l}</span>
+                {app.applicantLanguages.map((language, index) => (
+                  <span
+                    key={`${language}-${index}`}
+                    className="rounded-lg bg-blue-50 px-2.5 py-1 text-xs font-semibold text-blue-700 dark:bg-blue-900/20 dark:text-blue-400"
+                  >
+                    {language}
+                  </span>
                 ))}
               </div>
             </div>
-          )}
+          ) : null}
 
-          {/* Note / Cover Letter */}
-          {(app.applicantNote || app.coverLetter) && (
+          {app.applicantNote || app.coverLetter ? (
             <div>
-              <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">
-                <FileText size={12} className="inline mr-1" />Applicant Note
+              <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-gray-500">
+                <FileText size={12} className="mr-1 inline" />
+                Applicant Note
               </p>
-              <p className="text-sm text-gray-700 dark:text-gray-300 bg-gray-50 dark:bg-gray-800/50 rounded-xl p-3 leading-relaxed">
+              <p className="rounded-xl bg-gray-50 p-3 text-sm leading-relaxed text-gray-700 dark:bg-gray-800/50 dark:text-gray-300">
                 {app.applicantNote || app.coverLetter}
               </p>
             </div>
-          )}
+          ) : null}
 
-          {/* Status Change */}
           <div>
-            <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">Update Status</p>
+            <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-gray-500">
+              Update Status
+            </p>
             <div className="grid grid-cols-2 gap-2">
-              {(['Pending', 'Shortlisted', 'Hired', 'Rejected'] as const).map(s => (
-                <button key={s} onClick={() => onStatusChange(app._id, s)}
-                  className={`py-2 rounded-xl text-sm font-bold transition-all border ${app.status === s ? statusConfig[s].color + ' border-current' : 'border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-400 hover:border-gray-400'}`}>
-                  {s}
+              {(['Pending', 'Shortlisted', 'Hired', 'Rejected'] as const).map((status) => (
+                <button
+                  key={status}
+                  onClick={() => onStatusChange(app._id, status)}
+                  className={`rounded-xl border py-2 text-sm font-bold transition-all ${
+                    app.status === status
+                      ? `${statusConfig[status].color} border-current`
+                      : 'border-gray-200 text-gray-600 hover:border-gray-400 dark:border-gray-700 dark:text-gray-400'
+                  }`}
+                >
+                  {status}
                 </button>
               ))}
             </div>
@@ -156,104 +244,150 @@ export default function AdminApplicationsPage() {
 
   const fetchJobs = useCallback(async () => {
     try {
-      const token = localStorage.getItem('token');
-      const res = await axios.get(`${API}/admin/jobs`, { headers: { Authorization: `Bearer ${token}` } });
-      setJobs(res.data);
-    } catch { /* ignore */ }
-    finally { setLoading(false); }
+      const data = (await adminService.getAllJobs()) as Job[];
+      setJobs(data);
+    } catch (err) {
+      console.error(extractErrorMessage(err));
+    } finally {
+      setLoading(false);
+    }
   }, []);
 
-  useEffect(() => { fetchJobs(); }, [fetchJobs]);
+  useEffect(() => {
+    void fetchJobs();
+  }, [fetchJobs]);
 
   const fetchApplicationsForJob = async (jobId: string) => {
-    if (applications[jobId]) return; // cached
+    if (applications[jobId]) return;
+
     setLoadingApps(jobId);
+
     try {
-      const token = localStorage.getItem('token');
-      const res = await axios.get(`${API}/applications/job/${jobId}`, { headers: { Authorization: `Bearer ${token}` } });
-      setApplications(prev => ({ ...prev, [jobId]: res.data }));
-    } catch { /* ignore */ }
-    finally { setLoadingApps(null); }
+      const data = (await applicationService.getJobApplications(jobId)) as Application[];
+      setApplications((prev) => ({ ...prev, [jobId]: data }));
+    } catch (err) {
+      console.error(extractErrorMessage(err));
+    } finally {
+      setLoadingApps(null);
+    }
   };
 
   const toggleJob = async (jobId: string) => {
     if (expandedJob === jobId) {
       setExpandedJob(null);
-    } else {
-      setExpandedJob(jobId);
-      await fetchApplicationsForJob(jobId);
+      return;
+    }
+
+    setExpandedJob(jobId);
+    await fetchApplicationsForJob(jobId);
+  };
+
+  const handleStatusChange = async (appId: string, status: ApplicationStatus) => {
+    try {
+      await applicationService.updateStatus(appId, status);
+
+      setApplications((prev) => {
+        const updated = { ...prev };
+
+        Object.keys(updated).forEach((jobId) => {
+          updated[jobId] = updated[jobId].map((application) =>
+            application._id === appId
+              ? { ...application, status }
+              : application,
+          );
+        });
+
+        return updated;
+      });
+
+      if (selectedApp?._id === appId) {
+        setSelectedApp((prev) => (prev ? { ...prev, status } : null));
+      }
+    } catch (err) {
+      console.error(extractErrorMessage(err));
     }
   };
 
-  const handleStatusChange = async (appId: string, status: string) => {
-    try {
-      const token = localStorage.getItem('token');
-      await axios.patch(`${API}/applications/${appId}/status`, { status }, { headers: { Authorization: `Bearer ${token}` } });
-      // Update in all cached job applications
-      setApplications(prev => {
-        const updated = { ...prev };
-        Object.keys(updated).forEach(jobId => {
-          updated[jobId] = updated[jobId].map(a => a._id === appId ? { ...a, status: status as Application['status'] } : a);
-        });
-        return updated;
-      });
-      if (selectedApp?._id === appId) {
-        setSelectedApp(prev => prev ? { ...prev, status: status as Application['status'] } : null);
-      }
-    } catch { /* ignore */ }
-  };
-
-  const filteredJobs = jobs.filter(j =>
-    j.title.toLowerCase().includes(search.toLowerCase()) ||
-    (j.companyName || '').toLowerCase().includes(search.toLowerCase())
+  const filteredJobs = jobs.filter(
+    (job) =>
+      job.title.toLowerCase().includes(search.toLowerCase()) ||
+      (job.companyName || '').toLowerCase().includes(search.toLowerCase()),
   );
 
-  const totalApps = jobs.reduce((sum, j) => sum + (j.applicationsCount || 0), 0);
+  const totalApps = jobs.reduce((sum, job) => sum + (job.applicationsCount || 0), 0);
 
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
-            <Users size={24} className="text-primary" /> Applications Tracker
+          <h1 className="flex items-center gap-2 text-2xl font-bold text-gray-900 dark:text-white">
+            <Users size={24} className="text-primary" />
+            Applications Tracker
           </h1>
-          <p className="text-gray-500 text-sm mt-1">{totalApps} total applications across {jobs.length} jobs</p>
+          <p className="mt-1 text-sm text-gray-500">
+            {totalApps} total applications across {jobs.length} jobs
+          </p>
         </div>
       </div>
 
-      {/* Stats Row */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
         {[
-          { label: 'Total Jobs', value: jobs.length, color: 'text-blue-600', bg: 'bg-blue-50 dark:bg-blue-900/20' },
-          { label: 'Total Applications', value: totalApps, color: 'text-purple-600', bg: 'bg-purple-50 dark:bg-purple-900/20' },
-          { label: 'Open Jobs', value: jobs.filter(j => j.status === 'Open').length, color: 'text-green-600', bg: 'bg-green-50 dark:bg-green-900/20' },
-          { label: 'Avg per Job', value: jobs.length ? Math.round(totalApps / jobs.length) : 0, color: 'text-orange-600', bg: 'bg-orange-50 dark:bg-orange-900/20' },
-        ].map(s => (
-          <div key={s.label} className="bg-white dark:bg-[#111827] rounded-xl p-4 shadow-sm border border-gray-100 dark:border-gray-800">
-            <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">{s.label}</p>
-            <p className={`text-2xl font-black mt-1 ${s.color}`}>{s.value}</p>
+          {
+            label: 'Total Jobs',
+            value: jobs.length,
+            color: 'text-blue-600',
+          },
+          {
+            label: 'Total Applications',
+            value: totalApps,
+            color: 'text-purple-600',
+          },
+          {
+            label: 'Open Jobs',
+            value: jobs.filter((job) => job.status === 'Open').length,
+            color: 'text-green-600',
+          },
+          {
+            label: 'Avg per Job',
+            value: jobs.length ? Math.round(totalApps / jobs.length) : 0,
+            color: 'text-orange-600',
+          },
+        ].map((stat) => (
+          <div
+            key={stat.label}
+            className="rounded-xl border border-gray-100 bg-white p-4 shadow-sm dark:border-gray-800 dark:bg-[#111827]"
+          >
+            <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">
+              {stat.label}
+            </p>
+            <p className={`mt-1 text-2xl font-black ${stat.color}`}>{stat.value}</p>
           </div>
         ))}
       </div>
 
-      {/* Search */}
-      <div className="bg-white dark:bg-[#111827] rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800">
-        <div className="p-4 border-b border-gray-100 dark:border-gray-800">
+      <div className="rounded-2xl border border-gray-100 bg-white shadow-sm dark:border-gray-800 dark:bg-[#111827]">
+        <div className="border-b border-gray-100 p-4 dark:border-gray-800">
           <div className="relative max-w-sm">
-            <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-            <input type="text" placeholder="Search jobs..." value={search} onChange={e => setSearch(e.target.value)}
-              className="w-full pl-9 pr-4 py-2 text-sm border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-[#080d1a] rounded-lg focus:ring-2 focus:ring-primary outline-none" />
+            <Search
+              size={16}
+              className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+            />
+            <input
+              type="text"
+              placeholder="Search jobs..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="w-full rounded-lg border border-gray-200 bg-gray-50 py-2 pl-9 pr-4 text-sm outline-none focus:ring-2 focus:ring-primary dark:border-gray-700 dark:bg-[#080d1a]"
+            />
           </div>
         </div>
 
-        {/* Job Accordion */}
         <div className="divide-y divide-gray-50 dark:divide-gray-800">
           {loading ? (
-            Array.from({ length: 4 }).map((_, i) => (
-              <div key={i} className="px-5 py-4 animate-pulse">
-                <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/3 mb-2" />
-                <div className="h-3 bg-gray-100 dark:bg-gray-800 rounded w-1/5" />
+            Array.from({ length: 4 }).map((_, index) => (
+              <div key={index} className="animate-pulse px-5 py-4">
+                <div className="mb-2 h-4 w-1/3 rounded bg-gray-200 dark:bg-gray-700" />
+                <div className="h-3 w-1/5 rounded bg-gray-100 dark:bg-gray-800" />
               </div>
             ))
           ) : filteredJobs.length === 0 ? (
@@ -262,29 +396,50 @@ export default function AdminApplicationsPage() {
               <p className="font-semibold">No jobs found</p>
             </div>
           ) : (
-            filteredJobs.map(job => {
+            filteredJobs.map((job) => {
               const isOpen = expandedJob === job._id;
-              const jobApps = applications[job._id] || [];
+              const jobApps: Application[] = applications[job._id] ?? [];
 
               return (
                 <div key={job._id}>
-                  <button onClick={() => toggleJob(job._id)}
-                    className="w-full px-5 py-4 flex items-center justify-between hover:bg-gray-50 dark:hover:bg-gray-800/30 transition-colors text-left">
+                  <button
+                    onClick={() => void toggleJob(job._id)}
+                    className="flex w-full items-center justify-between px-5 py-4 text-left transition-colors hover:bg-gray-50 dark:hover:bg-gray-800/30"
+                  >
                     <div className="flex items-center gap-4">
-                      <div className={`p-2 rounded-lg ${isOpen ? 'bg-primary/10' : 'bg-gray-100 dark:bg-gray-800'}`}>
-                        <Briefcase size={18} className={isOpen ? 'text-primary' : 'text-gray-500'} />
+                      <div
+                        className={`rounded-lg p-2 ${
+                          isOpen ? 'bg-primary/10' : 'bg-gray-100 dark:bg-gray-800'
+                        }`}
+                      >
+                        <Briefcase
+                          size={18}
+                          className={isOpen ? 'text-primary' : 'text-gray-500'}
+                        />
                       </div>
                       <div>
-                        <p className="font-bold text-gray-900 dark:text-white text-sm">{job.title}</p>
-                        <p className="text-xs text-gray-500">{job.companyName || job.category} · {job.location || 'Remote'}</p>
+                        <p className="text-sm font-bold text-gray-900 dark:text-white">
+                          {job.title}
+                        </p>
+                        <p className="text-xs text-gray-500">
+                          {job.companyName || job.category} · {job.location || 'Remote'}
+                        </p>
                       </div>
                     </div>
+
                     <div className="flex items-center gap-3">
-                      <span className={`px-2.5 py-1 rounded-full text-xs font-bold ${job.status === 'Open' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+                      <span
+                        className={`rounded-full px-2.5 py-1 text-xs font-bold ${
+                          job.status === 'Open'
+                            ? 'bg-green-100 text-green-700'
+                            : 'bg-red-100 text-red-700'
+                        }`}
+                      >
                         {job.status}
                       </span>
                       <span className="flex items-center gap-1 text-xs font-bold text-gray-600 dark:text-gray-400">
-                        <Users size={13} />{job.applicationsCount || 0}
+                        <Users size={13} />
+                        {job.applicationsCount || 0}
                       </span>
                       <div className="text-gray-400">
                         {isOpen ? <ChevronDown size={18} /> : <ChevronRight size={18} />}
@@ -292,11 +447,12 @@ export default function AdminApplicationsPage() {
                     </div>
                   </button>
 
-                  {isOpen && (
-                    <div className="border-t border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-gray-800/20">
+                  {isOpen ? (
+                    <div className="border-t border-gray-100 bg-gray-50 dark:border-gray-800 dark:bg-gray-800/20">
                       {loadingApps === job._id ? (
-                        <div className="py-8 flex items-center justify-center gap-2 text-gray-400">
-                          <Loader2 size={20} className="animate-spin" /><span className="text-sm">Loading applications...</span>
+                        <div className="flex items-center justify-center gap-2 py-8 text-gray-400">
+                          <Loader2 size={20} className="animate-spin" />
+                          <span className="text-sm">Loading applications...</span>
                         </div>
                       ) : jobApps.length === 0 ? (
                         <div className="py-8 text-center text-gray-400">
@@ -305,8 +461,8 @@ export default function AdminApplicationsPage() {
                         </div>
                       ) : (
                         <div className="overflow-x-auto">
-                          <table className="w-full text-sm text-left">
-                            <thead className="text-xs font-semibold text-gray-500 uppercase bg-white dark:bg-[#111827] border-b border-gray-100 dark:border-gray-800">
+                          <table className="w-full text-left text-sm">
+                            <thead className="border-b border-gray-100 bg-white text-xs font-semibold uppercase text-gray-500 dark:border-gray-800 dark:bg-[#111827]">
                               <tr>
                                 <th className="px-5 py-3">Applicant</th>
                                 <th className="px-5 py-3">Contact</th>
@@ -317,35 +473,65 @@ export default function AdminApplicationsPage() {
                               </tr>
                             </thead>
                             <tbody className="divide-y divide-gray-100 dark:divide-gray-800">
-                              {jobApps.map(app => {
-                                const sc = statusConfig[app.status] || statusConfig.Pending;
+                              {jobApps.map((app) => {
+                                const statusMeta = statusConfig[app.status];
+
                                 return (
-                                  <tr key={app._id} className="hover:bg-white dark:hover:bg-[#111827]/60 transition-colors">
+                                  <tr
+                                    key={app._id}
+                                    className="transition-colors hover:bg-white dark:hover:bg-[#111827]/60"
+                                  >
                                     <td className="px-5 py-3">
                                       <div className="flex items-center gap-3">
-                                        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-white font-bold text-xs">
+                                        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-primary to-secondary text-xs font-bold text-white">
                                           {app.applicantName.charAt(0).toUpperCase()}
                                         </div>
                                         <div>
-                                          <p className="font-bold text-gray-900 dark:text-white">{app.applicantName}</p>
-                                          {app.applicantLocation && <p className="text-xs text-gray-500">{app.applicantLocation}</p>}
+                                          <p className="font-bold text-gray-900 dark:text-white">
+                                            {app.applicantName}
+                                          </p>
+                                          {app.applicantLocation ? (
+                                            <p className="text-xs text-gray-500">
+                                              {app.applicantLocation}
+                                            </p>
+                                          ) : null}
                                         </div>
                                       </div>
                                     </td>
+
                                     <td className="px-5 py-3">
-                                      <div className="text-sm text-gray-700 dark:text-gray-300">{app.applicantPhone}</div>
-                                      {app.applicantEmail && <div className="text-xs text-gray-400">{app.applicantEmail}</div>}
+                                      <div className="text-sm text-gray-700 dark:text-gray-300">
+                                        {app.applicantPhone}
+                                      </div>
+                                      {app.applicantEmail ? (
+                                        <div className="text-xs text-gray-400">
+                                          {app.applicantEmail}
+                                        </div>
+                                      ) : null}
                                     </td>
-                                    <td className="px-5 py-3 text-gray-600 dark:text-gray-400 text-sm">{app.applicantAvailability || '—'}</td>
-                                    <td className="px-5 py-3 text-gray-500 text-xs whitespace-nowrap">{timeAgo(app.appliedAt)}</td>
+
+                                    <td className="px-5 py-3 text-sm text-gray-600 dark:text-gray-400">
+                                      {app.applicantAvailability || '—'}
+                                    </td>
+
+                                    <td className="whitespace-nowrap px-5 py-3 text-xs text-gray-500">
+                                      {timeAgo(app.appliedAt)}
+                                    </td>
+
                                     <td className="px-5 py-3">
-                                      <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold ${sc.color}`}>
-                                        {sc.icon}{sc.label}
+                                      <span
+                                        className={`inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-bold ${statusMeta.color}`}
+                                      >
+                                        {statusMeta.icon}
+                                        {statusMeta.label}
                                       </span>
                                     </td>
+
                                     <td className="px-5 py-3 text-right">
-                                      <button onClick={() => setSelectedApp(app)}
-                                        className="p-1.5 rounded-lg text-gray-400 hover:text-primary hover:bg-primary/10 transition-colors">
+                                      <button
+                                        onClick={() => setSelectedApp(app)}
+                                        className="rounded-lg p-1.5 text-gray-400 transition-colors hover:bg-primary/10 hover:text-primary"
+                                      >
                                         <Eye size={16} />
                                       </button>
                                     </td>
@@ -357,7 +543,7 @@ export default function AdminApplicationsPage() {
                         </div>
                       )}
                     </div>
-                  )}
+                  ) : null}
                 </div>
               );
             })
@@ -365,14 +551,13 @@ export default function AdminApplicationsPage() {
         </div>
       </div>
 
-      {/* Detail Modal */}
-      {selectedApp && (
+      {selectedApp ? (
         <ApplicantModal
           app={selectedApp}
           onClose={() => setSelectedApp(null)}
           onStatusChange={handleStatusChange}
         />
-      )}
+      ) : null}
     </div>
   );
 }

@@ -15,7 +15,7 @@ const HeroSection = () => {
           {/* Eyebrow */}
           <div className="inline-flex items-center px-4 py-2 bg-blue-100 text-blue-800 rounded-full text-sm font-semibold mb-6">
             <span className="w-2 h-2 bg-blue-600 rounded-full mr-2"></span>
-            India's #1 Work-as-a-Service Platform!
+            India&apos;s #1 Work-as-a-Service Platform!
           </div>
 
           {/* Main Heading */}
@@ -25,7 +25,7 @@ const HeroSection = () => {
 
           {/* Subheading */}
           <p className="text-xl text-gray-600 mb-10 max-w-3xl mx-auto leading-relaxed">
-            Discover flexible work opportunities that match your skills and schedule. Join thousands of professionals already working with Awign.
+            Discover flexible work opportunities that match your skills and schedule. Join thousands of professionals already working with AD Sky Solution.
           </p>
 
           {/* CTA Buttons */}

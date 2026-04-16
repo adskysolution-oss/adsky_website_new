@@ -14,7 +14,8 @@ import {
   MapPin,
   User,
 } from 'lucide-react';
-import axios from 'axios';
+import { apiClient } from '@/lib/api';
+import { useAuth } from '@/context/AuthContext';
 
 const onboardingSchema = z.object({
   personalDetails: z.object({
@@ -53,6 +54,7 @@ const STEPS = [
 
 export default function OnboardingPage() {
   const router = useRouter();
+  const { isAuthenticated, refreshUser } = useAuth();
   const [currentStep, setCurrentStep] = useState(0);
   const [isSaving, setIsSaving] = useState(false);
 
@@ -69,14 +71,24 @@ export default function OnboardingPage() {
     defaultValues: {
       personalDetails: {
         name: '',
-        gender: undefined,
+        gender: 'Male',
         dob: '',
         languages: [],
         whatsappUpdates: true,
         referralCode: '',
-      } as any,
-      preferences: { locationType: 'Current', travelDistance: '' } as any,
-      availability: { hoursPerDay: '4' } as any,
+      },
+      preferences: {
+        locationType: 'Current',
+        locationArea: '',
+        travelDistance: '',
+      },
+      availability: {
+        availabilityType: 'Full-time',
+        shift: 'Day',
+        workingDays: 'Weekdays',
+        hoursPerDay: '4',
+        joiningTime: 'Immediately',
+      },
     },
   });
 
@@ -103,17 +115,14 @@ export default function OnboardingPage() {
 
   const autoSave = async (data: Partial<OnboardingData>) => {
     try {
-      const token = localStorage.getItem('token');
-      if (token) {
-        const payload = {
-          ...data.personalDetails,
-          ...data.preferences,
-          ...data.availability,
-        };
-        await axios.put('http://localhost:5000/api/auth/profile/onboarding', payload, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-      }
+      if (!isAuthenticated) return;
+      
+      const payload = {
+        ...data.personalDetails,
+        ...data.preferences,
+        ...data.availability,
+      };
+      await apiClient.put('/auth/profile/onboarding', payload);
     } catch (e) {
       console.error('Auto-save failed', e);
     }
@@ -122,6 +131,8 @@ export default function OnboardingPage() {
   const onSubmit = async (data: OnboardingData) => {
     setIsSaving(true);
     try {
+      if (!isAuthenticated) return;
+
       const payload = {
         ...data.personalDetails,
         ...data.preferences,
@@ -129,12 +140,8 @@ export default function OnboardingPage() {
         onboardingCompleted: true,
       };
 
-      const token = localStorage.getItem('token');
-      await axios.put('http://localhost:5000/api/auth/profile/onboarding', payload, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-
-      localStorage.setItem('onboardingCompleted', 'true');
+      await apiClient.put('/auth/profile/onboarding', payload);
+      await refreshUser(); // Update global auth state
       router.push('/office');
     } catch (error) {
       console.error(error);
@@ -217,7 +224,7 @@ export default function OnboardingPage() {
 
                     <div>
                       <label className="mb-2 block text-sm font-semibold text-slate-800 dark:text-gray-200">
-                        What's your name?
+                        What&apos;s your name?
                       </label>
                       <input
                         {...register('personalDetails.name')}
@@ -334,7 +341,7 @@ export default function OnboardingPage() {
                         Work Preferences
                       </h2>
                       <p className="text-sm text-gray-500 dark:text-gray-400">
-                        Share your work preferences with us and we'll match you with the
+                        Share your work preferences with us and we&apos;ll match you with the
                         perfect gig!
                       </p>
                     </div>
@@ -511,7 +518,7 @@ export default function OnboardingPage() {
                     </div>
 
                     <h2 className="mb-4 text-3xl font-bold text-slate-900 dark:text-white">
-                      You're almost there!
+                      You&apos;re almost there!
                     </h2>
 
                     <p className="mx-auto mb-8 max-w-sm text-gray-500 dark:text-gray-400">

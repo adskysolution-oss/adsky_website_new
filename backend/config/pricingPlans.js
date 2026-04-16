@@ -1,7 +1,13 @@
 const PRICING_PLANS = {
-  standard: {
-    slug: 'standard',
-    name: 'Standard',
+  basic: {
+    slug: 'basic',
+    name: 'Basic',
+    amount: 2999,
+    billingLabel: '/month',
+  },
+  pro: {
+    slug: 'pro',
+    name: 'Pro',
     amount: 14999,
     billingLabel: '/month',
   },

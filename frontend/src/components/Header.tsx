@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 
 const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -28,11 +29,17 @@ const Header = () => {
         <nav className="flex items-center justify-between h-16 lg:h-20">
           {/* Logo */}
           <div className="flex items-center">
-            <Link href="/" className="flex items-center">
-              <div className="w-8 h-8 bg-gradient-to-r from-blue-600 to-blue-800 rounded-lg flex items-center justify-center mr-3">
-                <span className="text-white font-bold text-lg">A</span>
+            <Link href="/" className="flex items-center gap-3">
+              <div className="w-10 h-10 overflow-hidden rounded-full border border-gray-100 flex items-center justify-center">
+                <Image
+                  src="/logo.png"
+                  alt="AD Sky Solution"
+                  width={40}
+                  height={40}
+                  className="h-full w-full object-cover"
+                />
               </div>
-              <span className="text-xl font-bold text-gray-900">Awign</span>
+              <span className="text-xl font-bold text-gray-900 uppercase">AD Sky Solution</span>
             </Link>
           </div>
 

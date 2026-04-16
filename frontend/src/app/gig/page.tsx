@@ -1,10 +1,10 @@
 'use client';
 
 import Link from 'next/link';
-
 import { useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
 import { ArrowRight, Briefcase, ChevronLeft, ChevronRight, Menu, Rocket, Settings2, Star, UserRound } from 'lucide-react';
+import Image from 'next/image';
 import Footer from '@/components/Footer';
 import { Button } from '@/components/ui/Button';
 import { Section } from '@/components/ui/Section';
@@ -86,7 +86,7 @@ const heroTiles = [
 ] as const;
 
 const jobHowItWorks = [
-  { step: '1', title: 'Download the Awign App', description: 'Kickstart your journey with the app and create your worker profile in minutes.', preview: 'app' },
+  { step: '1', title: 'Download the AD Sky App', description: 'Kickstart your journey with the app and create your worker profile in minutes.', preview: 'app' },
   { step: '2', title: 'Explore Work Opportunities', description: 'Select a work opportunity and read the requirements carefully.', preview: 'jobs' },
   { step: '3', title: 'Apply', description: 'Fill the dream application form and apply for work. Get a call from us!', preview: 'apply' },
   { step: '4', title: 'Screening & Training', description: 'Complete the online interview and training once selected.', preview: 'training' },
@@ -121,19 +121,19 @@ const testimonials = [
     name: 'Shanu Agrawal',
     image: 'photo-1500648767791-00dcc994a43e',
     quote:
-      'Through my association with Awign, I have earned more than INR 2 lakhs in the last three years by undertaking calling and auditing projects. It would not even be possible to work as a parent and earn money over large periods if it were not for Awign.',
+      'Through my association with AD Sky Solution, I have earned more than INR 2 lakhs in the last three years by undertaking calling and auditing projects. It would not even be possible to work as a parent and earn money over large periods if it were not for AD Sky Solution.',
   },
   {
     name: 'Partha Arun Xavier',
     image: 'photo-1506794778202-cad84cf45f1d',
     quote:
-      'I remember there were days when we could only afford one meal and some days we managed through limited portions. After I started working on gigs via Awign, life changed completely. I loved the flexibility and now I am able to support my family with confidence.',
+      'I remember there were days when we could only afford one meal and some days we managed through limited portions. After I started working on gigs via AD Sky Solution, life changed completely. I loved the flexibility and now I am able to support my family with confidence.',
   },
   {
     name: 'Hamza Yusuf',
     image: 'photo-1494790108377-be9c29b29330',
     quote:
-      'With Awign, I have been able to earn over 2 lakhs in 11 months while I manage my own small business in Cuttack. I also have the power to choose my working hours and regulate my workload. Special thanks to my managers at Awign.',
+      'With AD Sky Solution, I have been able to earn over 2 lakhs in 11 months while I manage my own small business in Cuttack. I also have the power to choose my working hours and regulate my workload. Special thanks to my managers at AD Sky Solution.',
   },
   {
     name: 'Asha Thomas',
@@ -145,7 +145,7 @@ const testimonials = [
     name: 'Mohit Sinha',
     image: 'photo-1544005313-94ddf0286df2',
     quote:
-      'Awign made flexible work feel dependable. The onboarding, training, and payouts are transparent, which made it easy for me to commit long term and recommend it to others.',
+      'AD Sky Solution made flexible work feel dependable. The onboarding, training, and payouts are transparent, which made it easy for me to commit long term and recommend it to others.',
   },
 ] as const;
 
@@ -170,12 +170,17 @@ function TrustedCardMarquee({ items, reverse = false }: { items: string[]; rever
   );
 }
 
-function AwignMark({ className = '' }: { className?: string }) {
+function AdSkyLogo({ className = '' }: { className?: string }) {
   return (
-    <svg viewBox="0 0 64 64" fill="none" className={className} aria-hidden="true">
-      <path d="M32 8 46 48c.5 1.6-.7 3.2-2.4 3.2h-6.2a2.6 2.6 0 0 1-2.4-1.7l-3-8.8-3.1 8.8a2.6 2.6 0 0 1-2.4 1.7h-6.1c-1.8 0-3-1.7-2.4-3.4L32 8Z" stroke="currentColor" strokeWidth="4" strokeLinejoin="round" />
-      <path d="m22.8 34.8 9.2-8.6 9.1 8.6" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
+    <div className={`overflow-hidden rounded-full ${className}`}>
+      <Image
+        src="/logo.png"
+        alt="AD Sky Solution"
+        width={64}
+        height={64}
+        className="h-full w-full object-cover"
+      />
+    </div>
   );
 }
 
@@ -183,7 +188,7 @@ function JobsPreview({ preview }: { preview: (typeof jobHowItWorks)[number]['pre
   if (preview === 'app') {
     return (
       <div className="relative w-full overflow-hidden rounded-[16px] bg-[#214bbb] p-4 text-left shadow-[0_10px_24px_rgba(0,0,0,0.18)]">
-        <div className="mb-5 text-[0.72rem] font-medium text-white/80">Download the Awign App</div>
+        <div className="mb-5 text-[0.72rem] font-medium text-white/80">Download the AD Sky App</div>
         <div className="mb-6 text-[1rem] font-bold leading-[1.1] text-white">India&apos;s Largest Gig Work Platform</div>
         <div className="rounded-[14px] bg-white p-3 text-[#243548]">
           <div className="mb-2 text-[0.78rem] font-semibold">500k+</div>
@@ -315,12 +320,11 @@ export default function GigPage() {
         <div className="max-w-[1300px] !ml-[200px] mr-[1000px]  px-6 pt-7 lg:px-8 !mt-[30px] ">
          <nav className="flex w-full items-center justify-between rounded-[32px] bg-[rgba(39,43,49,0.92)] px-10 py-5 shadow-[0_18px_40px_rgba(0,0,0,0.18)] backdrop-blur-md    ">
             <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-full border border-white/12 bg-white/5">
-                <AwignMark className="h-5 w-5 text-white" />
+              <div className="flex h-10 w-10 items-center justify-center rounded-full border border-white/12 bg-white/5 overflow-hidden">
+                <AdSkyLogo className="h-full w-full" />
               </div>
               <div className="flex flex-col">
-                <span className="text-[17px] font-semibold tracking-[0.02em] text-white">awign</span>
-                <span className="text-[10px] font-medium text-white/60">A Mynavi company</span>
+                <span className="text-[17px] font-semibold tracking-[0.02em] text-white uppercase">AD Sky Solution</span>
               </div>
             </div>
 
@@ -428,8 +432,8 @@ export default function GigPage() {
                 <div className="relative flex items-center justify-center px-12 py-14 sm:px-16 sm:py-[72px]">
                   <div className="absolute left-[-120px] top-1/2 h-[640px] w-[420px] -translate-y-1/2 rounded-full bg-[radial-gradient(circle_at_72%_50%,rgba(27,63,128,0.9),rgba(7,18,38,0.96)_52%,transparent_74%)]" />
                   <div className="relative flex w-full items-center justify-center">
-                    <div className="flex h-[152px] w-[152px] items-center justify-center rounded-full bg-white text-[#424d5f] shadow-[0_18px_50px_rgba(0,0,0,0.2)]">
-                      <AwignMark className="h-[76px] w-[76px]" />
+                    <div className="flex h-[152px] w-[152px] items-center justify-center rounded-full bg-white shadow-[0_18px_50px_rgba(0,0,0,0.2)]">
+                      <AdSkyLogo className="h-[76px] w-[76px]" />
                     </div>
                     <div className="absolute left-[58%] top-1/2 flex -translate-y-1/2 flex-col items-center gap-7">
                       {whyWorkIcons.map((item, index) => {
@@ -526,7 +530,7 @@ export default function GigPage() {
             className="mx-auto mb-14 max-w-[760px] text-center !ml-[200px]"
           >
             <h2 className="text-[#252525]" style={{ fontSize: '2.25rem', fontWeight: 700 }}>People Love Working With Us</h2>
-            <p className="mt-3 text-[1rem] leading-7 text-[#7c828a]">Here&apos;s what our Awignites have to say</p>
+            <p className="mt-3 text-[1rem] leading-7 text-[#7c828a]">Here&apos;s what our community has to say</p>
           </motion.div>
 
           <div className="mx-auto grid max-w-[1080px] gap-6 lg:grid-cols-3">

@@ -17,7 +17,7 @@ const optionalAuth = (req, res, next) => {
         const jwt = require('jsonwebtoken');
         try {
             const token = header.split(' ')[1];
-            req.user = jwt.verify(token, process.env.JWT_SECRET || 'super_secret_key_12345');
+            req.user = jwt.verify(token, process.env.JWT_SECRET );
         } catch (_) { /* ignore invalid token */ }
     }
     next();

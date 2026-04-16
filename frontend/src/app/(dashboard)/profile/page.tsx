@@ -1,19 +1,53 @@
 'use client';
 import { useState, useEffect, useRef, Suspense } from 'react';
-import axios from 'axios';
+
 import {
-  User, Camera, Save, CheckCircle, Loader2, Phone,
-  MapPin, Languages, Briefcase, Calendar, Shield,
+  Camera, Save, CheckCircle, Loader2, Phone,
+  MapPin, Languages, Briefcase, Shield,
   Clock, Edit3, Star, Award
 } from 'lucide-react';
-import { useSearchParams } from 'next/navigation';
+import { useAuth } from '@/context/AuthContext';
+import { apiClient, extractErrorMessage } from '@/lib/api';
 
-const API = 'http://localhost:5000/api';
+
+type ProfileData = {
+  name?: string;
+  email?: string;
+  phone?: string;
+  gender?: string;
+  dob?: string;
+  languages?: string[];
+  skills?: string[];
+  locationArea?: string;
+  availabilityType?: string;
+  shift?: string;
+  role?: string;
+  profileImage?: string;
+  progressPercentage?: number;
+};
+
+type ProfileForm = {
+  name: string;
+  phone: string;
+  gender: string;
+  dob: string;
+  languages: string;
+  skills: string;
+  locationArea: string;
+  availabilityType: string;
+  shift: string;
+};
+
+type ProfilePictureResponse = {
+  profileImage: string;
+};
+
 
 function ProfileContent() {
-  const searchParams = useSearchParams();
-  const [activeTab, setActiveTab] = useState(searchParams.get('tab') === 'picture' ? 'picture' : 'info');
-  const [profile, setProfile] = useState<any>(null);
+  
+  const { isAuthenticated } = useAuth();
+  
+  const [profile, setProfile] = useState<ProfileData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [success, setSuccess] = useState('');
@@ -22,19 +56,23 @@ function ProfileContent() {
   const [uploadLoading, setUploadLoading] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
 
-  const [form, setForm] = useState({
-    name: '', phone: '', gender: '', dob: '', languages: '',
-    skills: '', locationArea: '', availabilityType: '', shift: ''
-  });
+ const [form, setForm] = useState<ProfileForm>({
+  name: '',
+  phone: '',
+  gender: '',
+  dob: '',
+  languages: '',
+  skills: '',
+  locationArea: '',
+  availabilityType: '',
+  shift: '',
+});
 
   useEffect(() => {
     const fetchProfile = async () => {
-      const token = localStorage.getItem('token');
-      if (!token) return;
+      if (!isAuthenticated) return;
       try {
-        const res = await axios.get(`${API}/auth/profile`, {
-          headers: { Authorization: `Bearer ${token}` }
-        });
+        const res = await apiClient.get('/auth/profile');
         setProfile(res.data);
         setForm({
           name: res.data.name || '',
@@ -51,27 +89,24 @@ function ProfileContent() {
       finally { setIsLoading(false); }
     };
     fetchProfile();
-  }, []);
+  }, [isAuthenticated]);
 
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSaving(true); setError(''); setSuccess('');
-    const token = localStorage.getItem('token');
     try {
       const payload = {
         ...form,
         languages: form.languages.split(',').map(l => l.trim()).filter(Boolean),
         skills: form.skills.split(',').map(s => s.trim()).filter(Boolean),
       };
-      const res = await axios.put(`${API}/auth/profile`, payload, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      const res = await apiClient.put('/auth/profile', payload);
       setProfile(res.data);
       setSuccess('Profile updated successfully!');
       setIsEditing(false);
       setTimeout(() => setSuccess(''), 3000);
-    } catch (err: any) {
-      setError(err.response?.data?.message || 'Update failed');
+    } catch (err: unknown) {
+      setError(extractErrorMessage(err, 'Update failed'));
     } finally { setIsSaving(false); }
   };
 
@@ -79,18 +114,24 @@ function ProfileContent() {
     const file = e.target.files?.[0];
     if (!file) return;
     setUploadLoading(true); setError(''); setSuccess('');
-    const token = localStorage.getItem('token');
     const formData = new FormData();
     formData.append('profileImage', file);
     try {
-      const res = await axios.post(`${API}/auth/profile/picture`, formData, {
-        headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'multipart/form-data' }
-      });
-      setProfile((prev: any) => ({ ...prev, profileImage: res.data.profileImage }));
+      const res = await apiClient.post<ProfilePictureResponse>(
+  '/auth/profile/picture',
+  formData,
+  { headers: { 'Content-Type': 'multipart/form-data' } }
+);
+
+setProfile((prev) => ({
+  ...(prev ?? {}),
+  profileImage: res.data.profileImage,
+}));
+
       setSuccess('Profile picture updated!');
       setTimeout(() => setSuccess(''), 3000);
-    } catch (err: any) {
-      setError(err.response?.data?.message || 'Upload failed');
+    } catch (err: unknown) {
+      setError(extractErrorMessage(err, 'Upload failed'));
     } finally { setUploadLoading(false); }
   };
 

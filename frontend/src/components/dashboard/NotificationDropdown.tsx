@@ -2,7 +2,8 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import { Bell, CheckCircle, Info, AlertTriangle, DollarSign } from 'lucide-react';
-import axios from 'axios';
+import { apiClient } from '@/lib/api';
+import { useAuth } from '@/context/AuthContext';
 
 interface Notification {
   _id: string;
@@ -36,23 +37,27 @@ export default function NotificationDropdown() {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [unreadCount, setUnreadCount] = useState(0);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const { isAuthenticated } = useAuth();
 
   const fetchNotifications = useCallback(async () => {
-    const token = localStorage.getItem('token');
-    if (!token) return;
+    if (!isAuthenticated) return;
     try {
-      const res = await axios.get('http://localhost:5000/api/notifications', {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      const res = await apiClient.get('/notifications');
       setNotifications(res.data.notifications);
       setUnreadCount(res.data.unreadCount);
     } catch {
       // fallback: show empty
     }
-  }, []);
+  }, [isAuthenticated]);
 
   useEffect(() => {
-    fetchNotifications();
+    // Calling an async function from an effect is fine, 
+    // but some linters prefer the explicit self-invoking function pattern 
+    // to avoid potential "setState in effect" warnings if multiple states update.
+    const load = async () => {
+      await fetchNotifications();
+    };
+    void load();
   }, [fetchNotifications]);
 
   useEffect(() => {
@@ -66,24 +71,18 @@ export default function NotificationDropdown() {
   }, []);
 
   const handleMarkAllRead = async () => {
-    const token = localStorage.getItem('token');
-    if (!token) return;
+    if (!isAuthenticated) return;
     try {
-      await axios.put('http://localhost:5000/api/notifications/mark-all-read', {}, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      await apiClient.put('/notifications/mark-all-read');
       setNotifications(prev => prev.map(n => ({ ...n, read: true })));
       setUnreadCount(0);
     } catch { /* ignore */ }
   };
 
   const handleMarkRead = async (id: string) => {
-    const token = localStorage.getItem('token');
-    if (!token) return;
+    if (!isAuthenticated) return;
     try {
-      await axios.put(`http://localhost:5000/api/notifications/${id}/read`, {}, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      await apiClient.put(`/notifications/${id}/read`);
       setNotifications(prev => prev.map(n => n._id === id ? { ...n, read: true } : n));
       setUnreadCount(prev => Math.max(0, prev - 1));
     } catch { /* ignore */ }

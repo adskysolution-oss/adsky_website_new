@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { ArrowRight, Briefcase, CheckCircle, ChevronLeft, ChevronRight, DollarSign, MapPin, Menu, Rocket, Settings2, Star, TrendingUp, UserRound, Users } from 'lucide-react';
@@ -93,14 +94,14 @@ const testimonials = [
   {
     role: 'Gig Partner',
     quote:
-      'With Awign, I have been able to earn over 2 lakhs in 11 months while I manage my own small business in Cuttack. I have also had the power to choose my working hours and regulate my workload. Special thanks to my managers at Awign who have helped me on my way up here.',
+      'With AD Sky Solution, I have been able to earn over 2 lakhs in 11 months while I manage my own small business in Cuttack. I have also had the power to choose my working hours and regulate my workload. Special thanks to my managers at AD Sky Solution who have helped me on my way up here.',
     name: 'Hamza Yusuf',
     image: 'photo-1500648767791-00dcc994a43e',
   },
   {
     role: 'Field Associate',
     quote:
-      'Awign helped me move from occasional shifts to a stable monthly income. I can accept assignments close to my home and still have enough flexibility to balance family responsibilities.',
+      'AD Sky Solution helped me move from occasional shifts to a stable monthly income. I can accept assignments close to my home and still have enough flexibility to balance family responsibilities.',
     name: 'Nisha Verma',
     image: 'photo-1494790108377-be9c29b29330',
   },
@@ -221,10 +222,10 @@ const jobCategories = [
     salary: 'Earn Rs 12,000 - Rs 22,000 / month',
   },
   {
-    title: 'Awign Surveys Jobs',
+    title: 'AD Sky Solution Surveys Jobs',
     workType: 'Work From Home',
     countLabel: 'Jobs coming soon',
-    route: '/jobs?category=awign-surveys',
+    route: '/jobs?category=adsky-surveys',
     details: ['Participate in guided surveys and feedback tasks', 'Simple workflows with regular task updates'],
     salary: 'Survey-based earnings launching soon',
   },
@@ -241,7 +242,7 @@ const jobCategoryColumns = [
   ['Delivery Partner Jobs', 'Exam Invigilator Jobs (Offline)'],
   ['Field Survey Jobs', 'Sales and Marketing Jobs', 'Audit Jobs'],
   ['Quick Money', 'Recruitment'],
-  ['Digital Gigs Jobs', 'Background Verification Jobs', 'Awign Surveys Jobs'],
+  ['Digital Gigs Jobs', 'Background Verification Jobs', 'AD Sky Solution Surveys Jobs'],
   ['Data Entry Jobs', 'Telecalling Jobs', 'Field Collection'],
 ] as const;
 
@@ -255,6 +256,7 @@ const serviceCards = [
       '1000+ hours of egocentric video per day',
       '98% robotics-grade annotation accuracy',
     ],
+    href: '/services/data-annotation',
   },
   {
     icon: CheckCircle,
@@ -266,6 +268,7 @@ const serviceCards = [
       'Supports images, text, speech & videos',
       'Industry-specific annotation solutions',
     ],
+    href: '/services/data-annotation',
   },
   {
     icon: Users,
@@ -277,6 +280,7 @@ const serviceCards = [
       'Secure offices, enterprise-ready compliance',
       'Go live in 2-weeks with 5-10 engineers',
     ],
+    href: '/services/data-annotation',
   },
   {
     icon: MapPin,
@@ -287,6 +291,7 @@ const serviceCards = [
       'Target the right audience for high quality lead generation',
       'In store promotion, customer promotion, BTL activities, and more!',
     ],
+    href: '/services/data-annotation',
   },
   {
     icon: Briefcase,
@@ -298,6 +303,7 @@ const serviceCards = [
       '50% reduction in seller claims after audit completion',
       '25+ data points captured against each shipment',
     ],
+     href: '/services/data-annotation',
   },
 ];
 
@@ -336,7 +342,7 @@ const offeringTabs = ['White Collar', 'Grey Collar', 'Blue Collar'] as const;
 const whyWorkTabs = {
   jobs: {
     title: 'Find flexible gigs that fit your schedule',
-    description: 'Discover opportunities, build reliable income, and grow with guided support from Awign.',
+    description: 'Discover opportunities, build reliable income, and grow with guided support from AD Sky Solution.',
     buttonLabel: 'Explore Jobs',
   },
   business: {
@@ -355,13 +361,17 @@ const whyWorkIcons = [
   { key: 'rocket', icon: Rocket, accent: false },
 ];
 
-function AwignMark({ className = '' }: { className?: string }) {
+function AdSkyLogo({ className = '' }: { className?: string }) {
   return (
-    <svg viewBox="0 0 52 52" fill="none" className={className} aria-hidden="true">
-      <path d="M26 9L39 41C39.3 41.9 38.5 42.7 37.6 42.3L26 37.8L14.4 42.3C13.5 42.7 12.7 41.9 13 41L26 9Z" stroke="currentColor" strokeWidth="3" strokeLinejoin="round" />
-      <path d="M18.8 27.2L26 19.2L33.2 27.2" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
-      <path d="M21.5 34L26 27.6L30.5 34" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
+    <div className={`overflow-hidden ${className}`}>
+      <Image
+        src="/logo.png"
+        alt="AD Sky Solution"
+        width={152}
+        height={152}
+        className="h-full w-full object-cover"
+      />
+    </div>
   );
 }
 
@@ -394,7 +404,6 @@ export default function Home() {
   const [activeTestimonial, setActiveTestimonial] = useState(3);
   const shellClass = 'mx-auto flex w-full justify-center px-6 lg:px-8';
   const shellInnerClass = 'mx-auto w-full max-w-[1200px]';
-  const homeCenteredShellStyle = { maxWidth: '1200px', marginLeft: 'auto', marginRight: 'auto' } as const;
   const homeWideShellStyle = { maxWidth: '1200px', marginLeft: 'auto', marginRight: 'auto' } as const;
   const heroShellClass = 'w-full max-w-[1220px]';
   const navbarInnerClass = 'w-full max-w-[1280px]';
@@ -410,20 +419,29 @@ export default function Home() {
 
   return (
     <div className="min-h-screen overflow-x-hidden bg-white text-slate-900" style={{ fontFamily: '"Montserrat Variable", sans-serif' }}>
+    <div className="min-h-screen overflow-hidden bg-white text-slate-900" style={{ fontFamily: '"Montserrat Variable", sans-serif' }}>
       <section className="relative min-h-screen w-full overflow-hidden bg-[radial-gradient(circle_at_50%_34%,rgba(33,94,146,0.72),rgba(7,22,41,0.95)_40%,#01060e_78%)] text-white">
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_18%_35%,rgba(18,167,134,0.18),transparent_28%),radial-gradient(circle_at_80%_34%,rgba(28,74,148,0.18),transparent_34%),linear-gradient(180deg,rgba(0,0,0,0.06),rgba(0,0,0,0.18))]" />
 
         <div className={`${shellClass} absolute left-0 right-0 top-7 z-30`}>
           <nav className={`${navbarInnerClass} flex items-center justify-between rounded-[32px] bg-[rgba(39,43,49,0.92)] px-10 py-5 shadow-[0_18px_40px_rgba(0,0,0,0.18)] backdrop-blur-md`}>
             <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-full border border-white/12 bg-white/5">
-                <div className="h-4 w-4 rotate-45 border border-white/90" />
-              </div>
-              <div className="flex flex-col">
-                <span className="text-[17px] font-semibold tracking-[0.02em] text-white">awign</span>
-                <span className="text-[10px] font-medium text-white/60">A Mynavi company</span>
-              </div>
+              <Link href="/" className="flex items-center gap-3 transition-opacity hover:opacity-90">
+                <div className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-full border border-white/12 bg-white/5">
+                  <Image
+                    src="/logo.png"
+                    alt="AD Sky Solution Logo"
+                    width={40}
+                    height={40}
+                    className="h-full w-full object-cover"
+                  />
+                </div>
+                <div className="flex flex-col">
+                  <span className="text-[17px] font-semibold tracking-[0.02em] text-white uppercase">AD Sky Solution</span>
+                </div>
+              </Link>
             </div>
+            
 
             <div className="hidden items-center gap-14 md:flex">
               <div className="flex items-center gap-14 text-[15px] font-semibold text-white/90">
@@ -485,10 +503,13 @@ export default function Home() {
                 <div key={profile.name}>
                   <div className={`absolute z-10 hidden h-[132px] w-[132px] overflow-hidden lg:block ${profile.className}`}>
                     <div className={`absolute inset-0 ${profile.blobClassName}`} style={{ borderRadius: '35% 65% 58% 42% / 42% 38% 62% 58%' }} />
-                    <img
+                    <Image
                       src={`https://images.unsplash.com/${profile.img}?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=260`}
                       alt={profile.name}
+                      width={260}
+                      height={260}
                       className="absolute inset-[8px] h-[calc(100%-16px)] w-[calc(100%-16px)] rounded-[32px] object-cover grayscale"
+                      unoptimized
                     />
                   </div>
                   <div className={`absolute z-10 hidden -translate-x-1/2 text-[18px] font-medium text-white lg:block ${profile.labelClassName}`}>
@@ -500,10 +521,13 @@ export default function Home() {
               {heroBottomProfiles.map((profile) => (
                 <div key={profile.img} className={`absolute hidden h-[120px] w-[120px] overflow-hidden lg:block ${profile.className}`}>
                   <div className={`absolute inset-0 ${profile.blobClassName}`} style={{ borderRadius: '44% 56% 63% 37% / 46% 38% 62% 54%' }} />
-                  <img
+                  <Image
                     src={`https://images.unsplash.com/${profile.img}?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=220`}
                     alt=""
+                    width={220}
+                    height={220}
                     className="absolute inset-[8px] h-[calc(100%-16px)] w-[calc(100%-16px)] rounded-[28px] object-cover grayscale"
+                    unoptimized
                   />
                 </div>
               ))}
@@ -514,18 +538,22 @@ export default function Home() {
                 transition={{ duration: 0.9, delay: 0.35 }}
                 className="absolute left-1/2 bottom-[-26px] z-20 h-[340px] w-[260px] -translate-x-1/2 overflow-hidden lg:h-[380px] lg:w-[286px]"
               >
-                <img
+                <Image
                   src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=700"
                   alt="Professional"
+                  width={286}
+                  height={380}
                   className="h-full w-full object-cover object-top grayscale"
                   style={{ filter: 'drop-shadow(0 20px 80px rgba(0,0,0,0.45))' }}
+                  unoptimized
                 />
               </motion.div>
             </div>
           </div>
         </div>
       </section>
-
+       </div>
+ 
       <Section variant="black" spacing="md">
         <div className="w-full px-4 md:px-6">
           <div style={homeWideShellStyle} className="flex flex-col items-center justify-center">
@@ -565,7 +593,7 @@ export default function Home() {
       <Section variant="white" spacing="lg">
         <div className="mx-auto flex w-full max-w-[1200px] flex-col items-center justify-center px-4">
           <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }} className="mx-auto mb-16 max-w-[760px] text-center sm:mb-20">
-            <h2 className="leading-[1.12]" style={{ fontSize: '2.5rem', fontWeight: 700 }}>Why work with us?</h2>
+            <h2 className="leading-[1.12] style={{ fontSize: '2.5rem', fontWeight: 700 }}">Why work with us?</h2>
           </motion.div>
 
           <motion.div
@@ -582,7 +610,7 @@ export default function Home() {
 
                 <div className="relative flex w-full items-center justify-center">
                   <div className="flex h-[152px] w-[152px] items-center justify-center rounded-full bg-white text-[#424d5f] shadow-[0_18px_50px_rgba(0,0,0,0.2)]">
-                    <AwignMark className="h-[76px] w-[76px]" />
+                    <AdSkyLogo className="h-[76px] w-[76px] rounded-full" />
                   </div>
 
                   <div className="absolute left-[58%] top-1/2 flex -translate-y-1/2 flex-col items-center gap-5">
@@ -768,9 +796,11 @@ export default function Home() {
           <div className="mx-auto grid items-start justify-center gap-12 lg:grid-cols-[360px_minmax(0,680px)] lg:gap-12">
               <motion.div initial={{ opacity: 0, x: -24 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.7 }} className="relative mx-auto w-full max-w-[360px] lg:mx-0 lg:pt-2">
                 <div className="relative overflow-hidden">
-                  <img
+                  <Image
                     src="/image.png"
                     alt="Job categories representative"
+                    width={400}
+                    height={700}
                     className="h-[700px] w-full object-contain object-top"
                     style={{ maskImage: 'linear-gradient(to bottom, black 72%, transparent 100%)', WebkitMaskImage: 'linear-gradient(to bottom, black 72%, transparent 100%)' }}
                   />
@@ -873,10 +903,13 @@ export default function Home() {
       <Section variant="lightGray" spacing="lg">
           <div className={`${shellInnerClass} grid items-center gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:gap-16 xl:gap-20`}>
             <motion.div initial={{ opacity: 0, x: -30 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.8 }} className="relative order-1 mx-auto h-96 w-full max-w-[720px] overflow-hidden rounded-2xl shadow-2xl lg:h-[500px] lg:max-w-none">
-              <img
+              <Image
                 src="https://images.unsplash.com/photo-1758873268663-5a362616b5a7?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080"
                 alt="Business team"
+                width={720}
+                height={500}
                 className="h-full w-full object-cover"
+                unoptimized
               />
             </motion.div>
 
@@ -945,10 +978,13 @@ export default function Home() {
             </motion.div>
 
             <motion.div initial={{ opacity: 0, x: 30 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.8 }} className="order-1 relative mx-auto h-96 w-full max-w-[720px] overflow-hidden rounded-2xl shadow-2xl lg:order-2 lg:h-[500px] lg:max-w-none">
-              <img
+              <Image
                 src="https://images.unsplash.com/photo-1714976326831-660970f3de8b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080"
                 alt="Professionals working"
+                width={720}
+                height={500}
                 className="h-full w-full object-cover"
+                unoptimized
               />
             </motion.div>
           </div>
@@ -992,7 +1028,7 @@ export default function Home() {
                   </div>
 
                   <h3 className="!mb-4 mt-[10%] text-[1.05rem] font-medium leading-[1.35] text-white lg:min-h-[58px] UTT43">
-                    {index === 0 && 'Project Configuration on Awign App'}
+                    {index === 0 && 'Project Configuration on AD Sky Solution App'}
                     {index === 1 && 'Task Allocation and Fulfillment'}
                     {index === 2 && 'Payment and Completion'}
                   </h3>
@@ -1099,10 +1135,13 @@ export default function Home() {
                 >
                   <div className="flex w-full justify-center">
                     <div className="h-[174px] w-[174px] overflow-hidden rounded-full bg-[#dceaf0] shadow-[0_12px_36px_rgba(0,0,0,0.06)]">
-                      <img
+                      <Image
                         src={`https://images.unsplash.com/${currentTestimonial.image}?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=420`}
                         alt={currentTestimonial.name}
+                        width={174}
+                        height={174}
                         className="h-full w-full object-cover"
+                        unoptimized
                       />
                     </div>
                   </div>
@@ -1151,95 +1190,113 @@ export default function Home() {
                 <ChevronRight className="h-4 w-4" />
               </button>
             </div>
-
-            <div className="pt-28 text-center sm:pt-32">
-              <h2 className="text-[#252525]" style={{ fontSize: '2.45rem', fontWeight: 700 }}>Blogs</h2>
-            </div>
           </div>
       </Section>
 
-      <Section variant="lightGray" spacing="lg" className="relative pt-24 sm:pt-28 lg:pt-32">
-        <div className="pointer-events-none absolute left-[2%] top-[4%] hidden h-28 w-28 text-[#dfe7fb] opacity-60 md:block">
+      <Section variant="lightGray" spacing="md">
+        <div className="mx-auto flex w-full max-w-[1200px] flex-col items-center justify-center px-4">
+          <div className="pt-8 text-center sm:pt-12">
+            <h2 className="text-[#252525]" style={{ fontSize: '2.45rem', fontWeight: 700 }}>Blogs</h2>
+          </div>
+        </div>
+      </Section>
+
+      <Section variant="white" spacing="lg">
+        <div className="relative z-10 mx-auto flex w-full max-w-[1200px] flex-col items-center justify-center px-4 text-center">
+          <motion.div initial={{ opacity: 0, y: 18 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }} className="mx-auto mb-16 max-w-[860px] text-center">
+            <h2 className="text-[#203d6e]" style={{ fontSize: '2.5rem', fontWeight: 700 }}>In Media</h2>
+            <p className="mt-4 text-[1.1rem] leading-8 text-[#53627b]">
+              We&apos;re making headlines - click to explore what the buzz is all about
+            </p>
+          </motion.div>
+
+          <div className="mx-auto mb-12 flex max-w-[1000px] flex-col items-center gap-12 lg:gap-16">
+            {mediaLogoRows.map((row, rowIndex) => (
+              <div key={`media-row-${rowIndex}`} className="flex w-full flex-wrap items-center justify-center gap-x-16 gap-y-10 sm:gap-x-24">
+                {row.map((logo, logoIndex) => (
+                  <motion.div
+                    key={logo.label}
+                    initial={{ opacity: 0, y: 14 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.4, delay: rowIndex * 0.08 + logoIndex * 0.05 }}
+                    className={`min-w-[160px] text-center text-[1.2rem] font-bold leading-tight whitespace-pre-line transition-opacity hover:opacity-80 ${logo.className}`}
+                  >
+                    {logo.label}
+                  </motion.div>
+                ))}
+              </div>
+            ))}
+          </div>
+        </div>
+      </Section>
+
+      <Section variant="black" spacing="lg" className="relative !overflow-visible">
+        <div className="pointer-events-none absolute left-[2%] top-[-4%] hidden h-32 w-32 text-white/5 opacity-40 md:block">
           <Star className="h-full w-full fill-current stroke-none" />
         </div>
-        <div className="pointer-events-none absolute right-[4%] top-[22%] hidden h-28 w-28 rotate-12 rounded-[28px] bg-[#dfe7fb] opacity-45 md:block" style={{ clipPath: 'polygon(18% 0, 100% 26%, 71% 100%, 0 73%)' }} />
-        <div className="absolute bottom-0 left-0 right-0 h-[190px] bg-black" /></Section>
-
-        <div className="relative z-10 mx-auto flex w-full max-w-[1200px] flex-col items-center justify-center px-4 text-center">
-            <motion.div initial={{ opacity: 0, y: 18 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }} className="mx-auto mb-12 max-w-[860px] text-center">
-              <h2 className="text-[#203d6e]" style={{ fontSize: '2.2rem', fontWeight: 700 }}>In Media</h2>
-              <p className="mt-3 text-[1.05rem] leading-8 text-[#53627b]">
-                We&apos;re making headlines - click to explore what the buzz is all about
-              </p>
-            </motion.div>
-
-            <div className="mx-auto mb-20 flex max-w-[840px] flex-col items-center gap-10">
-              {mediaLogoRows.map((row, rowIndex) => (
-                <div key={`media-row-${rowIndex}`} className="flex w-full flex-wrap items-center justify-center gap-x-12 gap-y-8 sm:gap-x-16">
-                  {row.map((logo, logoIndex) => (
-                    <motion.div
-                      key={logo.label}
-                      initial={{ opacity: 0, y: 14 }}
-                      whileInView={{ opacity: 1, y: 0 }}
-                      viewport={{ once: true }}
-                      transition={{ duration: 0.4, delay: rowIndex * 0.08 + logoIndex * 0.05 }}
-                      className={`min-w-[140px] text-center text-[1.15rem] font-bold leading-[1.05] whitespace-pre-line ${logo.className}`}
-                    >
-                      {logo.label}
-                    </motion.div>
-                  ))}
-                </div>
-              ))}
-            </div>
-            
-            
-
-            <div className="relative mx-auto flex w-full max-w-[860px] flex-col items-center justify-center gap-7 pb-10 md:flex-row md:items-stretch">
-              <motion.article
-                initial={{ opacity: 0, y: 22 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5 }}
-                className="min-h-[255px] rounded-[26px] bg-[radial-gradient(circle_at_70%_85%,rgba(28,74,148,0.9),rgba(32,32,34,0.98)_48%,#232325_100%)] px-7 py-8 text-white shadow-[0_26px_60px_rgba(0,0,0,0.2)]"
-              >
-                <div className="mb-10 text-[0.95rem] font-medium text-white/78">For Business</div>
-                <h3 className="mb-6 max-w-[360px] text-[2rem] font-semibold leading-[1.05] tracking-[-0.03em]">
+        <div className="pointer-events-none absolute right-[4%] top-[10%] hidden h-32 w-32 rotate-12 rounded-[32px] bg-white/5 opacity-20 md:block" style={{ clipPath: 'polygon(18% 0, 100% 26%, 71% 100%, 0 73%)' }} />
+        
+        <div className="relative z-10 mx-auto flex w-full max-w-[1200px] flex-col items-center justify-center px-4">
+          <div className="grid w-full gap-8 md:grid-cols-2 lg:gap-10">
+            <motion.article
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6 }}
+              className="group relative flex flex-col justify-between overflow-hidden rounded-[32px] bg-[radial-gradient(circle_at_70%_85%,rgba(33,94,146,0.5),rgba(20,20,22,0.98)_48%,#0a0a0b_100%)] p-10 text-white shadow-[0_26px_60px_rgba(0,0,0,0.4)] border border-white/5 transition-all hover:border-white/10"
+            >
+              <div className="relative z-10">
+                <div className="mb-10 text-[1rem] font-semibold uppercase tracking-wider text-white/50">For Business</div>
+                <h3 className="mb-6 max-w-[320px] text-[2.4rem] font-bold leading-[1.1] tracking-tight">
                   Want to Optimize Your Core Operations?
                 </h3>
-                <p className="mb-8 text-[1.55rem] font-medium leading-none text-white/92">Let&apos;s Talk!</p>
-                <Button asChild size="md" variant="secondary" className="px-7 bg-white text-[#283548]">
+                <p className="mb-10 text-[1.4rem] font-medium text-white/80">Let&apos;s talk about customized solutions.</p>
+              </div>
+              <div className="relative z-10 mt-auto flex">
+                <Button asChild size="lg" variant="secondary" className="px-10 py-7 text-lg">
                   <Link href="/business">
                     Book a meeting
                   </Link>
                 </Button>
-              </motion.article>
+              </div>
+              
+              {/* Decorative background element */}
+              <div className="absolute -right-20 -bottom-20 h-64 w-64 rounded-full bg-[#214bbb]/10 blur-[80px] transition-all group-hover:bg-[#214bbb]/20" />
+            </motion.article>
 
-              <motion.article
-                initial={{ opacity: 0, y: 22 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: 0.08 }}
-                className="min-h-[255px] rounded-[26px] bg-[radial-gradient(circle_at_70%_85%,rgba(28,74,148,0.9),rgba(32,32,34,0.98)_48%,#232325_100%)] px-7 py-8 text-white shadow-[0_26px_60px_rgba(0,0,0,0.2)]"
-              >
-                <div className="mb-10 text-[0.95rem] font-medium text-white/78">For Work</div>
-                <h3 className="mb-6 max-w-[300px] text-[2rem] font-semibold leading-[1.05] tracking-[-0.03em]">
+            <motion.article
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.15 }}
+              className="group relative flex flex-col justify-between overflow-hidden rounded-[32px] bg-[radial-gradient(circle_at_70%_85%,rgba(18,167,134,0.4),rgba(20,20,22,0.98)_48%,#0a0a0b_100%)] p-10 text-white shadow-[0_26px_60px_rgba(0,0,0,0.4)] border border-white/5 transition-all hover:border-white/10"
+            >
+              <div className="relative z-10">
+                <div className="mb-10 text-[1rem] font-semibold uppercase tracking-wider text-white/50">For Work</div>
+                <h3 className="mb-6 max-w-[320px] text-[2.4rem] font-bold leading-[1.1] tracking-tight">
                   Looking For Work?
                 </h3>
-                <p className="mb-8 max-w-[320px] text-[1.55rem] font-medium leading-[1.18] text-white/92">
-                  Discover Flexible Work Opportunities Now!
+                <p className="mb-10 text-[1.4rem] font-medium text-white/80">
+                  Discover flexible work opportunities across India.
                 </p>
-                <Button asChild size="md" variant="secondary" className="px-7 bg-white text-[#283548]">
+              </div>
+              <div className="relative z-10 mt-auto flex">
+                <Button asChild size="lg" variant="secondary" className="px-10 py-7 text-lg">
                   <Link href="/jobs">
                     Explore Jobs
                   </Link>
                 </Button>
-              </motion.article>
-            </div>
+              </div>
+
+              {/* Decorative background element */}
+              <div className="absolute -right-20 -bottom-20 h-64 w-64 rounded-full bg-[#12a786]/10 blur-[80px] transition-all group-hover:bg-[#12a786]/20" />
+            </motion.article>
           </div>
         </div>
-   );
-    
+      </Section>
+
       <Footer />
-   
-  ;
+    </div>
+  );
 }

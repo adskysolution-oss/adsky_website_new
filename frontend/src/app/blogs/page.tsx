@@ -29,14 +29,14 @@ export default function BlogsPage() {
         <div className="mx-auto max-w-[1220px]">
           <div className="mx-auto max-w-[860px] text-center">
             <span className="inline-flex rounded-full bg-white px-4 py-2 text-[0.82rem] font-semibold uppercase tracking-[0.18em] text-[#17356c] ring-1 ring-[#e6eaf2]">
-              Awign Blogs
+              AD Sky Blogs
             </span>
             <h1 className="mt-6 text-[3rem] font-semibold tracking-[-0.05em] text-[#101828] sm:text-[3.7rem]">
               Smarter Work, Better Careers, Stronger Operations
             </h1>
             <p className="mx-auto mt-6 max-w-[740px] text-[1.08rem] leading-8 text-[#667085]">
               Explore interview guides, workforce insights, platform stories, and operating playbooks inspired by how modern
-              teams and professionals grow with Awign.
+              teams and professionals grow with AD Sky Solution.
             </p>
           </div>
 

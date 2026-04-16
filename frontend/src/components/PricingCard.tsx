@@ -15,7 +15,7 @@ export default function PricingCard({ plan }: PricingCardProps) {
         ? 'border-white/40 bg-[linear-gradient(180deg,rgba(8,20,43,0.98),rgba(3,9,24,0.98))] shadow-[0_24px_70px_rgba(0,0,0,0.26)]'
         : 'border-white/10 bg-[linear-gradient(180deg,rgba(5,12,28,0.96),rgba(3,9,24,0.98))] shadow-[0_18px_48px_rgba(0,0,0,0.18)]'
     }`}>
-      {plan.slug === 'standard' && (
+      {String(plan.slug) === 'standard' && (
         <div className="pointer-events-none absolute -left-20 -top-32 h-72 w-72 rounded-full bg-[#102d68]/70 blur-sm" />
       )}
 

@@ -1,27 +1,25 @@
 'use client';
 import { useState, useEffect } from 'react';
-import axios from 'axios';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { Search, MapPin, Briefcase, ChevronRight } from 'lucide-react';
+import {JobCategory, jobService} from '@/services/job.service';
+import { extractErrorMessage } from '@/lib/api';
+import { JobClient } from '@/types/job';
+
 
 export default function ExplorePage() {
-  const [categories, setCategories] = useState<any[]>([]);
+  const [categories, setCategories] = useState<JobCategory[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const token = localStorage.getItem('token');
-        if (!token) return;
-
-        const res = await axios.get('http://localhost:5000/api/categories', {
-          headers: { Authorization: `Bearer ${token}` }
-        });
-        setCategories(res.data);
+        const data = await jobService.getCategories();
+        setCategories(data);
       } catch (err) {
-        console.error("Failed to fetch categories", err);
+        console.error(extractErrorMessage(err));
       } finally {
         setLoading(false);
       }
@@ -137,7 +135,7 @@ export default function ExplorePage() {
           <div className="text-center py-20 bg-white dark:bg-dark-surface rounded-2xl border border-gray-100 dark:border-gray-800">
             <Briefcase size={48} className="mx-auto text-gray-300 dark:text-gray-600 mb-4" />
             <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">No categories found</h3>
-            <p className="text-gray-500">We couldn't find anything matching "{searchQuery}"</p>
+            <p className="text-gray-500">{`We couldn't find anything matching ${searchQuery}`}</p>
             <button onClick={() => setSearchQuery('')} className="mt-4 text-primary font-bold hover:underline">Clear Search</button>
           </div>
         )}
@@ -147,8 +145,10 @@ export default function ExplorePage() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-20">
          <div className="bg-[#0b1120] rounded-3xl p-10 flex flex-col md:flex-row items-center justify-between text-white overflow-hidden relative shadow-2xl">
             <div className="relative z-10 max-w-2xl">
-               <h3 className="text-3xl font-bold mb-4">Can't find what you're looking for?</h3>
-               <p className="text-gray-400 text-lg mb-0">Join our talent pool. We'll notify you as soon as a relevant gig opens up near you.</p>
+               <h3 className="text-3xl font-bold mb-4">Can&apos;t find what you&apos;re looking for?</h3>
+               <p className="text-gray-400 text-lg mb-0">
+                 Join our talent pool. We&apos;ll notify you as soon as a relevant gig opens up near you.
+               </p>
             </div>
             <div className="relative z-10 mt-8 md:mt-0 flex-shrink-0">
                <Link href="/onboarding" className="bg-primary hover:bg-primary-hover text-white px-8 py-4 rounded-xl font-bold transition-colors inline-block shadow-lg">

@@ -6,6 +6,7 @@ import { Menu, X } from 'lucide-react';
 import ProfileDropdown from '@/components/dashboard/ProfileDropdown';
 import HelpDropdown from '@/components/dashboard/HelpDropdown';
 import NotificationDropdown from '@/components/dashboard/NotificationDropdown';
+import { useAuth } from '@/context/AuthContext';
 
 export default function DashboardLayout({
   children,
@@ -14,19 +15,16 @@ export default function DashboardLayout({
 }) {
   const router = useRouter();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [authChecked, setAuthChecked] = useState(false);
+  const { isAuthenticated, isLoading: authLoading } = useAuth();
 
-  // Route guard: protect all dashboard routes
+  // Route guard: protection handled by middleware, but hydration check here
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (!token) {
+    if (!authLoading && !isAuthenticated) {
       router.replace('/login');
-    } else {
-      setAuthChecked(true);
     }
-  }, [router]);
+  }, [isAuthenticated, authLoading, router]);
 
-  if (!authChecked) {
+  if (authLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <div className="flex flex-col items-center gap-3">

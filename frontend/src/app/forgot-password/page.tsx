@@ -5,40 +5,34 @@ import { useState } from 'react';
 import { ArrowLeft, CheckCircle2 } from 'lucide-react';
 import { AuthField } from '@/components/auth/AuthField';
 import { AuthPageShell } from '@/components/auth/AuthPageShell';
-import { authApi, extractAuthErrorMessage, isValidEmail } from '@/lib/auth';
+import { authService } from '@/services/auth.service';
+import { extractErrorMessage } from '@/lib/api';
+import { isValidEmail } from '@/lib/validation';
+
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState('');
-  const [emailError, setEmailError] = useState('');
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
+  const [formError, setFormError] = useState<{ email?: string; general?: string }>({});
+  const [isSubmitted, setIsSubmitted] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    setError('');
-    setSuccess('');
-
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
     if (!isValidEmail(email)) {
-      setEmailError('Enter a valid email address.');
+      setFormError({ email: 'Please enter a valid email address' });
       return;
     }
 
-    setEmailError('');
     setIsLoading(true);
+    setFormError({});
 
     try {
-      const response = await authApi.post('/forgot-password', {
-        email: email.trim(),
+      await authService.forgotPassword(email.trim());
+      setIsSubmitted(true);
+    } catch (error) {
+      setFormError({ 
+        email: extractErrorMessage(error, 'Unable to process your request. Please try again later.') 
       });
-      setSuccess(response.data.message);
-    } catch (requestError) {
-      setError(
-        extractAuthErrorMessage(
-          requestError,
-          'Unable to send reset instructions right now. Please try again shortly.',
-        ),
-      );
     } finally {
       setIsLoading(false);
     }
@@ -73,19 +67,19 @@ export default function ForgotPasswordPage() {
         </p>
       </div>
 
-      {error ? (
-        <div className="mb-5 rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700" aria-live="polite">
-          {error}
-        </div>
-      ) : null}
+      {formError.general ? (
+  <div className="mb-5 rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700" aria-live="polite">
+    {formError.general}
+  </div>
+) : null}
 
-      {success ? (
+      {isSubmitted ? (
         <div className="rounded-[28px] border border-emerald-200 bg-emerald-50 px-5 py-5 text-sm text-emerald-700" aria-live="polite">
           <div className="flex items-start gap-3">
             <CheckCircle2 className="mt-0.5 h-5 w-5 flex-shrink-0" />
             <div>
               <p className="font-semibold">Check your inbox</p>
-              <p className="mt-1 leading-6">{success}</p>
+              <p className="mt-1 leading-6">We have sent reset link to{email}</p>
               <p className="mt-3 text-xs leading-5 text-emerald-700/80">
                 If you don&apos;t see it, check your spam folder and confirm you entered the correct email.
               </p>
@@ -102,7 +96,7 @@ export default function ForgotPasswordPage() {
             placeholder="name@company.com"
             value={email}
             onChange={(event) => setEmail(event.target.value)}
-            error={emailError}
+            error={formError.email}
             requiredMark
           />
 

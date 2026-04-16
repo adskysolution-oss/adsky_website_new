@@ -1,10 +1,11 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
-import axios from 'axios';
 import { motion } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
 import Link from 'next/link';
+import { jobService } from '@/services/job.service';
+import { extractErrorMessage } from '@/lib/api';
 
 type Category = {
   _id: string;
@@ -77,16 +78,10 @@ export default function CategoriesPage() {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const token = localStorage.getItem('token');
-        if (!token) return;
-
-        const res = await axios.get('http://localhost:5000/api/categories', {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-
-        setCategories(res.data);
+        const data = await jobService.getCategories();
+        setCategories(data);
       } catch (err) {
-        console.error('Failed to fetch categories', err);
+        console.error(extractErrorMessage(err));
       } finally {
         setLoading(false);
       }

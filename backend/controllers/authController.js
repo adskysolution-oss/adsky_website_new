@@ -18,8 +18,16 @@ const buildAuthResponse = (user) => ({
   email: user.email,
   role: user.role,
   onboardingCompleted: user.onboardingCompleted,
-  token: signAuthToken(user._id.toString(), user.role),
 });
+
+const setAuthCookie = (res, token) => {
+  res.cookie('token', token, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'strict',
+    maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
+  });
+};
 
 const validatePasswordStrength = (password) => PASSWORD_REGEX.test(password);
 
@@ -34,6 +42,12 @@ exports.registerUser = async (req, res) => {
 
     if (!name || !email || !password || !role) {
       return res.status(400).json({ message: 'Name, email, password, and role are required.' });
+    }
+
+    // Role Escalation Prevention: Only permit public roles
+    const publicRoles = ['Worker', 'Client'];
+    if (!publicRoles.includes(role)) {
+      return res.status(403).json({ message: 'Invalid role selection.' });
     }
 
     if (!validatePasswordStrength(password)) {
@@ -56,6 +70,8 @@ exports.registerUser = async (req, res) => {
       companyName,
     });
 
+    const token = signAuthToken(user._id.toString(), user.role);
+    setAuthCookie(res, token);
     res.status(201).json(buildAuthResponse(user));
   } catch (error) {
     res.status(500).json({ message: 'Unable to create account right now.' });
@@ -85,10 +101,20 @@ exports.loginUser = async (req, res) => {
       return res.status(401).json({ message: 'Invalid email or password.' });
     }
 
+    const token = signAuthToken(user._id.toString(), user.role);
+    setAuthCookie(res, token);
     res.json(buildAuthResponse(user));
   } catch (error) {
     res.status(500).json({ message: 'Unable to sign in right now.' });
   }
+};
+
+exports.logoutUser = async (req, res) => {
+  res.cookie('token', '', {
+    httpOnly: true,
+    expires: new Date(0),
+  });
+  res.json({ message: 'Logged out successfully' });
 };
 
 exports.getProfile = async (req, res) => {
@@ -173,11 +199,41 @@ exports.uploadProfilePicture = async (req, res) => {
 exports.updateOnboardingProfile = async (req, res) => {
   try {
     const userId = req.user.id;
-    const updates = { ...req.body };
+    
+    // Strict allowlist to prevent data poisoning (e.g. role, accountStatus injection)
+    const allowedUpdates = [
+     // basic
+  'phone',
+  'companyName',
+  'onboardingCompleted',
 
-    if (typeof updates.name === 'string') {
-      updates.name = sanitizeText(updates.name);
-    }
+  // profile info
+  'name',
+  'gender',
+  'dob',
+  'languages',
+
+  // location
+  'locationArea',
+  'travelDistance',
+
+  // availability
+  'availabilityType',
+  'shift',
+  'hoursPerDay',
+
+  // optional extras (safe)
+  'skills',
+  'portfolioUrl',
+
+    ];
+
+    const updates = {};
+    allowedUpdates.forEach((field) => {
+      if (req.body[field] !== undefined) {
+        updates[field] = typeof req.body[field] === 'string' ? sanitizeText(req.body[field]) : req.body[field];
+      }
+    });
 
     const user = await User.findByIdAndUpdate(userId, { $set: updates }, { new: true, runValidators: true })
       .select('-password -passwordResetToken -passwordResetExpiresAt');
@@ -211,9 +267,11 @@ exports.forgotPassword = async (req, res) => {
       await user.save();
 
       const requestOrigin = String(req.get('origin') || '');
-      const frontendUrl = LOCAL_DEV_ORIGIN_REGEX.test(requestOrigin)
-        ? requestOrigin
-        : getRequiredEnv('FRONTEND_URL');
+      const isProduction = process.env.NODE_ENV === 'production';
+      
+      const frontendUrl = (isProduction || !LOCAL_DEV_ORIGIN_REGEX.test(requestOrigin))
+        ? getRequiredEnv('FRONTEND_URL')
+        : requestOrigin;
       const resetUrl = `${frontendUrl.replace(/\/$/, '')}/reset-password/${rawToken}`;
       const emailPayload = buildPasswordResetEmail({ name: user.name, resetUrl, expiresInMinutes: 15 });
 

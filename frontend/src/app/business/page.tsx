@@ -25,6 +25,7 @@ import { Button } from '@/components/ui/Button';
 import { Section } from '@/components/ui/Section';
 import { Card } from '@/components/ui/Card';
 import { AnimatePresence, motion } from 'framer-motion';
+import Image from 'next/image';
 
 const offeringMenuItems = [
   {
@@ -68,7 +69,7 @@ const offeringMenuItems = [
     icon: Phone,
   },
   {
-    title: 'Awign Expert',
+    title: 'AD Sky Expert',
     description: 'Effortlessly hire top talent on a contractual or project basis.',
     icon: Star,
   },
@@ -79,7 +80,7 @@ const offeringMenuItems = [
   },
   {
     title: 'Visual Merchandising and Branding',
-    description: "Optimize merchandising and branding with Awign's comprehensive solutions.",
+    description: "Optimize merchandising and branding with AD Sky Solution's comprehensive solutions.",
     icon: LayoutGrid,
   },
   {
@@ -230,7 +231,7 @@ const offeringTabs = {
       },
       {
         title: 'Visual Merchandising and Branding',
-        description: "Optimize merchandising and branding with Awign's comprehensive solutions.",
+        description: "Optimize merchandising and branding with AD Sky Solution's comprehensive solutions.",
         bullets: ['PAN India execution', 'Industry agnostic expertise', 'Value-driven approach'],
       },
       {
@@ -266,7 +267,7 @@ const whyWorkFeatures = [
 
 const clientSuccessStories = [
   {
-    title: '60,000+ Customers Onboarded: Awign Unlocks Revenue Growth for Top Indian Bank',
+    title: '60,000+ Customers Onboarded: AD Sky Solution Unlocks Revenue Growth for Top Indian Bank',
     metric: '5,000+',
     detail: 'Workforce across 250+ cities',
     image: '/success-story1.jpg',
@@ -282,7 +283,7 @@ const clientSuccessStories = [
 const howItWorksSteps = [
   {
     number: '1',
-    title: 'Project Configuration on Awign App',
+    title: 'Project Configuration on AD Sky App',
     description:
       'We configure your task within 24 hours and share your requirements with our trained workforce.',
   },
@@ -310,12 +311,17 @@ const mediaLogos = [
   'CNBC TV18',
 ] as const;
 
-function AwignMark({ className = '' }: { className?: string }) {
+function AdSkyLogo({ className = '' }: { className?: string }) {
   return (
-    <svg viewBox="0 0 64 64" fill="none" className={className} aria-hidden="true">
-      <path d="M32 8 46 48c.5 1.6-.7 3.2-2.4 3.2h-6.2a2.6 2.6 0 0 1-2.4-1.7l-3-8.8-3.1 8.8a2.6 2.6 0 0 1-2.4 1.7h-6.1c-1.8 0-3-1.7-2.4-3.4L32 8Z" stroke="currentColor" strokeWidth="4" strokeLinejoin="round" />
-      <path d="m22.8 34.8 9.2-8.6 9.1 8.6" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
+    <div className={`overflow-hidden rounded-full ${className}`}>
+      <Image
+        src="/logo.png"
+        alt="AD Sky Solution"
+        width={64}
+        height={64}
+        className="h-full w-full object-cover"
+      />
+    </div>
   );
 }
 
@@ -356,12 +362,11 @@ export default function BusinessPage() {
           <div className="w-full">
             <nav className="flex w-full items-center justify-between rounded-[32px] bg-[rgba(39,43,49,0.96)] px-8 py-3 shadow-[0_18px_40px_rgba(0,0,0,0.18)] backdrop-blur-md">
               <div className="flex items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-full border border-white/12 bg-white/5">
-                  <AwignMark className="h-5 w-5 text-white" />
+                <div className="flex h-10 w-10 items-center justify-center rounded-full border border-white/12 bg-white/5 overflow-hidden">
+                  <AdSkyLogo className="h-full w-full" />
                 </div>
                 <div className="flex flex-col">
-                  <span className="text-[17px] font-semibold tracking-[0.02em] text-white">awign</span>
-                  <span className="text-[10px] font-medium text-white/60">A Mynavi company</span>
+                  <span className="text-[17px] font-semibold tracking-[0.02em] text-white uppercase">AD Sky Solution</span>
                 </div>
                 <span className="hidden border-l border-white/10 pl-3 text-[13px] text-white/80 md:inline-flex">For Business</span>
               </div>
@@ -467,8 +472,8 @@ export default function BusinessPage() {
           </div>
         </div>
 
-        <div className="relative z-10 mx-auto flex w-full max-w-[1240px] !ml-[200] mt-[40px] pt-[50px] flex-col items-center px-6 pb-0 pt-16 text-center lg:px-8 lg:pt-20">
-          <div className="relative w-full max-w-[840px] !ml[350px] rounded-[40px] bg-[rgba(6,8,14,0.52)] px-10 py-16 shadow-[0_30px_80px_rgba(0,0,0,0.18)] backdrop-blur-[2px]">
+        <div className="relative z-10 mx-auto flex w-full max-w-[1240px] !ml-[400] mt-[40px] pt-[50px] flex-col items-center px-6 pb-0 pt-16 text-center lg:px-8 lg:pt-20">
+          <div className="relative w-full max-w-[840px] !ml[500px] !pl-[400px] rounded-[40px]  px-10 py-16 shadow-[0_30px_80px_rgba(0,0,0,0.18)] backdrop-blur-[2px]">
             <div className="absolute inset-y-0 left-1/2 hidden w-[180px] -translate-x-1/2 bg-[repeating-linear-gradient(90deg,transparent_0,transparent_14px,rgba(255,255,255,0.08)_14px,rgba(255,255,255,0.08)_17px)] opacity-35 md:block" />
             <div className="relative z-10">
               <div className="mb-3 text-[1rem] font-medium uppercase tracking-[0.04em] text-white/88">INDIA&apos;S #1</div>
@@ -478,16 +483,16 @@ export default function BusinessPage() {
               <p className="mx-auto mb-10 max-w-[760px] text-[1.15rem] leading-[1.45] text-white/85 lg:text-[1.35rem]">
                 We guarantee seamless execution of your core business operations at scale!
               </p>
-              <Link href="/business" className="inline-flex h-[64px] min-w-[280px] items-center justify-center rounded-full bg-white px-10 text-[1.05rem] font-semibold text-[#243548] transition-transform hover:scale-[1.01]">
+              <Link href="/business" className="inline-flex h-[50px] min-w-[280px] !mt-[10px] items-center justify-center rounded-full bg-white px-10 text-[1.05rem] font-semibold text-[#243548] transition-transform hover:scale-[1.01]">
                 Share Requirement
               </Link>
-              <div className="mx-auto mt-10 max-w-[640px] rounded-full bg-[radial-gradient(circle_at_center,#d4ff57_0%,#a4d335_38%,rgba(164,211,53,0.16)_100%)] px-6 py-3 text-[1.05rem] font-medium text-[#26372a]">
+              <div className="mx-auto !mt-10  max-w-[640px] rounded-full bg-[radial-gradient(circle_at_center,#d4ff57_0%,#a4d335_38%,rgba(164,211,53,0.16)_100%)] px-6 py-3 text-[1.05rem] font-medium text-[#26372a]">
                 Save up to <span className="font-bold">30%</span> of your revenue with our cost-effective solutions.
               </div>
             </div>
           </div>
 
-          <div className="logo-marquee relative mt-12 w-full overflow-hidden !ml-[200px] !pl-[100px] pb-8">
+          <div className="logo-marquee relative mt-12 w-full overflow-hidden !ml-[400px] !pl-[100px] pb-8">
             <div className="offerings-scroll flex gap-6 !mt-[80px] ">
               {[0, 1].map((copy) => (
                 <div key={copy} className="flex flex-shrink-0 items-stretch gap-6">
@@ -514,18 +519,18 @@ export default function BusinessPage() {
         <div className="mx-auto max-w-[1100px] !ml-[200px]">
           <div className="mx-auto max-w-[980px] overflow-hidden rounded-[36px] bg-white shadow-[0_28px_80px_rgba(15,23,42,0.12)] ring-1 ring-[#dfe6f2]">
             <div className="relative aspect-[16/9] bg-[#081224]">
-              <img src="/hero-bg.jpg" alt="Awign business video showcase" className="h-full w-full object-cover" />
+              <img src="/hero-bg.jpg" alt="AD Sky Solution business video showcase" className="h-full w-full object-cover" />
               <div className="absolute inset-0 bg-[linear-gradient(135deg,rgba(2,6,23,0.48),rgba(2,6,23,0.18))]" />
               <div className="absolute inset-0 flex items-center justify-center">
                 <button type="button" className="inline-flex items-center gap-3 rounded-full bg-white px-6 py-4 text-[1rem] font-semibold text-[#0f172a] shadow-[0_16px_40px_rgba(15,23,42,0.2)] transition-transform hover:scale-[1.02]">
                   <CirclePlay className="h-6 w-6" />
-                  Watch Awign in Action
+                  Watch AD Sky Solution in Action
                 </button>
               </div>
               <div className="absolute bottom-6 left-6 right-6 flex flex-wrap items-center justify-between gap-4 rounded-[24px] bg-[rgba(7,12,22,0.72)] px-5 py-4 text-left text-white backdrop-blur-sm">
                 <div>
                   <div className="text-[0.8rem] uppercase tracking-[0.24em] text-white/60">Featured Walkthrough</div>
-                  <div className="mt-1 text-[1.1rem] font-semibold">How enterprise teams run workforce operations on Awign</div>
+                  <div className="mt-1 text-[1.1rem] font-semibold">How enterprise teams run workforce operations on AD Sky Solution</div>
                 </div>
                 <div className="text-[0.95rem] text-white/80">Product, deployment, live monitoring, and payout orchestration</div>
               </div>
@@ -603,7 +608,7 @@ export default function BusinessPage() {
       <Section variant="white" spacing="md">
         <div className="mx-auto max-w-[1200px] text-center">
           <h2 className="text-[2.8rem] font-semibold tracking-[-0.04em] text-[#111827]">Why Work With Us?</h2>
-          <p className="mx-auto mt-5 max-w-[760px] text-[1.08rem] leading-8 text-[#6b7280]">
+          <p className="mx-auto mt-5 !ml-[150px] max-w-[760px] text-[1.08rem] leading-8 text-[#6b7280]">
             We combine platform intelligence, field execution, and a large verified workforce so your core operations
             move faster without sacrificing quality.
           </p>
@@ -734,8 +739,9 @@ export default function BusinessPage() {
                         ['Sham Jain', '16', '16', '14', '16'],
                       ].map((row) => (
                         <div key={row[0]} className="grid grid-cols-5 border-t border-[#dbe2ea] bg-white">
-                          {row.map((cell) => (
-                            <div key={cell} className="border-r border-[#dbe2ea] px-2 py-3 last:border-r-0">
+                          {row.map((cell , cellIndex) => (
+                            <div 
+                            key={`${row[0]}-${cellIndex}`} className="border-r border-[#dbe2ea] px-2 py-3 last:border-r-0">
                               {cell}
                             </div>
                           ))}
@@ -780,10 +786,10 @@ export default function BusinessPage() {
         />
         <div className="mx-auto max-w-[1200px] text-center">
           <h2 className="text-[2.8rem] font-semibold tracking-[-0.04em] text-[#17356c]">In Media</h2>
-          <p className="mx-auto mt-4 max-w-[760px] text-[1.05rem] leading-8 text-[#5870a6]">
+          <p className="mx-auto !ml-[200px] mt-4 max-w-[760px] text-[1.05rem] leading-8 text-[#5870a6]">
             We&apos;re making headlines - click to explore what the buzz is all about.
           </p>
-          <div className="mx-auto mt-14 grid max-w-[860px] grid-cols-2 items-center gap-x-12 gap-y-10 md:grid-cols-3 lg:grid-cols-4">
+          <div className="mx-auto mt-14 !ml-[200px] grid max-w-[860px] grid-cols-2 items-center gap-x-8 gap-y-10 md:grid-cols-3 lg:grid-cols-4">
             {mediaLogos.map((logo) => (
               <div
                 key={logo}

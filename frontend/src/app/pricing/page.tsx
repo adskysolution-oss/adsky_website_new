@@ -14,7 +14,7 @@ const plans = [
     currency: '₹',
     period: '/mo',
     cta: 'Get Started',
-    ctaHref: '/register',
+    ctaHref: '/pricing/basic',
     highlight: false,
     icon: BriefcaseBusiness,
     gradient: 'from-blue-500 to-cyan-500',
@@ -64,7 +64,7 @@ const plans = [
     price: { monthly: 49999, annual: 39999 },
     currency: '₹',
     period: '/mo',
-    cta: 'Contact Sales',
+    cta: 'Get Started',
     ctaHref: '/pricing/enterprise',
     highlight: false,
     icon: Shield,
@@ -131,7 +131,7 @@ export default function PricingPage() {
       {/* Pricing Cards */}
       <div className="max-w-6xl mx-auto px-4 sm:px-6 pb-16">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-start">
-          {plans.map((plan, i) => {
+          {plans.map((plan) => {
             const Icon = plan.icon;
             const price = annual ? plan.price.annual : plan.price.monthly;
 
@@ -215,7 +215,7 @@ export default function PricingPage() {
         <div className="mt-8 bg-gradient-to-r from-gray-900 to-gray-800 dark:from-[#111827] dark:to-[#0d1f35] rounded-2xl p-6 sm:p-8 flex flex-col sm:flex-row items-center justify-between gap-6">
           <div>
             <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Need something custom?</p>
-            <h3 className="text-xl font-black text-white">Let's build a plan for your scale</h3>
+            <h3 className="text-xl font-black text-white">Let&apos;s build a plan for your scale</h3>
             <p className="text-gray-400 text-sm mt-1">Dedicated infra, SLA guarantees, API access, and white-labeling available.</p>
           </div>
           <Link href="/contact"

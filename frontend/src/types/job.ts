@@ -17,7 +17,7 @@ export interface Job {
   companyName?: string;
   experienceLevel?: string;
   qualification?: string;
-  applicationsCount: number;
+  applicationsCount?: number;
   status: string;
   createdAt: string;
   tags?: string[];

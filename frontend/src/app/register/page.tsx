@@ -8,15 +8,23 @@ import { AuthField } from '@/components/auth/AuthField';
 import { AuthPageShell } from '@/components/auth/AuthPageShell';
 import { useAuth } from '@/context/AuthContext';
 import {
-  authApi,
-  extractAuthErrorMessage,
   isValidEmail,
   isValidPhone,
   PASSWORD_REGEX,
   PASSWORD_REQUIREMENTS_TEXT,
-} from '@/lib/auth';
+} from '@/lib/validation';
+import { extractErrorMessage } from '@/lib/api';
 
 type Role = 'Worker' | 'Client';
+
+type RegisterPayload = {
+  name: string;
+  email: string;
+  password: string;
+  role: Role;
+  phone?: string;
+  companyName?: string;
+};
 
 type RegisterErrors = {
   name?: string;
@@ -27,7 +35,12 @@ type RegisterErrors = {
   confirmPassword?: string;
 };
 
-const roleOptions: Array<{ value: Role; label: string; icon: typeof UserRound; description: string }> = [
+const roleOptions: Array<{
+  value: Role;
+  label: string;
+  icon: typeof UserRound;
+  description: string;
+}> = [
   {
     value: 'Worker',
     label: "I'm a Worker",
@@ -44,7 +57,8 @@ const roleOptions: Array<{ value: Role; label: string; icon: typeof UserRound; d
 
 export default function RegisterPage() {
   const router = useRouter();
-  const { login } = useAuth();
+  const { register } = useAuth();
+
   const [role, setRole] = useState<Role>('Worker');
   const [name, setName] = useState('');
   const [companyName, setCompanyName] = useState('');
@@ -103,7 +117,7 @@ export default function RegisterPage() {
     setIsLoading(true);
 
     try {
-      const payload: Record<string, string> = {
+      const payload: RegisterPayload = {
         name: name.trim(),
         email: email.trim(),
         password,
@@ -115,12 +129,14 @@ export default function RegisterPage() {
         payload.companyName = companyName.trim();
       }
 
-      const response = await authApi.post('/register', payload);
-      await login(response.data.token, response.data.role);
+      await register(payload);
       router.push('/onboarding');
     } catch (error) {
       setFormError(
-        extractAuthErrorMessage(error, 'Unable to create your account right now. Please try again.'),
+        extractErrorMessage(
+          error,
+          'Unable to create your account right now. Please try again.',
+        ),
       );
     } finally {
       setIsLoading(false);
@@ -131,7 +147,7 @@ export default function RegisterPage() {
     <AuthPageShell
       panelPosition="right"
       sideEyebrow="Create account"
-      sideTitle="Set up a secure account that’s ready for real-world execution."
+      sideTitle="Set up a secure account that's ready for real-world execution."
       sideDescription="Whether you are joining as a worker or a business, the registration flow is designed to be reliable, responsive, and easy to complete."
       sideHighlights={[
         'Worker and business sign-up paths with clear role selection.',
@@ -181,7 +197,10 @@ export default function RegisterPage() {
       <p className="mb-6 text-sm leading-6 text-slate-500">{roleDescription}</p>
 
       {formError ? (
-        <div className="mb-5 rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700" aria-live="polite">
+        <div
+          className="mb-5 rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700"
+          aria-live="polite"
+        >
           {formError}
         </div>
       ) : null}

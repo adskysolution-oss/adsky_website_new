@@ -2,9 +2,8 @@
 
 import { useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import axios from 'axios';
+import { apiClient } from '@/lib/api';
 import { Calendar, CheckCircle, ChevronLeft, ChevronRight, Clock3, Loader2, Mail, MapPin, Phone, User, X } from 'lucide-react';
-import { APPLICATIONS_API_URL } from '@/lib/auth';
 import { formatCompensation, getCompanyName } from '@/lib/jobs';
 import type { Job } from '@/types/job';
 
@@ -71,12 +70,9 @@ export default function ApplicationModal({ job, onClose }: Props) {
     setError('');
 
     try {
-      const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
-
-      await axios.post(
-        APPLICATIONS_API_URL,
-        { ...form, jobId: job._id },
-        token ? { headers: { Authorization: `Bearer ${token}` } } : {},
+      await apiClient.post(
+        '/applications',
+        { ...form, jobId: job._id }
       );
 
       setSubmitted(true);

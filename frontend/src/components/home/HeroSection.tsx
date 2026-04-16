@@ -1,5 +1,6 @@
-﻿'use client';
+'use client';
 
+import Image from 'next/image';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 
@@ -24,7 +25,7 @@ export default function HeroSection() {
           transition={{ duration: 0.7 }}
           className="mx-auto max-w-3xl text-center"
         >
-          <p className="mb-4 text-xs font-semibold uppercase tracking-[0.45em] text-white/65">Awign</p>
+          <p className="mb-4 text-xs font-semibold uppercase tracking-[0.45em] text-white/65">AD Sky Solution</p>
           <h1 className="text-balance text-5xl font-extrabold leading-[1.05] tracking-[-0.06em] sm:text-6xl lg:text-7xl">
             Work-as-a-Service Platform!
           </h1>
@@ -65,10 +66,13 @@ export default function HeroSection() {
                   <div className="relative -translate-x-1/2 -translate-y-1/2">
                     <div className="absolute left-1/2 top-1/2 -z-10 h-px w-[260px] -translate-x-1/2 -translate-y-1/2 rotate-[var(--angle)] border-t border-dashed border-white/25" style={{ ['--angle' as string]: `${role.angle}deg` }} />
                     <div className={`h-26 w-26 overflow-hidden rounded-full border-4 border-white shadow-2xl ${role.ring}`}>
-                      <img
+                      <Image
                         src={`https://images.unsplash.com/${role.image}?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=180`}
                         alt={role.name}
+                        width={80}
+                        height={80}
                         className="h-full w-full object-cover"
+                        unoptimized
                       />
                     </div>
                     <div className="absolute -bottom-10 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full bg-black/30 px-3 py-1 text-sm font-medium text-white backdrop-blur-sm">
@@ -87,11 +91,14 @@ export default function HeroSection() {
             className="relative z-10"
           >
             <div className="absolute inset-x-12 bottom-0 h-12 rounded-full bg-black/35 blur-2xl" />
-            <img
+            <Image
               src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=640"
               alt="Professional worker"
+              width={330}
+              height={470}
               className="relative h-[360px] w-[260px] object-cover object-top sm:h-[430px] sm:w-[300px] lg:h-[470px] lg:w-[330px]"
               style={{ clipPath: 'polygon(50% 0%, 100% 24%, 100% 100%, 0% 100%, 0% 24%)', filter: 'drop-shadow(0 24px 60px rgba(0,0,0,0.45))' }}
+              unoptimized
             />
           </motion.div>
 
@@ -99,10 +106,13 @@ export default function HeroSection() {
             {orbitingRoles.slice(0, 4).map((role) => (
               <div key={role.name} className="flex items-center gap-3 rounded-2xl border border-white/12 bg-white/8 px-4 py-3 backdrop-blur-sm">
                 <div className={`h-10 w-10 overflow-hidden rounded-full border-2 border-white ${role.ring}`}>
-                  <img
+                  <Image
                     src={`https://images.unsplash.com/${role.image}?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=120`}
                     alt={role.name}
+                    width={40}
+                    height={40}
                     className="h-full w-full object-cover"
+                    unoptimized
                   />
                 </div>
                 <span className="text-sm font-medium text-white/88">{role.name}</span>

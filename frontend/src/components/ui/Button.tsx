@@ -7,13 +7,15 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   asChild?: boolean;
 }
 
+
 const Button = forwardRef<HTMLButtonElement, ButtonProps>(
+  
   ({ className = '', variant = 'primary', size = 'lg', asChild = false , children, ...props }, ref) => {
-    //  const Comp = asChild ? Slot : 'button';
+     const Comp = asChild ? Slot : 'button';
     // Base styles: precise flex center, rounded pill shape, text-center + transition
     const baseStyles = 'inline-flex items-center justify-center rounded-full font-semibold transition-all duration-200';
     
-    // Variant styles referencing exact Awign colors
+    // Variant styles referencing exact AD Sky colors
     const variants = {
       primary: 'bg-[#c9ff45] text-[#1b1f22] hover:scale-[1.02] shadow-[0_4px_14px_rgba(201,255,69,0.2)]', // Lime/Neon
       secondary: 'bg-white text-[#24344a] shadow-[0_12px_24px_rgba(0,0,0,0.12)] hover:scale-[1.02]',     // White over dark bg
@@ -30,13 +32,13 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     };
 
     return (
-      <button
-        ref={ref}
-        className={`${baseStyles} ${variants[variant]} ${sizes[size]} ${className}`}
-        {...props}
-      >
-        {children}
-      </button>
+     <Comp
+    ref={ref}
+    className={`${baseStyles} ${variants[variant]} ${sizes[size]} ${className}`}
+    {...props}
+  >
+    {children}
+  </Comp>
     );
   }
 );

@@ -40,7 +40,7 @@ export default function TestimonialsSection() {
           >
             <Quote className="absolute top-6 right-6 w-10 h-10 text-[#0a2d67]/10" />
             <p className="text-gray-700 italic mb-8 relative z-10 leading-relaxed text-lg">
-              "{t.text}"
+              &quot;{t.text}&quot;
             </p>
             <div className="flex items-center">
               <div className="mr-4 flex h-12 w-12 items-center justify-center rounded-full bg-[linear-gradient(135deg,#0a2d67,#d21f3c)] text-xl font-bold text-white shadow-sm">

@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
-import axios from 'axios';
+import { apiClient } from '@/lib/api';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { motion } from 'framer-motion';
@@ -9,6 +9,7 @@ import { ArrowRight, Briefcase, ChevronRight } from 'lucide-react';
 import ApplicationModal from '@/components/jobs/ApplicationModal';
 import { formatCompensation, getCompanyName } from '@/lib/jobs';
 import type { Job } from '@/types/job';
+import { useAuth } from '@/context/AuthContext';
 
 type Category = {
   _id: string;
@@ -36,7 +37,7 @@ const CATEGORY_META: Record<string, CategoryMeta> = {
     requirements: 'Basic requirements: 18+ age, 2 wheeler required, Driving License',
     salary: 'Rs 20,000 - Rs 25,000 / month',
     overview:
-      'Awign partners with last-mile and hyperlocal companies to match delivery associates with flexible earning opportunities near their location.',
+      'AD Sky Solution partners with last-mile and hyperlocal companies to match delivery associates with flexible earning opportunities near their location.',
   },
   'Field Sales': {
     displayTitle: 'Field Survey Jobs',
@@ -89,6 +90,7 @@ const CATEGORY_META: Record<string, CategoryMeta> = {
 export default function OfficeDashboard() {
   const searchParams = useSearchParams();
   const selectedCategory = searchParams.get('category') || '';
+  const { isAuthenticated } = useAuth();
 
   const [categories, setCategories] = useState<Category[]>([]);
   const [jobs, setJobs] = useState<Job[]>([]);
@@ -98,18 +100,14 @@ export default function OfficeDashboard() {
   useEffect(() => {
     const fetchOfficeData = async () => {
       try {
-        const token = localStorage.getItem('token');
-        if (!token) {
+        if (!isAuthenticated) {
           setLoading(false);
           return;
         }
 
-        const config = { headers: { Authorization: `Bearer ${token}` } };
-
         const [categoriesRes, jobsRes] = await Promise.all([
-          axios.get<Category[]>('http://localhost:5000/api/categories', config),
-          axios.get<{ jobs: Job[] }>('http://localhost:5000/api/jobs', {
-            ...config,
+          apiClient.get<Category[]>('/categories'),
+          apiClient.get<{ jobs: Job[] }>('/jobs', {
             params: selectedCategory ? { category: selectedCategory } : undefined,
           }),
         ]);
@@ -126,7 +124,7 @@ export default function OfficeDashboard() {
     };
 
     void fetchOfficeData();
-  }, [selectedCategory]);
+  }, [selectedCategory, isAuthenticated]);
 
   const activeCategory = useMemo(
     () => categories.find((category) => category.title === selectedCategory) ?? null,

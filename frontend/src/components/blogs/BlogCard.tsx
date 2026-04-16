@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import Link from 'next/link';
 import type { BlogPost } from '@/lib/blogs';
 
@@ -6,10 +7,13 @@ export default function BlogCard({ post }: { post: BlogPost }) {
     <article className="group overflow-hidden rounded-[28px] border border-[#e5e7eb] bg-white shadow-[0_18px_50px_rgba(15,23,42,0.08)] transition-transform duration-300 hover:-translate-y-1">
       <Link href={`/blogs/${post.slug}`} className="block">
         <div className="aspect-[16/10] overflow-hidden bg-[#e5e7eb]">
-          <img
+          <Image
             src={post.image}
             alt={post.title}
+            width={400}
+            height={250}
             className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+            unoptimized={post.image.startsWith('http')}
           />
         </div>
       </Link>

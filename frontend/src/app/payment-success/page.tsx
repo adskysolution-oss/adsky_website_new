@@ -3,7 +3,8 @@ import { useEffect, useState, Suspense } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { CheckCircle2, Loader2 } from 'lucide-react';
-import { verifyPaymentOrder } from '@/services/payment';
+import { useAuth } from '@/context/AuthContext';
+import { verifyPaymentOrder } from '@/services/payment.service';
 
 function PaymentSuccessContent() {
   const router = useRouter();
@@ -20,14 +21,15 @@ function PaymentSuccessContent() {
     paymentDate: string;
   }>(null);
 
+  const { isAuthenticated } = useAuth();
+
   useEffect(() => {
-    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
-    if (!token || !orderId) {
-      router.replace(`/payment-failed?plan=${plan}`);
+    if (!isAuthenticated || !orderId) {
+      if (!orderId) router.replace(`/payment-failed?plan=${plan}`);
       return;
     }
 
-    verifyPaymentOrder({ token, orderId })
+    verifyPaymentOrder({ orderId })
       .then((data) => {
         setPaymentData(data);
         setStatus('success');
@@ -37,7 +39,7 @@ function PaymentSuccessContent() {
         const reason = error.response?.data?.message || 'We could not confirm this payment.';
         router.replace(`/payment-failed?plan=${plan}&order_id=${orderId}&reason=${encodeURIComponent(reason)}`);
       });
-  }, [orderId, plan, router]);
+  }, [orderId, plan, router, isAuthenticated]);
 
   return (
     <div className="min-h-screen bg-[#020817] px-4 pt-32 text-white">

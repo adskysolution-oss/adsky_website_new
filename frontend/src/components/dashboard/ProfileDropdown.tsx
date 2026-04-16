@@ -1,12 +1,14 @@
 'use client';
 import { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+
 import { 
   User, LogOut, FileText, Share2, Award, Download, 
   AlertCircle, ShieldAlert, Star, Camera 
 } from 'lucide-react';
 import type { ReactNode } from 'react';
+
+import { useAuth } from '@/context/AuthContext';
 
 interface MenuItem {
   href: string;
@@ -18,7 +20,8 @@ interface MenuItem {
 export default function ProfileDropdown() {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
-  const router = useRouter();
+
+  const { logout } = useAuth();
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -30,10 +33,8 @@ export default function ProfileDropdown() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const handleLogout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('role');
-    router.push('/login');
+  const handleLogout = async () => {
+    await logout();
   };
 
   const menuItems: MenuItem[] = [

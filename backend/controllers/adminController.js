@@ -9,10 +9,14 @@ exports.getAdminStats = async (req, res) => {
         const totalUsers = await User.countDocuments();
         const activeJobs = await Job.countDocuments({ status: 'Open' });
         const totalApplications = await Application.countDocuments();
-        
-        // Mock revenue and vendor counts since those modules are minimal right now
-        const totalRevenue = 154000;
         const totalVendors = await User.countDocuments({ role: { $in: ['IT Vendor', 'Gig Vendor'] } });
+        
+        // Calculate real revenue from completed payments
+        const revenueData = await Payment.aggregate([
+            { $match: { status: 'Completed' } },
+            { $group: { _id: null, total: { $sum: '$amount' } } }
+        ]);
+        const totalRevenue = revenueData.length > 0 ? revenueData[0].total : 0;
 
         res.json({
             totalUsers,
@@ -134,16 +138,6 @@ exports.getAllVendors = async (req, res) => {
 };
 
 
-// Seeder hack: Quick undocumented endpoint just to promote current user to Admin for testing
-// I will not expose this in production, just using it so user can test admin panel
-exports.makeMeAdmin = async (req, res) => {
-    try {
-        const user = await User.findByIdAndUpdate(req.user.id, { role: 'Admin' }, { new: true });
-        res.json({ message: 'You are now an Admin! Please relogin to refresh token.', user });
-    } catch (error) {
-        res.status(500).json({ message: error.message });
-    }
-};
 
 // Admin: Create a job (uses admin's own user ID as client)
 exports.createAdminJob = async (req, res) => {
@@ -171,6 +165,120 @@ exports.deleteAdminJob = async (req, res) => {
     try {
         await Job.findByIdAndDelete(req.params.id);
         res.json({ message: 'Job deleted' });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+// Admin: Get Chart Data (Monthly Revenue and Applications)
+exports.getAdminChartData = async (req, res) => {
+    try {
+        const sixMonthsAgo = new Date();
+        sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
+        sixMonthsAgo.setDate(1);
+
+        // Aggregate Revenue
+        const revenueAgg = await Payment.aggregate([
+            { $match: { status: 'Completed', createdAt: { $gte: sixMonthsAgo } } },
+            {
+                $group: {
+                    _id: { month: { $month: "$createdAt" }, year: { $year: "$createdAt" } },
+                    revenue: { $sum: "$amount" }
+                }
+            },
+            { $sort: { "_id.year": 1, "_id.month": 1 } }
+        ]);
+
+        // Aggregate Applications
+        const applicationsAgg = await Application.aggregate([
+            { $match: { appliedAt: { $gte: sixMonthsAgo } } },
+            {
+                $group: {
+                    _id: { month: { $month: "$appliedAt" }, year: { $year: "$appliedAt" } },
+                    count: { $sum: 1 }
+                }
+            },
+            { $sort: { "_id.year": 1, "_id.month": 1 } }
+        ]);
+
+        // Merge data
+        const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+        const combined = [];
+        
+        for (let i = 0; i < 7; i++) {
+            const date = new Date();
+            date.setMonth(date.getMonth() - (6 - i));
+            const m = date.getMonth() + 1;
+            const y = date.getFullYear();
+            
+            const rev = revenueAgg.find(r => r._id.month === m && r._id.year === y)?.revenue || 0;
+            const app = applicationsAgg.find(a => a._id.month === m && a._id.year === y)?.count || 0;
+            
+            combined.push({
+                name: monthNames[date.getMonth()],
+                revenue: rev,
+                applications: app
+            });
+        }
+
+        res.json(combined);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+// Admin: Get Chart Data (Monthly Revenue and Applications)
+exports.getAdminChartData = async (req, res) => {
+    try {
+        const sixMonthsAgo = new Date();
+        sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
+        sixMonthsAgo.setDate(1);
+
+        // Aggregate Revenue
+        const revenueAgg = await Payment.aggregate([
+            { $match: { status: 'Completed', createdAt: { $gte: sixMonthsAgo } } },
+            {
+                $group: {
+                    _id: { month: { $month: "$createdAt" }, year: { $year: "$createdAt" } },
+                    revenue: { $sum: "$amount" }
+                }
+            },
+            { $sort: { "_id.year": 1, "_id.month": 1 } }
+        ]);
+
+        // Aggregate Applications
+        const applicationsAgg = await Application.aggregate([
+            { $match: { appliedAt: { $gte: sixMonthsAgo } } },
+            {
+                $group: {
+                    _id: { month: { $month: "$appliedAt" }, year: { $year: "$appliedAt" } },
+                    count: { $sum: 1 }
+                }
+            },
+            { $sort: { "_id.year": 1, "_id.month": 1 } }
+        ]);
+
+        // Merge data
+        const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+        const combined = [];
+        
+        for (let i = 0; i < 7; i++) {
+            const date = new Date();
+            date.setMonth(date.getMonth() - (6 - i));
+            const m = date.getMonth() + 1;
+            const y = date.getFullYear();
+            
+            const rev = revenueAgg.find(r => r._id.month === m && r._id.year === y)?.revenue || 0;
+            const app = applicationsAgg.find(a => a._id.month === m && a._id.year === y)?.count || 0;
+            
+            combined.push({
+                name: monthNames[date.getMonth()],
+                revenue: rev,
+                applications: app
+            });
+        }
+
+        res.json(combined);
     } catch (error) {
         res.status(500).json({ message: error.message });
     }

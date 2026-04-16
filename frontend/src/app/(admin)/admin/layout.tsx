@@ -3,66 +3,59 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { 
-  Users, Briefcase, CheckSquare, Settings, BarChart2, 
-  CreditCard, Menu, X, Bell, LogOut, ClipboardList
+  Users, Briefcase, CheckSquare, 
+  CreditCard, Menu, Bell, LogOut ,Home ,  Building2  
 } from 'lucide-react';
-import axios from 'axios';
+import type { LucideIcon } from 'lucide-react';
+import { useAuth } from '@/context/AuthContext';
 
+
+type MenuItem = {
+  name: string;
+  path: string;
+  icon: LucideIcon;
+};
+
+const menuItems: MenuItem[] = [
+  { name: 'Dashboard', path: '/admin', icon: Home },
+  { name: 'Jobs', path: '/admin/jobs', icon: Briefcase },
+  { name: 'Applications', path: '/admin/applications', icon: Users },
+  { name: 'Users', path: '/admin/users', icon: Users },
+  { name: 'Payments', path: '/admin/payments', icon: CreditCard },
+  { name: 'Tasks', path: '/admin/tasks', icon: CheckSquare },
+  { name: 'Vendors', path: '/admin/vendors', icon: Building2 },
+];
 export default function AdminLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
   const [sidebarOpen, setSidebarOpen] = useState(true);
-  const [isAdmin, setIsAdmin] = useState(true);
+  const { user, isLoading: authLoading } = useAuth();
   const pathname = usePathname();
   const router = useRouter();
 
-  // Temporary backdoor to promote user to admin 
-  const upgradeToAdmin = async () => {
-      try {
-          const token = localStorage.getItem('token');
-          if (token) {
-              await axios.post('http://localhost:5000/api/admin/make-me-admin', {}, {
-                  headers: { Authorization: `Bearer ${token}` }
-              });
-              alert("You are now Admin! Please log out and log back in to refresh your token.");
-              localStorage.removeItem('token');
-              localStorage.removeItem('role');
-              router.push('/login');
-          }
-      } catch(e) {
-          console.error(e);
-      }
-  }
+  useEffect(() => {
+     if (!authLoading && user?.role !== 'Admin') {
+         router.replace('/office');
+     }
+  }, [user, authLoading, router]);
 
-  // Sidebar mapping
-  const menuItems = [
-    { name: 'Dashboard', path: '/admin', icon: <BarChart2 size={20} /> },
-    { name: 'Users', path: '/admin/users', icon: <Users size={20} /> },
-    { name: 'Jobs', path: '/admin/jobs', icon: <Briefcase size={20} /> },
-    { name: 'Applications', path: '/admin/applications', icon: <ClipboardList size={20} /> },
-    { name: 'Tasks', path: '/admin/tasks', icon: <CheckSquare size={20} /> },
-    { name: 'Vendors', path: '/admin/vendors', icon: <Settings size={20} /> },
-    { name: 'Payments', path: '/admin/payments', icon: <CreditCard size={20} /> },
-  ];
-
-  if (!isAdmin) {
+  if (authLoading) {
       return (
-          <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-dark-bg p-4 flex-col">
-              <h1 className="text-3xl font-bold mb-4 text-gray-900 dark:text-white">Access Denied</h1>
-              <p className="text-gray-500 mb-8 max-w-sm text-center">You need Admin privileges to view this area.</p>
-              
-              <button onClick={upgradeToAdmin} className="bg-red-500 hover:bg-red-600 text-white font-bold px-6 py-3 rounded-xl mb-4">
-                  Test Hack: Make Me Admin
-              </button>
-              
-              <Link href="/" className="text-primary font-bold hover:underline">
-                  Return to User App
-              </Link>
+          <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-dark-bg">
+              <div className="flex flex-col items-center gap-3">
+                  <div className="w-10 h-10 border-4 border-primary border-t-transparent rounded-full animate-spin" />
+                  <p className="text-gray-500 text-sm">Verifying Access...</p>
+              </div>
           </div>
-      )
+      );
   }
+
+  if (user?.role !== 'Admin') {
+      return null;
+  }
+  
 
   return (
     <div className="flex h-screen bg-gray-50 dark:bg-[#080d1a] overflow-hidden">
@@ -86,6 +79,7 @@ export default function AdminLayout({
 
         <div className="flex-1 py-6 overflow-y-auto space-y-1 px-3">
           {menuItems.map((item) => {
+            const Icon = item.icon; 
             const isActive = pathname === item.path || pathname.startsWith(`${item.path}/`);
             // Exact match for dashboard
             const isStrictActive = item.name === 'Dashboard' ? pathname === item.path : isActive;
@@ -99,7 +93,7 @@ export default function AdminLayout({
                 `}
               >
                 <div className={`${isStrictActive ? 'text-red-500' : 'text-gray-400'} ${!sidebarOpen ? '' : 'mr-3'}`}>
-                  {item.icon}
+                  <Icon size={20}/>
                 </div>
                 {sidebarOpen && <span>{item.name}</span>}
               </Link>

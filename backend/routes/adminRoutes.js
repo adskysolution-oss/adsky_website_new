@@ -14,21 +14,19 @@ const {
     getAllPayments,
     updatePaymentStatus,
     getAllVendors,
-    makeMeAdmin
+    getAdminChartData
 } = require('../controllers/adminController');
 const { protect, authorize } = require('../middlewares/authMiddleware');
 
 // Mount middleware
 router.use(protect);
 
-// Backdoor just for testing so user can promote themselves
-router.post('/make-me-admin', makeMeAdmin);
-
 // Strict admin only below
 router.use(authorize('Admin'));
 
 // Analytics
 router.get('/stats', getAdminStats);
+router.get('/charts', getAdminChartData);
 
 // Users
 router.get('/users', getAllUsers);

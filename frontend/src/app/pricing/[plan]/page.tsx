@@ -2,15 +2,17 @@
 import Link from 'next/link';
 import { useEffect, useMemo, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
+import { extractErrorMessage } from '@/lib/api';
+
 import { ArrowLeft, Loader2, ShieldCheck } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { getPlanBySlug } from '@/lib/pricing';
-import { createPaymentOrder, openCashfreeCheckout, submitCustomQuote } from '@/services/payment';
+import { createPaymentOrder, openCashfreeCheckout, submitCustomQuote } from '@/services/payment.service';
 
 export default function PricingPlanPage() {
   const params = useParams<{ plan: string }>();
   const router = useRouter();
-  const { user, isLoading } = useAuth();
+  const { user, isLoading, isAuthenticated } = useAuth();
   const plan = useMemo(() => getPlanBySlug(params?.plan), [params]);
   const [actionError, setActionError] = useState('');
   const [actionSuccess, setActionSuccess] = useState('');
@@ -32,9 +34,8 @@ export default function PricingPlanPage() {
   }, [user]);
 
   const handlePurchase = async () => {
-    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
-    if (!token) {
-      router.push('/login');
+    if (!isAuthenticated) {
+      router.push(`/login?redirect=/pricing/${params?.plan}`);
       return;
     }
 
@@ -47,15 +48,18 @@ export default function PricingPlanPage() {
 
     try {
       const order = await createPaymentOrder({
-        token,
         planSlug: plan.slug,
         amount: plan.amount,
       });
+      
+      if (!order.payment_session_id) {
+        throw new Error('Order creation failed on server.');
+      }
+
       await openCashfreeCheckout(order.payment_session_id);
-    } catch (error: any) {
-      const message = error.response?.data?.message || error.message || 'Unable to start payment. Please try again.';
+    } catch (error: unknown) {
+      const message = extractErrorMessage(error);
       setActionError(message);
-      router.push(`/payment-failed?plan=${plan.slug}`);
     } finally {
       setIsSubmitting(false);
     }
@@ -63,8 +67,7 @@ export default function PricingPlanPage() {
 
   const handleQuoteSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
-    if (!token) {
+    if (!isAuthenticated) {
       router.push('/login');
       return;
     }
@@ -75,13 +78,12 @@ export default function PricingPlanPage() {
 
     try {
       const response = await submitCustomQuote({
-        token,
         ...quoteForm,
       });
       setActionSuccess(response.message);
       setQuoteForm((prev) => ({ ...prev, requirements: '' }));
-    } catch (error: any) {
-      setActionError(error.response?.data?.message || 'Unable to submit your quote request right now.');
+    } catch (error: unknown) {
+      setActionError(extractErrorMessage(error));
     } finally {
       setIsSubmitting(false);
     }

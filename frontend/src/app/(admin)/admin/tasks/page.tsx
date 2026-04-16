@@ -1,10 +1,39 @@
 'use client';
 import { useState, useEffect } from 'react';
-import axios from 'axios';
+import { apiClient } from '@/lib/api';
 import { Search, CheckSquare, FileText, CheckCircle, XCircle } from 'lucide-react';
 
+
+type TaskStatus = 'Pending' | 'Submitted' | 'Approved' | 'Rejected' | string;
+
+interface TaskJob {
+  _id?: string;
+  title?: string;
+}
+
+interface TaskWorker {
+  _id?: string;
+  name?: string;
+  email?: string;
+}
+
+interface TaskAttachment {
+  _id?: string;
+  url?: string;
+  fileName?: string;
+}
+
+interface Task {
+  _id: string;
+  description?: string;
+  status: TaskStatus;
+  job?: TaskJob;
+  worker?: TaskWorker;
+  attachments?: TaskAttachment[];
+}
+
 export default function AdminTasksPage() {
-  const [tasks, setTasks] = useState<any[]>([]);
+  const [tasks, setTasks] = useState<Task[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
 
@@ -12,14 +41,13 @@ export default function AdminTasksPage() {
     fetchTasks();
   }, []);
 
+  
+
   const fetchTasks = async () => {
     try {
-      const token = localStorage.getItem('token');
-      const res = await axios.get('http://localhost:5000/api/admin/tasks', {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      const res = await apiClient.get('/admin/tasks');
       setTasks(res.data);
-    } catch (err) {
+    } catch (err :unknown) {
       console.error(err);
     } finally {
       setLoading(false);
@@ -28,12 +56,9 @@ export default function AdminTasksPage() {
 
   const updateTaskStatus = async (id: string, newStatus: string) => {
     try {
-      const token = localStorage.getItem('token');
-      await axios.patch(`http://localhost:5000/api/admin/tasks/${id}/status`, { status: newStatus }, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      await apiClient.patch(`/admin/tasks/${id}/status`, { status: newStatus });
       setTasks(tasks.map(t => t._id === id ? { ...t, status: newStatus } : t));
-    } catch (err) {
+    } catch (err : unknown) {
       console.error("Failed to update task status");
     }
   };

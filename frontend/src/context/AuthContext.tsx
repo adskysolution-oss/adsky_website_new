@@ -1,103 +1,120 @@
 'use client';
-import { createContext, useContext, useEffect, useState, useCallback } from 'react';
+
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+  type ReactNode,
+} from 'react';
 import { useRouter } from 'next/navigation';
-import { authApi } from '@/lib/auth';
+import { authService } from '@/services/auth.service';
+import { extractErrorMessage } from '@/lib/api';
+
+type PublicRole = 'Worker' | 'Client';
+type UserRole = PublicRole | 'IT Vendor' | 'Gig Vendor' | 'Admin';
 
 interface User {
   _id: string;
   name: string;
   email: string;
-  role: string;
+  role: UserRole;
   phone?: string;
   profileImage?: string;
   onboardingCompleted: boolean;
   progressPercentage?: number;
 }
 
+interface LoginCredentials {
+  email: string;
+  password: string;
+}
+
+interface RegisterPayload {
+  name: string;
+  email: string;
+  password: string;
+  role: PublicRole;
+  phone?: string;
+  companyName?: string;
+}
+
 interface AuthContextType {
   user: User | null;
-  token: string | null;
+  isAuthenticated: boolean;
   isLoading: boolean;
-  login: (token: string, role: string) => Promise<void>;
-  logout: () => void;
+  login: (credentials: LoginCredentials) => Promise<void>;
+  register: (data: RegisterPayload) => Promise<void>;
+  logout: () => Promise<void>;
   refreshUser: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
-export function AuthProvider({ children }: { children: React.ReactNode }) {
+export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
-  const [token, setToken] = useState<string | null>(() => {
-    if (typeof window === 'undefined') {
-      return null;
-    }
-
-    return localStorage.getItem('token');
-  });
-  const [isLoading, setIsLoading] = useState<boolean>(() => {
-    if (typeof window === 'undefined') {
-      return true;
-    }
-
-    return Boolean(localStorage.getItem('token'));
-  });
+  const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
 
-  const fetchUser = useCallback(async (tk: string) => {
+  const fetchUser = useCallback(async () => {
     try {
-      const res = await authApi.get('/profile', {
-        headers: { Authorization: `Bearer ${tk}` },
-      });
-      setUser(res.data);
+      const data = (await authService.me()) as User;
+      setUser(data);
     } catch {
-      localStorage.removeItem('token');
-      localStorage.removeItem('role');
-      setToken(null);
       setUser(null);
-    }
-  }, []);
-
-  const hydrateUser = useCallback(async (tk: string) => {
-    try {
-      await fetchUser(tk);
     } finally {
       setIsLoading(false);
     }
-  }, [fetchUser]);
+  }, []);
 
   useEffect(() => {
-    if (!token) {
-      return;
-    }
-
-    void hydrateUser(token);
-  }, [hydrateUser, token]);
-
-  const login = useCallback(async (newToken: string, role: string) => {
-    localStorage.setItem('token', newToken);
-    localStorage.setItem('role', role);
-    setToken(newToken);
-    setIsLoading(true);
-    await fetchUser(newToken);
-    setIsLoading(false);
+    void fetchUser();
   }, [fetchUser]);
 
-  const logout = useCallback(() => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('role');
-    setToken(null);
-    setUser(null);
-    setIsLoading(false);
-    router.push('/login');
+  const login = useCallback(async (credentials: LoginCredentials) => {
+    try {
+      const data = (await authService.login(credentials)) as User;
+      setUser(data);
+    } catch (error) {
+      throw new Error(extractErrorMessage(error));
+    }
+  }, []);
+
+  const register = useCallback(async (data: RegisterPayload) => {
+    try {
+      const response = (await authService.register(data)) as User;
+      setUser(response);
+    } catch (error) {
+      throw new Error(extractErrorMessage(error));
+    }
+  }, []);
+
+  const logout = useCallback(async () => {
+    try {
+      await authService.logout();
+    } finally {
+      setUser(null);
+      router.push('/login');
+    }
   }, [router]);
 
   const refreshUser = useCallback(async () => {
-    const tk = localStorage.getItem('token');
-    if (tk) await fetchUser(tk);
+    await fetchUser();
   }, [fetchUser]);
 
   return (
-    <AuthContext.Provider value={{ user, token, isLoading, login, logout, refreshUser }}>
+    <AuthContext.Provider
+      value={{
+        user,
+        isAuthenticated: !!user,
+        isLoading,
+        login,
+        register,
+        logout,
+        refreshUser,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );
@@ -105,6 +122,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
 export function useAuth() {
   const ctx = useContext(AuthContext);
-  if (!ctx) throw new Error('useAuth must be used within AuthProvider');
+
+  if (!ctx) {
+    throw new Error('useAuth must be used within AuthProvider');
+  }
+
   return ctx;
 }

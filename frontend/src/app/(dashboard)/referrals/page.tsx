@@ -8,8 +8,11 @@ export default function ReferralsPage() {
 
   useEffect(() => {
     // Generate a referral code based on userId stored or a default
-    const code = 'ADSKY' + Math.random().toString(36).substring(2, 7).toUpperCase();
-    setReferralCode(code);
+    const generateCode = () => {
+      const code = 'ADSKY' + Math.random().toString(36).substring(2, 7).toUpperCase();
+      setReferralCode(code);
+    };
+    generateCode();
   }, []);
 
   const handleCopy = () => {
