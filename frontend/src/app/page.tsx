@@ -538,7 +538,7 @@ export default function Home() {
                 className="absolute left-1/2 bottom-[-26px] z-20 h-[340px] w-[260px] -translate-x-1/2 overflow-hidden lg:h-[380px] lg:w-[286px]"
               >
                 <Image
-                  src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=700"
+                  src="/hero.webp"
                   alt="Professional"
                   width={286}
                   height={380}
