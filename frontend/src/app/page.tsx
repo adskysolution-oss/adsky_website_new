@@ -419,6 +419,7 @@ export default function Home() {
 
   return (
     <div className="min-h-screen overflow-x-hidden bg-white text-slate-900" style={{ fontFamily: '"Montserrat Variable", sans-serif' }}>
+    <div className="min-h-screen overflow-hidden bg-white text-slate-900" style={{ fontFamily: '"Montserrat Variable", sans-serif' }}>
       <section className="relative min-h-screen w-full overflow-hidden bg-[radial-gradient(circle_at_50%_34%,rgba(33,94,146,0.72),rgba(7,22,41,0.95)_40%,#01060e_78%)] text-white">
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_18%_35%,rgba(18,167,134,0.18),transparent_28%),radial-gradient(circle_at_80%_34%,rgba(28,74,148,0.18),transparent_34%),linear-gradient(180deg,rgba(0,0,0,0.06),rgba(0,0,0,0.18))]" />
 
@@ -551,7 +552,8 @@ export default function Home() {
           </div>
         </div>
       </section>
-
+       </div>
+ 
       <Section variant="black" spacing="md">
         <div className="w-full px-4 md:px-6">
           <div style={homeWideShellStyle} className="flex flex-col items-center justify-center">
@@ -591,7 +593,7 @@ export default function Home() {
       <Section variant="white" spacing="lg">
         <div className="mx-auto flex w-full max-w-[1200px] flex-col items-center justify-center px-4">
           <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }} className="mx-auto mb-16 max-w-[760px] text-center sm:mb-20">
-            <h2 className="leading-[1.12] text-[#111827]" style={{ fontSize: '2.5rem', fontWeight: 700 }}>Why work with us?</h2>
+            <h2 className="leading-[1.12] style={{ fontSize: '2.5rem', fontWeight: 700 }}">Why work with us?</h2>
           </motion.div>
 
           <motion.div
@@ -702,26 +704,28 @@ export default function Home() {
         }}
       >
         <div className="w-full px-4 md:px-6">
-          <div style={homeWideShellStyle} className="w-full flex flex-col items-center justify-center">
-            <motion.div initial={{ opacity: 0, y: 18 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }} className="mx-auto mb-14 flex w-full max-w-[760px] flex-col items-center text-center sm:mb-16">
-              <h2 className="mb-8 text-white" style={{ fontSize: '2.2rem', fontWeight: 600 }}>Our Offerings</h2>
+          <div style={homeWideShellStyle} className="w-full flex flex-col items-center justify-center !mt-[5%]">
+            <motion.div initial={{ opacity: 0, y: 18 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }} className="mx-auto mb-14 flex max-w-[760px] flex-col items-center text-center sm:mb-16 !w-[100%]">
+              <h2 className="mb-9 !mt-[5%] text-white" style={{ fontSize: '2.2rem', fontWeight: 600 }}>Our Offerings</h2>
 
-              <div className="mb-8 inline-flex items-center gap-2 rounded-full bg-[#2a2a2d] p-1.5">
+              <div className="mb-10 !ml-[40%] flex items-center gap-10 rounded-full p-2.5 !mt-[10%] !mb-[10%] w-full">
                 {offeringTabs.map((tab) => (
                   <button
                     key={tab}
                     type="button"
                     onClick={() => setActiveOfferingTab(tab)}
-                    className={`rounded-full px-6 py-2.5 text-[1rem] font-medium transition-colors ${
-                      activeOfferingTab === tab ? 'bg-[#c9ff45] text-[#212121]' : 'text-white/70 hover:text-white'
+                    className={`flex-1 max-w-[18%] rounded-full px-8 py-3 text-[1.15rem] transition-colors ${
+                      activeOfferingTab === tab ? 'bg-[#c9ff45] text-[#212121]' : 'bg-[#3a3a3d] text-white/78'
                     }`}
+                    style={{ padding: '0.5% 1%' }}
                   >
                     {tab}
                   </button>
                 ))}
               </div>
+              
 
-              <p className="text-[1.2rem] font-semibold leading-8 text-white/70">Cognitive, Desk-based, Tech-centric</p>
+              <p className="text-[1.5rem] font-semibold leading-8 text-white mt-[5%] !mb-[5%]">Cognitive, Desk-based, Tech-centric</p>
             </motion.div>
 
             <div className="logo-marquee relative w-full overflow-hidden">
@@ -737,10 +741,10 @@ export default function Home() {
                           whileInView={{ opacity: 1, y: 0 }}
                           viewport={{ once: true }}
                           transition={{ duration: 0.45, delay: index * 0.06 }}
-                          className="flex min-h-[440px] w-[340px] flex-shrink-0 flex-col rounded-[28px] border border-white/10 bg-[rgba(49,49,49,0.92)] px-7 py-7 shadow-[inset_0_1px_0_rgba(255,255,255,0.03)]"
+                          className="flex min-h-[440px] w-[340px] flex-shrink-0 flex-col rounded-[28px] border border-white/10 bg-[rgba(49,49,49,0.92)] px-6 py-6 shadow-[inset_0_1px_0_rgba(255,255,255,0.03)]"
                         >
-                          <div className="mb-5 flex items-start justify-between">
-                            <div className="flex h-8 w-8 items-center justify-center rounded-md text-white/80">
+                          <div className="mb-6 flex items-start justify-between">
+                            <div className="flex !mt-[5%] !mb-[5%] !ml-[5%] h-8 w-8 items-center justify-center rounded-md text-white/80">
                               <Icon className="h-8 w-8" />
                             </div>
                             <div className="flex flex-col items-center gap-1 text-white/50">
@@ -750,12 +754,12 @@ export default function Home() {
                             </div>
                           </div>
 
-                          <h3 className="mb-3 leading-[1.18] text-white" style={{ fontSize: '1.1rem', fontWeight: 700 }}>
+                          <h3 className="mb-4 !mb-[3%] !ml-[5%] leading-[1.18] text-white" style={{ fontSize: '1.1rem', fontWeight: 700 }}>
                             {service.title}
                           </h3>
-                          <p className="mb-4 text-[0.9rem] leading-6 text-white/75">{service.description}</p>
+                          <p className="mb-4 !mb-[3%] !ml-[5%] text-[0.9rem] leading-6 text-white/75">{service.description}</p>
 
-                          <ul className="mb-6 flex flex-1 list-disc flex-col gap-2 pl-5 text-[0.85rem] leading-5 text-white/78 marker:text-white/80">
+                          <ul className="mb-6 !ml-[10%] flex flex-1 list-disc flex-col gap-2 pl-5 text-[0.85rem] leading-5 text-white/78 marker:text-white/80">
                             {service.bullets.map((bullet) => (
                               <li key={bullet}>{bullet}</li>
                             ))}
@@ -896,7 +900,7 @@ export default function Home() {
           </div>
       </Section>
 
-      <Section variant="lightGray" spacing="lg">
+      <Section variant="black" spacing="lg">
           <div className={`${shellInnerClass} grid items-center gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:gap-16 xl:gap-20`}>
             <motion.div initial={{ opacity: 0, x: -30 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.8 }} className="relative order-1 mx-auto h-96 w-full max-w-[720px] overflow-hidden rounded-2xl shadow-2xl lg:h-[500px] lg:max-w-none">
               <Image
@@ -975,7 +979,7 @@ export default function Home() {
 
             <motion.div initial={{ opacity: 0, x: 30 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.8 }} className="order-1 relative mx-auto h-96 w-full max-w-[720px] overflow-hidden rounded-2xl shadow-2xl lg:order-2 lg:h-[500px] lg:max-w-none">
               <Image
-                src="https://images.unsplash.com/photo-1714976326831-660970f3de8b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080"
+                src="/hero.webp"
                 alt="Professionals working"
                 width={720}
                 height={500}
@@ -1189,7 +1193,13 @@ export default function Home() {
           </div>
       </Section>
 
-
+      <Section variant="lightGray" spacing="md">
+        <div className="mx-auto flex w-full max-w-[1200px] flex-col items-center justify-center px-4">
+          <div className="pt-8 text-center sm:pt-12">
+            <h2 className="text-[#252525]" style={{ fontSize: '2.45rem', fontWeight: 700 }}>Blogs</h2>
+          </div>
+        </div>
+      </Section>
 
       <Section variant="white" spacing="lg">
         <div className="relative z-10 mx-auto flex w-full max-w-[1200px] flex-col items-center justify-center px-4 text-center">

@@ -35,7 +35,7 @@ export default function HeroSection() {
           <div className="mt-10 flex flex-col justify-center gap-4 sm:flex-row">
             <Link
               href="/register"
-              className="inline-flex items-center justify-center rounded-xl bg-grey px-8 py-4 text-base font-semibold text-black  shadow-[0_18px_45px_rgba(0,0,0,0.18)] transition hover:-translate-y-0.5 hover:shadow-[0_24px_60px_rgba(0,0,0,0.24)]"
+              className="inline-flex items-center justify-center rounded-xl bg-grey px-8 py-4 text-base font-semibold !text-black  shadow-[0_18px_45px_rgba(0,0,0,0.18)] transition hover:-translate-y-0.5 hover:shadow-[0_24px_60px_rgba(0,0,0,0.24)]"
             >
               Get Started Free
             </Link>
