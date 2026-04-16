@@ -16,7 +16,7 @@ export default function BlogFilters({
           key={category}
           type="button"
           onClick={() => onChange(category)}
-          className={`inline-flex items-center justify-center rounded-full px-5 py-3 text-[0.95rem] font-medium transition-colors ${
+          className={`inline-flex items-center justify-center rounded-full !px-5 !py-3 text-[0.95rem] font-medium transition-colors ${
             activeCategory === category
               ? 'bg-[#0f172a] text-white'
               : 'bg-white text-[#475467] ring-1 ring-[#e4e7ec] hover:bg-[#f8fafc]'

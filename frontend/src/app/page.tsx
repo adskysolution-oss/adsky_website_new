@@ -638,13 +638,13 @@ export default function Home() {
                 </div>
               </div>
 
-              <div className="relative flex items-center px-10 py-12 text-center text-white sm:px-14 sm:py-16 lg:text-left">
+              <div className="relative flex items-center !px-10 !py-12 text-center text-white sm:px-14 sm:py-16 lg:text-left">
                 <div className="mx-auto flex max-w-[460px] flex-col items-center lg:items-start">
-                  <div className="mb-14 inline-flex rounded-full bg-[#444c59] p-2 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]">
+                  <div className="!mb-14 inline-flex rounded-full bg-[#444c59] !p-2 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]">
                     <button
                       type="button"
                       onClick={() => setActiveWhyWorkTab('jobs')}
-                      className={`rounded-full px-7 py-2.5 text-[16px] font-medium transition-colors ${activeWhyWorkTab === 'jobs' ? 'bg-[#c9ff45] text-[#273448]' : 'text-white'}`}
+                      className={`rounded-full !px-7 !py-2.5 text-[16px] font-medium transition-colors ${activeWhyWorkTab === 'jobs' ? 'bg-[#c9ff45] text-[#273448]' : 'text-white'}`}
                     >
                       For Jobs
                     </button>
@@ -712,7 +712,7 @@ export default function Home() {
                     key={tab}
                     type="button"
                     onClick={() => setActiveOfferingTab(tab)}
-                    className={`rounded-full px-6 py-2.5 text-[1rem] font-medium transition-colors ${
+                    className={`rounded-full !px-6 !py-2.5 text-[1rem] font-medium transition-colors ${
                       activeOfferingTab === tab ? 'bg-[#c9ff45] text-[#212121]' : 'text-white/70 hover:text-white'
                     }`}
                   >
@@ -740,8 +740,8 @@ export default function Home() {
                           className="flex min-h-[440px] w-[340px] flex-shrink-0 flex-col rounded-[28px] border border-white/10 bg-[rgba(49,49,49,0.92)] px-7 py-7 shadow-[inset_0_1px_0_rgba(255,255,255,0.03)]"
                         >
                           <div className="mb-5 flex items-start justify-between">
-                            <div className="flex h-8 w-8 items-center justify-center rounded-md text-white/80">
-                              <Icon className="h-8 w-8" />
+                            <div className="flex !h-8 !w-8 items-center justify-center rounded-md text-white/80">
+                              <Icon className="!h-8 !w-8" />
                             </div>
                             <div className="flex flex-col items-center gap-1 text-white/50">
                               <span className="h-1 w-1 rounded-full bg-current" />
@@ -750,12 +750,12 @@ export default function Home() {
                             </div>
                           </div>
 
-                          <h3 className="mb-3 leading-[1.18] text-white" style={{ fontSize: '1.1rem', fontWeight: 700 }}>
+                          <h3 className="!mb-3 leading-[1.18] text-white" style={{ fontSize: '1.1rem', fontWeight: 700 }}>
                             {service.title}
                           </h3>
-                          <p className="mb-4 text-[0.9rem] leading-6 text-white/75">{service.description}</p>
+                          <p className="!mb-4 text-[0.9rem] leading-6 text-white/75">{service.description}</p>
 
-                          <ul className="mb-6 flex flex-1 list-disc flex-col gap-2 pl-5 text-[0.85rem] leading-5 text-white/78 marker:text-white/80">
+                          <ul className="!mb-6 flex flex-1 list-disc flex-col gap-2 !pl-5 text-[0.85rem] leading-5 text-white/78 marker:text-white/80">
                             {service.bullets.map((bullet) => (
                               <li key={bullet}>{bullet}</li>
                             ))}
@@ -763,7 +763,7 @@ export default function Home() {
 
                           <Link
                             href="/services"
-                            className="mt-auto inline-flex h-12 w-full items-center justify-center gap-2 rounded-full bg-white text-[0.98rem] font-semibold text-[#1f1f1f] transition-transform hover:scale-[1.01]"
+                            className="!mt-auto inline-flex h-12 w-full items-center justify-center gap-2 rounded-full bg-white text-[0.98rem] font-semibold !text-[#1f1f1f] transition-transform hover:scale-[1.01] "
                           >
                             Know More
                             <ArrowRight className="h-4 w-4" />
@@ -776,7 +776,7 @@ export default function Home() {
               </div>
             </div>
 
-            <div className="mt-5 flex justify-center">
+            <div className="!mt-5 flex justify-center">
               <div className="h-[3px] w-20 rounded-full bg-white/55" />
             </div>
             </div>
@@ -784,7 +784,7 @@ export default function Home() {
       </section>
 
       <Section variant="white" spacing="lg">
-        <div className="mx-auto flex w-full max-w-[1200px] flex-col items-center justify-center px-4">
+        <div className="mx-auto flex w-full max-w-[1200px] flex-col items-center justify-center !px-4">
           <motion.div initial={{ opacity: 0, y: 18 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }} className="mx-auto mb-16 max-w-[760px] text-center sm:mb-20">
             <h2 className="mb-3 leading-[1.12] text-[#111827]" style={{ fontSize: '2.5rem', fontWeight: 700 }}>Job Categories</h2>
           </motion.div>
@@ -846,10 +846,10 @@ export default function Home() {
                               className="flex flex-1 flex-col items-center text-center u2"
                             >
                               <div className="mb-3 flex flex-wrap justify-center gap-2">
-                                <span className="inline-flex rounded-full bg-black/10 px-3 py-1 text-xs font-semibold text-[#151515]">
+                                <span className="inline-flex rounded-full bg-black/10 !px-3 py-1 text-xs font-semibold text-[#151515]">
                                   {category.workType}
                                 </span>
-                                <span className="inline-flex rounded-full bg-white/75 px-3 py-1 text-xs font-semibold text-[#151515]">
+                                <span className="inline-flex rounded-full bg-white/75 !px-3 py-1 text-xs font-semibold text-[#151515]">
                                   {category.countLabel}
                                 </span>
                               </div>
@@ -864,7 +864,7 @@ export default function Home() {
 
                               <Link
                                 href={category.route}
-                                className="inline-flex h-10 items-center justify-center rounded-full bg-[#111827] px-5 text-sm font-semibold text-white transition-transform hover:scale-[1.02]"
+                                className="inline-flex h-10 items-center justify-center rounded-full bg-[#111827] !px-5 text-sm font-semibold text-white transition-transform hover:scale-[1.02]"
                               >
                                 Explore
                               </Link>
@@ -1225,9 +1225,9 @@ export default function Home() {
         <div className="pointer-events-none absolute left-[2%] top-[-4%] hidden h-32 w-32 text-white/5 opacity-40 md:block">
           <Star className="h-full w-full fill-current stroke-none" />
         </div>
-        <div className="pointer-events-none absolute right-[4%] top-[10%] hidden h-32 w-32 rotate-12 rounded-[32px] bg-white/5 opacity-20 md:block" style={{ clipPath: 'polygon(18% 0, 100% 26%, 71% 100%, 0 73%)' }} />
+        <div className="pointer-events-none absolute !right-[4%] !top-[10%] hidden h-32 w-32 rotate-12 rounded-[32px] bg-white/5 opacity-20 md:block" style={{ clipPath: 'polygon(18% 0, 100% 26%, 71% 100%, 0 73%)' }} />
         
-        <div className="relative z-10 mx-auto flex w-full max-w-[1200px] flex-col items-center justify-center px-4">
+        <div className="relative !z-10 mx-auto flex w-full max-w-[1200px] flex-col items-center justify-center !px-4">
           <div className="grid w-full gap-8 md:grid-cols-2 lg:gap-10">
             <motion.article
               initial={{ opacity: 0, y: 30 }}
@@ -1236,15 +1236,15 @@ export default function Home() {
               transition={{ duration: 0.6 }}
               className="group relative flex flex-col justify-between overflow-hidden rounded-[32px] bg-[radial-gradient(circle_at_70%_85%,rgba(33,94,146,0.5),rgba(20,20,22,0.98)_48%,#0a0a0b_100%)] p-10 text-white shadow-[0_26px_60px_rgba(0,0,0,0.4)] border border-white/5 transition-all hover:border-white/10"
             >
-              <div className="relative z-10">
-                <div className="mb-10 text-[1rem] font-semibold uppercase tracking-wider text-white/50">For Business</div>
-                <h3 className="mb-6 max-w-[320px] text-[2.4rem] font-bold leading-[1.1] tracking-tight">
+              <div className="relative !z-10">
+                <div className="!mb-10 !ml-[6%] !mt-[6%] text-[1rem] font-semibold uppercase tracking-wider text-white/50">For Business</div>
+                <h3 className="!mb-6 !ml-[6%] max-w-[320px] text-[2.4rem] font-bold leading-[1.1] tracking-tight">
                   Want to Optimize Your Core Operations?
                 </h3>
-                <p className="mb-10 text-[1.4rem] font-medium text-white/80">Let&apos;s talk about customized solutions.</p>
+                <p className="!mb-10 !ml-[6%] text-[1.4rem] font-medium text-white/80">Let&apos;s talk about customized solutions.</p>
               </div>
-              <div className="relative z-10 mt-auto flex">
-                <Button asChild size="lg" variant="secondary" className="px-10 py-7 text-lg">
+              <div className="relative !z-10 mt-auto flex">
+                <Button asChild size="lg" variant="secondary" className="!px-10 !py-7 text-lg">
                   <Link href="/business">
                     Book a meeting
                   </Link>
@@ -1262,17 +1262,17 @@ export default function Home() {
               transition={{ duration: 0.6, delay: 0.15 }}
               className="group relative flex flex-col justify-between overflow-hidden rounded-[32px] bg-[radial-gradient(circle_at_70%_85%,rgba(18,167,134,0.4),rgba(20,20,22,0.98)_48%,#0a0a0b_100%)] p-10 text-white shadow-[0_26px_60px_rgba(0,0,0,0.4)] border border-white/5 transition-all hover:border-white/10"
             >
-              <div className="relative z-10">
-                <div className="mb-10 text-[1rem] font-semibold uppercase tracking-wider text-white/50">For Work</div>
-                <h3 className="mb-6 max-w-[320px] text-[2.4rem] font-bold leading-[1.1] tracking-tight">
+              <div className="relative !z-10">
+                <div className="!mb-10 !ml-[6%] !mt-[6%] text-[1rem] font-semibold uppercase tracking-wider text-white/50">For Work</div>
+                <h3 className="!mb-6 !ml-[6%] max-w-[320px] text-[2.4rem] font-bold leading-[1.1] tracking-tight">
                   Looking For Work?
                 </h3>
-                <p className="mb-10 text-[1.4rem] font-medium text-white/80">
+                <p className="!mb-10 !ml-[6%] text-[1.4rem] font-medium text-white/80">
                   Discover flexible work opportunities across India.
                 </p>
               </div>
-              <div className="relative z-10 mt-auto flex">
-                <Button asChild size="lg" variant="secondary" className="px-10 py-7 text-lg">
+              <div className="relative !z-10 mt-auto flex">
+                <Button asChild size="lg" variant="secondary" className="!px-10 !py-7 text-lg">
                   <Link href="/jobs">
                     Explore Jobs
                   </Link>

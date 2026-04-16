@@ -18,7 +18,7 @@ export default function BlogCard({ post }: { post: BlogPost }) {
         </div>
       </Link>
 
-      <div className="flex min-h-[270px] flex-col px-6 py-6">
+      <div className="flex min-h-[270px] flex-col px-6 py-6 !p-[5%]">
         <div className="flex flex-wrap items-center gap-3 text-[0.82rem] font-medium text-[#64748b]">
           <span className="rounded-full bg-[#eff3f9] px-3 py-1 text-[#17356c]">{post.category}</span>
           <span>{post.date}</span>
